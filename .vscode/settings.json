@@ -1,0 +1,7 @@
+{
+  "dotnet.completion.showCompletionItemsFromUnimportedNamespaces": true,
+  "editor.formatOnSave": true
+  // "files.exclude": {
+  //   "**/.godot": true
+  // }
+}
