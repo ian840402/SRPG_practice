@@ -11,7 +11,7 @@ No animations, sprites, sound effects, or polish are planned for the first versi
 - [x] An 8x8 board exists.
 - [x] One player unit and one enemy unit are placed on the board.
 - [x] The player can select their unit.
-- The player can move the selected unit to a valid empty tile.
+- [x] The player can move the selected unit to a valid empty tile.
 - The player can attack the enemy when adjacent.
 - The enemy can take a very simple turn.
 - The game can detect win or loss.
@@ -29,7 +29,7 @@ No animations, sprites, sound effects, or polish are planned for the first versi
 
 - [x] Create one player unit.
 - [x] Create one enemy unit.
-- [ ] Each unit needs:
+- [x] Each unit needs:
   - Grid position
   - HP
   - Attack power
@@ -50,10 +50,10 @@ No animations, sprites, sound effects, or polish are planned for the first versi
 
 ### 5. Move the Player Unit
 
-- After selecting the player unit, clicking an empty tile attempts movement.
-- Allow movement only within move range.
-- Use Manhattan distance only.
-- Do not allow diagonal movement.
+- [x] After selecting the player unit, clicking an empty tile attempts movement.
+- [x] Allow movement only within move range.
+- [x] Use Manhattan distance only.
+- [x] Do not allow diagonal movement.
 - Do not implement terrain costs yet.
 
 ### 6. Attack the Enemy

@@ -10,19 +10,22 @@
 - Board tile clicks now resolve to grid coordinates.
 - The player unit can be selected by clicking its tile.
 - Selection feedback is shown with a highlighted tile, status text, and console output.
-- No movement, attack, enemy turn, or win/loss logic has been implemented yet.
+- Basic unit data now includes grid position, HP, attack power, move range, and team.
+- The selected player unit can move to valid empty tiles within move range.
+- Movement uses Manhattan distance and does not allow moving onto the enemy tile.
+- No attack, enemy turn, or win/loss logic has been implemented yet.
 - No animation or art pass is planned for the first prototype.
 
 ## Next Milestone
 
-Implement selected-unit movement to valid empty tiles.
+Implement adjacent player attacks against the enemy.
 
 Done when:
 
-- After selecting the player unit, clicking an empty tile attempts movement.
-- Movement is allowed only within the player's move range.
-- Movement uses Manhattan distance and does not allow diagonal movement.
-- The player unit cannot move onto the enemy tile.
+- If the selected player unit is adjacent to the enemy, clicking the enemy attacks it.
+- Enemy HP is reduced by the player's attack power.
+- The enemy is removed or hidden when HP reaches 0 or below.
+- Non-adjacent enemy clicks do not attack.
 
 ## Progress Log
 
@@ -60,3 +63,29 @@ Done when:
 - Renamed the project folder from `test-trpg` to `SRPG_practice`.
 - Verified the renamed project with `dotnet build SRPG_practice.sln`: build succeeded with 0 warnings and 0 errors.
 - Removed the obsolete `test_trpg.sln` file after confirming `SRPG_practice.sln` builds successfully.
+
+### 2026-05-28T14:50:03+0800
+
+- Added a simple `Unit` data structure in `Main.cs` for grid position, HP, attack power, move range, and team.
+- Updated player and enemy state to use `Unit` instances instead of separate grid position fields.
+- Implemented selected player movement to valid empty tiles within move range.
+- Movement now uses Manhattan distance and rejects movement onto the enemy tile.
+- Ran `dotnet format SRPG_practice.sln` to align `Main.cs` indentation with `.editorconfig`.
+- Verified the project with `dotnet build SRPG_practice.sln`: build succeeded with 0 warnings and 0 errors.
+- Verified formatting with `dotnet format SRPG_practice.sln --verify-no-changes`.
+- Updated `docs/GOALS.md` to mark basic unit data and player movement items complete.
+
+### 2026-05-28T15:00:48+0800
+
+- Updated `.editorconfig` to use 2-space indentation across the project.
+- Ran `dotnet format SRPG_practice.sln` to apply the new indentation setting.
+- Verified formatting with `dotnet format SRPG_practice.sln --verify-no-changes`.
+- Verified the project with `dotnet build SRPG_practice.sln`: build succeeded with 0 warnings and 0 errors.
+
+### 2026-05-28T15:10:12+0800
+
+- Split `Unit` out of `Main.cs` into `Unit.cs`.
+- Split `Team` out of `Main.cs` into `Team.cs`.
+- Kept unit rendering, input handling, and movement rules in `Main.cs` for now.
+- Verified formatting with `dotnet format SRPG_practice.sln --verify-no-changes`.
+- Verified the project with `dotnet build SRPG_practice.sln`: build succeeded with 0 warnings and 0 errors.
