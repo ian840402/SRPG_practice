@@ -10,7 +10,7 @@ No animations, sprites, sound effects, or polish are planned for the first versi
 
 - [x] An 8x8 board exists.
 - [x] One player unit and one enemy unit are placed on the board.
-- The player can select their unit.
+- [x] The player can select their unit.
 - The player can move the selected unit to a valid empty tile.
 - The player can attack the enemy when adjacent.
 - The enemy can take a very simple turn.
@@ -21,7 +21,7 @@ No animations, sprites, sound effects, or polish are planned for the first versi
 ### 1. Create the Board
 
 - [x] Create an 8x8 grid.
-- [ ] Each tile should be clickable.
+- [x] Each tile should be clickable.
 - [x] Use simple colored rectangles or default Godot nodes.
 - [x] No tile art is needed yet.
 
@@ -44,9 +44,9 @@ No animations, sprites, sound effects, or polish are planned for the first versi
 
 ### 4. Select the Player Unit
 
-- Clicking the player unit tile selects the unit.
-- Store the selected unit in game state.
-- A console log or simple label is enough for feedback.
+- [x] Clicking the player unit tile selects the unit.
+- [x] Store the selected unit in game state.
+- [x] A console log or simple label is enough for feedback.
 
 ### 5. Move the Player Unit
 

@@ -1,6 +1,6 @@
 ﻿Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "test_trpg", "test_trpg.csproj", "{5823FAFF-F5C8-4D2D-BDFA-4F9178A974D2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SRPG_practice", "SRPG_practice.csproj", "{5823FAFF-F5C8-4D2D-BDFA-4F9178A974D2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
