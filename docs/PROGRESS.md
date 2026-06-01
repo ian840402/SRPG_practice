@@ -13,19 +13,21 @@
 - Basic unit data now includes grid position, HP, attack power, move range, and team.
 - The selected player unit can move to valid empty tiles within move range.
 - Movement uses Manhattan distance and does not allow moving onto the enemy tile.
-- No attack, enemy turn, or win/loss logic has been implemented yet.
+- The selected player unit can attack the enemy when adjacent.
+- Enemy HP is reduced by the player's attack power.
+- When enemy HP reaches 0, the enemy is marked defeated, hidden, no longer blocks movement, and cannot be attacked again.
+- No enemy turn or win/loss logic has been implemented yet.
 - No animation or art pass is planned for the first prototype.
 
 ## Next Milestone
 
-Implement adjacent player attacks against the enemy.
+End the player action after moving or attacking.
 
 Done when:
 
-- If the selected player unit is adjacent to the enemy, clicking the enemy attacks it.
-- Enemy HP is reduced by the player's attack power.
-- The enemy is removed or hidden when HP reaches 0 or below.
-- Non-adjacent enemy clicks do not attack.
+- After the player moves, the selected unit can no longer keep moving in the same action.
+- After the player attacks, the selected unit can no longer keep attacking in the same action.
+- The implementation stays simple and does not add action points yet.
 
 ## Progress Log
 
@@ -89,3 +91,12 @@ Done when:
 - Kept unit rendering, input handling, and movement rules in `Main.cs` for now.
 - Verified formatting with `dotnet format SRPG_practice.sln --verify-no-changes`.
 - Verified the project with `dotnet build SRPG_practice.sln`: build succeeded with 0 warnings and 0 errors.
+
+### 2026-06-01T10:47:16+0800
+
+- Implemented adjacent player attacks against the enemy in `Main.cs`.
+- Attacks now require clicking the enemy while the player unit is adjacent by Manhattan distance.
+- Enemy HP is reduced by the player's attack power.
+- When enemy HP reaches 0, the enemy is marked defeated, hidden, no longer blocks movement, and cannot be attacked again.
+- Verified the project with `dotnet build SRPG_practice.sln`: build succeeded with 0 warnings and 0 errors.
+- Updated `docs/GOALS.md` to mark the attack milestone complete.

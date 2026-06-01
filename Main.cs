@@ -10,6 +10,7 @@ public partial class Main : Node2D
   private readonly Unit _playerUnit = new(new Vector2I(1, 1), hp: 10, attackPower: 3, moveRange: 3, Team.Player);
   private readonly Unit _enemyUnit = new(new Vector2I(6, 6), hp: 10, attackPower: 2, moveRange: 2, Team.Enemy);
   private Unit _selectedUnit;
+  private bool _isEnemyDefeated;
   private string _statusText = "Click the player unit to select it.";
 
   public override void _Ready()
@@ -22,7 +23,10 @@ public partial class Main : Node2D
     DrawBoard();
     DrawSelection();
     DrawUnit(_playerUnit, new Color(0.2f, 0.45f, 1.0f), "P");
-    DrawUnit(_enemyUnit, new Color(1.0f, 0.25f, 0.25f), "E");
+    if (!_isEnemyDefeated)
+    {
+      DrawUnit(_enemyUnit, new Color(1.0f, 0.25f, 0.25f), "E");
+    }
     DrawStatusText();
   }
 
@@ -50,6 +54,7 @@ public partial class Main : Node2D
     else if (_selectedUnit is { Team: Team.Player } selectedUnit)
     {
       TryMoveSelectedUnit(selectedUnit, clickedGridPosition);
+      TryAttackEnemy(selectedUnit, clickedGridPosition);
     }
     else
     {
@@ -105,7 +110,7 @@ public partial class Main : Node2D
 
   private void TryMoveSelectedUnit(Unit unit, Vector2I targetGridPosition)
   {
-    if (targetGridPosition == _enemyUnit.GridPosition)
+    if (!_isEnemyDefeated && targetGridPosition == _enemyUnit.GridPosition)
     {
       _statusText = "Cannot move onto the enemy tile.";
       return;
@@ -121,6 +126,37 @@ public partial class Main : Node2D
     unit.MoveTo(targetGridPosition);
     _statusText = $"Player moved to {targetGridPosition}.";
     GD.Print($"Player moved to: {targetGridPosition}");
+  }
+
+  private void TryAttackEnemy(Unit unit, Vector2I targetGridPosition)
+  {
+    if (_isEnemyDefeated)
+    {
+      return;
+    }
+
+    var distance = GetManhattanDistance(_playerUnit.GridPosition, _enemyUnit.GridPosition);
+    if (targetGridPosition != _enemyUnit.GridPosition)
+    {
+      return;
+    }
+
+    if (distance != 1)
+    {
+      _statusText = "Enemy is too far to attack.";
+      return;
+    }
+
+    _enemyUnit.TakeDamage(unit.AttackPower);
+    if (_enemyUnit.Hp == 0)
+    {
+      _isEnemyDefeated = true;
+      _selectedUnit = null;
+      _statusText = $"Enemy took {unit.AttackPower} damage and was defeated.";
+      return;
+    }
+
+    _statusText = $"Enemy took {unit.AttackPower} damage. Enemy HP: {_enemyUnit.Hp}.";
   }
 
   private void DrawStatusText()

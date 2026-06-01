@@ -12,7 +12,7 @@ No animations, sprites, sound effects, or polish are planned for the first versi
 - [x] One player unit and one enemy unit are placed on the board.
 - [x] The player can select their unit.
 - [x] The player can move the selected unit to a valid empty tile.
-- The player can attack the enemy when adjacent.
+- [x] The player can attack the enemy when adjacent.
 - The enemy can take a very simple turn.
 - The game can detect win or loss.
 
@@ -58,9 +58,9 @@ No animations, sprites, sound effects, or polish are planned for the first versi
 
 ### 6. Attack the Enemy
 
-- If the player unit is adjacent to the enemy, clicking the enemy attacks it.
-- Reduce enemy HP by the player's attack power.
-- Remove the enemy when HP is 0 or below.
+- [x] If the player unit is adjacent to the enemy, clicking the enemy attacks it.
+- [x] Reduce enemy HP by the player's attack power.
+- [x] Remove the enemy when HP is 0 or below.
 
 ### 7. End the Player Action
 
