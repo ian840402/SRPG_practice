@@ -14,7 +14,7 @@ No animations, sprites, sound effects, or polish are planned for the first versi
 - [x] The player can move the selected unit to a valid empty tile.
 - [x] The player can attack the enemy when adjacent.
 - [x] The enemy can take a very simple turn.
-- The game can detect win or loss.
+- [x] The game can detect win or loss.
 
 ## Todo List
 
@@ -76,8 +76,8 @@ No animations, sprites, sound effects, or polish are planned for the first versi
 
 ### 9. Add Win and Loss Checks
 
-- If the enemy HP reaches 0, show a win state.
-- If the player HP reaches 0, show a loss state.
+- [x] If the enemy HP reaches 0, show a win state.
+- [x] If the player HP reaches 0, show a loss state.
 
 ### 10. Keep the First Version Simple
 

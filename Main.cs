@@ -11,6 +11,7 @@ public partial class Main : Node2D
   private readonly Unit _enemyUnit = new(new Vector2I(6, 6), hp: 10, attackPower: 2, moveRange: 2, Team.Enemy);
   private Unit _selectedUnit;
   private bool _isEnemyDefeated;
+  private bool _isGameOver;
   private string _statusText = "Click the player unit to select it.";
 
   public override void _Ready()
@@ -32,6 +33,11 @@ public partial class Main : Node2D
 
   public override void _Input(InputEvent inputEvent)
   {
+    if (_isGameOver)
+    {
+      return;
+    }
+
     if (inputEvent is not InputEventMouseButton { Pressed: true, ButtonIndex: MouseButton.Left } mouseButton)
     {
       return;
@@ -156,7 +162,7 @@ public partial class Main : Node2D
     {
       _isEnemyDefeated = true;
       _selectedUnit = null;
-      _statusText = $"Enemy took {unit.AttackPower} damage and was defeated.";
+      SetGameOver($"Enemy took {unit.AttackPower} damage and was defeated. You win.");
       return true;
     }
 
@@ -183,6 +189,13 @@ public partial class Main : Node2D
     if (distance == 1)
     {
       _playerUnit.TakeDamage(_enemyUnit.AttackPower);
+      if (_playerUnit.Hp == 0)
+      {
+        _isGameOver = true;
+        _selectedUnit = null;
+        return $"Enemy attacked player for {_enemyUnit.AttackPower} damage. Player HP: {_playerUnit.Hp}. You lose.";
+      }
+
       return $"Enemy attacked player for {_enemyUnit.AttackPower} damage. Player HP: {_playerUnit.Hp}.";
     }
 
@@ -206,6 +219,13 @@ public partial class Main : Node2D
     }
 
     return stepsMoved;
+  }
+
+  private void SetGameOver(string statusText)
+  {
+    _isGameOver = true;
+    _selectedUnit = null;
+    _statusText = statusText;
   }
 
   private static Vector2I GetStepToward(Vector2I from, Vector2I to)

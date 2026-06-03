@@ -20,18 +20,20 @@
 - After the player successfully moves or attacks, the enemy takes a simple turn if it is not defeated.
 - If the enemy is adjacent to the player during its turn, it attacks and reduces player HP.
 - Otherwise, the enemy moves toward the player within its move range and stops early when it becomes adjacent.
-- No win/loss logic has been implemented yet.
+- Win/loss logic is implemented.
+- If the enemy HP reaches 0, the game shows a win state.
+- If the player HP reaches 0, the game shows a loss state.
+- After win or loss, further gameplay input is ignored.
 - No animation or art pass is planned for the first prototype.
 
 ## Next Milestone
 
-Add win and loss checks.
+First playable target is complete.
 
 Done when:
 
-- If the enemy HP reaches 0, show a win state.
-- If the player HP reaches 0, show a loss state.
-- After win or loss, ignore further gameplay input.
+- Review the first playable prototype manually in Godot.
+- Decide the next prototype goal before adding new gameplay systems.
 
 ## Progress Log
 
@@ -129,3 +131,11 @@ Done when:
 - Enemy movement now advances up to `MoveRange` tiles toward the player instead of always moving one tile.
 - Enemy movement stops early once the enemy becomes adjacent to the player, and it does not attack again in the same turn after moving.
 - Updated `docs/GOALS.md` and `docs/PROGRESS.md` to describe enemy movement as range-based rather than one-tile movement.
+
+### 2026-06-03T09:07:03+0800
+
+- Implemented win/loss checks in `Main.cs`.
+- Enemy defeat now shows a win state.
+- Player defeat during the enemy turn now shows a loss state.
+- After win or loss, gameplay input is ignored.
+- Updated `docs/GOALS.md` to mark the first playable win/loss milestone complete.
