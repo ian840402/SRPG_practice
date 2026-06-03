@@ -13,7 +13,7 @@ No animations, sprites, sound effects, or polish are planned for the first versi
 - [x] The player can select their unit.
 - [x] The player can move the selected unit to a valid empty tile.
 - [x] The player can attack the enemy when adjacent.
-- The enemy can take a very simple turn.
+- [x] The enemy can take a very simple turn.
 - The game can detect win or loss.
 
 ## Todo List
@@ -64,15 +64,15 @@ No animations, sprites, sound effects, or polish are planned for the first versi
 
 ### 7. End the Player Action
 
-- After the player moves or attacks, end the player's action.
+- [x] After the player moves or attacks, end the player's action.
 - Keep the first version to one player unit only.
 - Do not implement action points yet.
 
 ### 8. Add a Simple Enemy Turn
 
-- If the enemy is adjacent to the player, it attacks.
-- Otherwise, the enemy moves one tile toward the player.
-- Do not implement full pathfinding yet.
+- [x] If the enemy is adjacent to the player, it attacks.
+- [x] Otherwise, the enemy moves toward the player within its move range.
+- [x] Do not implement full pathfinding yet.
 
 ### 9. Add Win and Loss Checks
 

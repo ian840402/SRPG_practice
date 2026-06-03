@@ -16,18 +16,22 @@
 - The selected player unit can attack the enemy when adjacent.
 - Enemy HP is reduced by the player's attack power.
 - When enemy HP reaches 0, the enemy is marked defeated, hidden, no longer blocks movement, and cannot be attacked again.
-- No enemy turn or win/loss logic has been implemented yet.
+- After the player successfully moves or attacks, the current player action ends by clearing the selected unit.
+- After the player successfully moves or attacks, the enemy takes a simple turn if it is not defeated.
+- If the enemy is adjacent to the player during its turn, it attacks and reduces player HP.
+- Otherwise, the enemy moves toward the player within its move range and stops early when it becomes adjacent.
+- No win/loss logic has been implemented yet.
 - No animation or art pass is planned for the first prototype.
 
 ## Next Milestone
 
-End the player action after moving or attacking.
+Add win and loss checks.
 
 Done when:
 
-- After the player moves, the selected unit can no longer keep moving in the same action.
-- After the player attacks, the selected unit can no longer keep attacking in the same action.
-- The implementation stays simple and does not add action points yet.
+- If the enemy HP reaches 0, show a win state.
+- If the player HP reaches 0, show a loss state.
+- After win or loss, ignore further gameplay input.
 
 ## Progress Log
 
@@ -100,3 +104,28 @@ Done when:
 - When enemy HP reaches 0, the enemy is marked defeated, hidden, no longer blocks movement, and cannot be attacked again.
 - Verified the project with `dotnet build SRPG_practice.sln`: build succeeded with 0 warnings and 0 errors.
 - Updated `docs/GOALS.md` to mark the attack milestone complete.
+
+### 2026-06-02T15:58:41+0800
+
+- Implemented the end-player-action milestone in `Main.cs`.
+- Successful movement now clears the selected unit so the player cannot keep moving in the same action.
+- Successful attacks now clear the selected unit so the player cannot keep attacking in the same action.
+- Kept the implementation simple and did not add action points.
+- Verified the project with `dotnet build SRPG_practice.sln`: build succeeded with 0 warnings and 0 errors.
+- Updated `docs/GOALS.md` to mark the end-player-action milestone complete.
+
+### 2026-06-02T16:23:48+0800
+
+- Implemented a simple enemy turn in `Main.cs`.
+- Enemy turns now run after successful player movement or attack, unless the enemy was defeated.
+- If the enemy is adjacent to the player, it attacks and reduces player HP.
+- Otherwise, the enemy moves one tile toward the player without full pathfinding.
+- Verified the project with `dotnet build SRPG_practice.sln`: build succeeded with 0 warnings and 0 errors.
+- Updated `docs/GOALS.md` to mark the simple enemy turn milestone complete.
+
+### 2026-06-02T17:03:52+0800
+
+- Refined enemy movement in `Main.cs` to use the enemy unit's move range.
+- Enemy movement now advances up to `MoveRange` tiles toward the player instead of always moving one tile.
+- Enemy movement stops early once the enemy becomes adjacent to the player, and it does not attack again in the same turn after moving.
+- Updated `docs/GOALS.md` and `docs/PROGRESS.md` to describe enemy movement as range-based rather than one-tile movement.

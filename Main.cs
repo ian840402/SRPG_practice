@@ -53,8 +53,11 @@ public partial class Main : Node2D
     }
     else if (_selectedUnit is { Team: Team.Player } selectedUnit)
     {
-      TryMoveSelectedUnit(selectedUnit, clickedGridPosition);
-      TryAttackEnemy(selectedUnit, clickedGridPosition);
+      var playerActed = TryMoveSelectedUnit(selectedUnit, clickedGridPosition);
+      if (!playerActed)
+      {
+        TryAttackEnemy(selectedUnit, clickedGridPosition);
+      }
     }
     else
     {
@@ -108,43 +111,44 @@ public partial class Main : Node2D
     DrawRect(tileRect, new Color(1.0f, 0.9f, 0.1f), false, 4.0f);
   }
 
-  private void TryMoveSelectedUnit(Unit unit, Vector2I targetGridPosition)
+  private bool TryMoveSelectedUnit(Unit unit, Vector2I targetGridPosition)
   {
     if (!_isEnemyDefeated && targetGridPosition == _enemyUnit.GridPosition)
     {
       _statusText = "Cannot move onto the enemy tile.";
-      return;
+      return false;
     }
 
     var distance = GetManhattanDistance(unit.GridPosition, targetGridPosition);
     if (distance > unit.MoveRange)
     {
       _statusText = $"Target is too far. Move range is {unit.MoveRange}.";
-      return;
+      return false;
     }
 
     unit.MoveTo(targetGridPosition);
-    _statusText = $"Player moved to {targetGridPosition}.";
+    EndPlayerAction($"Player moved to {targetGridPosition}.");
     GD.Print($"Player moved to: {targetGridPosition}");
+    return true;
   }
 
-  private void TryAttackEnemy(Unit unit, Vector2I targetGridPosition)
+  private bool TryAttackEnemy(Unit unit, Vector2I targetGridPosition)
   {
     if (_isEnemyDefeated)
     {
-      return;
+      return false;
     }
 
     var distance = GetManhattanDistance(_playerUnit.GridPosition, _enemyUnit.GridPosition);
     if (targetGridPosition != _enemyUnit.GridPosition)
     {
-      return;
+      return false;
     }
 
     if (distance != 1)
     {
       _statusText = "Enemy is too far to attack.";
-      return;
+      return false;
     }
 
     _enemyUnit.TakeDamage(unit.AttackPower);
@@ -153,10 +157,66 @@ public partial class Main : Node2D
       _isEnemyDefeated = true;
       _selectedUnit = null;
       _statusText = $"Enemy took {unit.AttackPower} damage and was defeated.";
+      return true;
+    }
+
+    EndPlayerAction($"Enemy took {unit.AttackPower} damage. Enemy HP: {_enemyUnit.Hp}.");
+    return true;
+  }
+
+  private void EndPlayerAction(string playerActionText)
+  {
+    _selectedUnit = null;
+
+    if (_isEnemyDefeated)
+    {
+      _statusText = playerActionText;
       return;
     }
 
-    _statusText = $"Enemy took {unit.AttackPower} damage. Enemy HP: {_enemyUnit.Hp}.";
+    _statusText = $"{playerActionText} {TakeEnemyTurn()}";
+  }
+
+  private string TakeEnemyTurn()
+  {
+    var distance = GetManhattanDistance(_enemyUnit.GridPosition, _playerUnit.GridPosition);
+    if (distance == 1)
+    {
+      _playerUnit.TakeDamage(_enemyUnit.AttackPower);
+      return $"Enemy attacked player for {_enemyUnit.AttackPower} damage. Player HP: {_playerUnit.Hp}.";
+    }
+
+    var stepsMoved = MoveEnemyTowardPlayer();
+    return $"Enemy moved {stepsMoved} tile(s) to {_enemyUnit.GridPosition}.";
+  }
+
+  private int MoveEnemyTowardPlayer()
+  {
+    var stepsMoved = 0;
+    for (var step = 0; step < _enemyUnit.MoveRange; step++)
+    {
+      if (GetManhattanDistance(_enemyUnit.GridPosition, _playerUnit.GridPosition) == 1)
+      {
+        break;
+      }
+
+      var enemyMoveDirection = GetStepToward(_enemyUnit.GridPosition, _playerUnit.GridPosition);
+      _enemyUnit.MoveTo(_enemyUnit.GridPosition + enemyMoveDirection);
+      stepsMoved++;
+    }
+
+    return stepsMoved;
+  }
+
+  private static Vector2I GetStepToward(Vector2I from, Vector2I to)
+  {
+    var delta = to - from;
+    if (delta.X != 0)
+    {
+      return new Vector2I(Math.Sign(delta.X), 0);
+    }
+
+    return new Vector2I(0, Math.Sign(delta.Y));
   }
 
   private void DrawStatusText()
