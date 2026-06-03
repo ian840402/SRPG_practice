@@ -28,12 +28,15 @@
 
 ## Next Milestone
 
-First playable target is complete.
+Second playable target.
 
 Done when:
 
-- Review the first playable prototype manually in Godot.
-- Decide the next prototype goal before adding new gameplay systems.
+- Explicit turn states are implemented.
+- A player unit can move, then attack if adjacent.
+- The board has two player units and two enemy units.
+- Unit HP is visible on the board.
+- Valid movement tiles are highlighted when a player unit is selected.
 
 ## Progress Log
 
@@ -139,3 +142,9 @@ Done when:
 - Player defeat during the enemy turn now shows a loss state.
 - After win or loss, gameplay input is ignored.
 - Updated `docs/GOALS.md` to mark the first playable win/loss milestone complete.
+
+### 2026-06-03T11:45:12+0800
+
+- Defined the second playable target in `docs/GOALS.md`.
+- The next phase will focus on explicit turn states, move-then-attack flow, two units per side, visible HP, and valid movement tile highlights.
+- Updated `docs/PROGRESS.md` so the next milestone points to the second playable target.

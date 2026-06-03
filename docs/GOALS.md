@@ -16,6 +16,16 @@ No animations, sprites, sound effects, or polish are planned for the first versi
 - [x] The enemy can take a very simple turn.
 - [x] The game can detect win or loss.
 
+## Second Playable Target
+
+Focus on moving from a one-unit prototype to basic tactical decisions.
+
+- [ ] Add explicit turn states.
+- [ ] Allow a player unit to move, then attack if adjacent.
+- [ ] Add a second player unit and a second enemy unit.
+- [ ] Show simple HP information for units on the board.
+- [ ] Highlight valid movement tiles when a player unit is selected.
+
 ## Todo List
 
 ### 1. Create the Board
