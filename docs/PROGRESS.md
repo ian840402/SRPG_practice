@@ -162,3 +162,30 @@ Done when:
 - Refactored `Main.cs` input handling without changing gameplay behavior.
 - `_Input()` now delegates clicked-grid extraction, player-turn click handling, and selected-unit action handling to separate methods.
 - Kept win/loss checks centralized after player input handling.
+
+### 2026-06-04T11:07:10+0800
+
+- Implemented a simple drawn `End Turn` button in `Main.cs`.
+- Player movement now consumes remaining move points instead of ending the turn immediately.
+- A selected player unit can keep moving while it has remaining move points.
+- A player unit can attack once when adjacent, then the player must click `End Turn` to trigger the enemy turn.
+- The `End Turn` button is ignored outside the player turn through the existing `GameState` input guard.
+- Updated `docs/GOALS.md` to mark the move-then-attack milestone complete for the second playable target.
+
+### 2026-06-04T11:25:25+0800
+
+- Refined turn flow naming in `Main.cs`.
+- Player turns now end by calling `StartEnemyTurn()`.
+- Enemy turn handling is split into `StartEnemyTurn()`, `ResolveEnemyTurnAction()`, and `EndEnemyTurn()` before returning to `StartPlayerTurn()`.
+
+### 2026-06-04T11:28:21+0800
+
+- Consolidated enemy alive checks in `Main.cs`.
+- `IsEnemyAlive()` is now only used by the centralized win/loss check after input handling.
+- Movement and turn transition code now rely on `GameState` flow instead of repeating enemy alive guards.
+
+### 2026-06-04T14:15:00+0800
+
+- Added `InitTurn()` in `Main.cs` for initial turn setup.
+- Added lightweight `GameState` guards to player/enemy start and end turn methods.
+- Kept initialization separate from normal player turn transitions so future first-turn ownership can change more easily.

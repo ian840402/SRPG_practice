@@ -5,6 +5,10 @@
 - Prefer Traditional Chinese and Taiwan wording when responding to the user.
 - Use English only when it is clearer for code, APIs, file names, or technical terms.
 
+## Coding Style
+
+- For simple guard clauses or early returns, omit braces and keep the whole statement on a single line when readability remains clear, for example `if (unit.Hp == 0) return;`.
+
 ## Progress Tracking
 
 When the user asks to "紀錄目前專案狀態", "記錄目前專案狀態", "更新目前進度", or makes an equivalent request:

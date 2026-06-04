@@ -6,15 +6,19 @@ public partial class Main : Node2D
   private const int BoardSize = 8;
   private const int TileSize = 64;
   private static readonly Vector2 BoardOrigin = new(64, 64);
+  private static readonly Rect2 EndTurnButtonRect = new(BoardOrigin + new Vector2(BoardSize * TileSize + 32, 0), new Vector2(128, 48));
 
   private readonly Unit _playerUnit = new(new Vector2I(1, 1), hp: 10, attackPower: 3, moveRange: 3, Team.Player);
   private readonly Unit _enemyUnit = new(new Vector2I(6, 6), hp: 10, attackPower: 2, moveRange: 2, Team.Enemy);
   private Unit _selectedUnit;
   private GameState _gameState = GameState.PlayerTurn;
+  private int _remainingPlayerMovePoints;
+  private bool _hasPlayerAttackedThisTurn;
   private string _statusText = "Click the player unit to select it.";
 
   public override void _Ready()
   {
+    InitTurn();
     QueueRedraw();
   }
 
@@ -22,18 +26,27 @@ public partial class Main : Node2D
   {
     DrawBoard();
     DrawSelection();
-    DrawUnit(_playerUnit, new Color(0.2f, 0.45f, 1.0f), "P");
-    if (IsEnemyAlive())
-    {
-      DrawUnit(_enemyUnit, new Color(1.0f, 0.25f, 0.25f), "E");
-    }
+    DrawUnitIfAlive(_playerUnit, new Color(0.2f, 0.45f, 1.0f), "P");
+    DrawUnitIfAlive(_enemyUnit, new Color(1.0f, 0.25f, 0.25f), "E");
+    DrawEndTurnButton();
     DrawStatusText();
   }
 
   public override void _Input(InputEvent inputEvent)
   {
-    if (!TryGetClickedGridPosition(inputEvent, out var clickedGridPosition))
+    if (!TryGetPlayerTurnMouseClick(inputEvent, out var clickPosition)) return;
+
+    if (TryHandleEndTurnButtonClick(clickPosition))
     {
+      UpdateGameStateAfterInput();
+      QueueRedraw();
+      return;
+    }
+
+    if (!TryGetGridPosition(clickPosition, out var clickedGridPosition))
+    {
+      _statusText = "Clicked outside the board.";
+      QueueRedraw();
       return;
     }
 
@@ -42,27 +55,23 @@ public partial class Main : Node2D
     QueueRedraw();
   }
 
-  private bool TryGetClickedGridPosition(InputEvent inputEvent, out Vector2I clickedGridPosition)
+  private bool TryGetPlayerTurnMouseClick(InputEvent inputEvent, out Vector2 clickPosition)
   {
-    clickedGridPosition = default;
-    if (_gameState != GameState.PlayerTurn)
-    {
-      return false;
-    }
+    clickPosition = default;
+    if (_gameState != GameState.PlayerTurn) return false;
 
-    if (inputEvent is not InputEventMouseButton { Pressed: true, ButtonIndex: MouseButton.Left } mouseButton)
-    {
-      return false;
-    }
+    if (inputEvent is not InputEventMouseButton { Pressed: true, ButtonIndex: MouseButton.Left } mouseButton) return false;
 
-    if (TryGetGridPosition(mouseButton.Position, out clickedGridPosition))
-    {
-      return true;
-    }
+    clickPosition = mouseButton.Position;
+    return true;
+  }
 
-    _statusText = "Clicked outside the board.";
-    QueueRedraw();
-    return false;
+  private bool TryHandleEndTurnButtonClick(Vector2 clickPosition)
+  {
+    if (!EndTurnButtonRect.HasPoint(clickPosition)) return false;
+
+    EndPlayerTurn("Player ended the turn.");
+    return true;
   }
 
   private void HandlePlayerTurnClick(Vector2I clickedGridPosition)
@@ -87,7 +96,7 @@ public partial class Main : Node2D
   private void SelectPlayerUnit(Vector2I gridPosition)
   {
     _selectedUnit = _playerUnit;
-    _statusText = $"Player selected at {gridPosition}.";
+    _statusText = $"Player selected at {gridPosition}. Move points: {_remainingPlayerMovePoints}.";
   }
 
   private void HandleSelectedPlayerUnitClick(Unit selectedUnit, Vector2I clickedGridPosition)
@@ -129,12 +138,16 @@ public partial class Main : Node2D
     DrawString(ThemeDB.FallbackFont, unitPosition + new Vector2(16, 32), label, fontSize: 24);
   }
 
+  private void DrawUnitIfAlive(Unit unit, Color color, string label)
+  {
+    if (unit.Hp == 0) return;
+
+    DrawUnit(unit, color, label);
+  }
+
   private void DrawSelection()
   {
-    if (_selectedUnit is not { } selectedUnit)
-    {
-      return;
-    }
+    if (_selectedUnit is not { } selectedUnit) return;
 
     var selectedGridPosition = selectedUnit.GridPosition;
     var tilePosition = BoardOrigin + new Vector2(selectedGridPosition.X * TileSize, selectedGridPosition.Y * TileSize);
@@ -145,21 +158,28 @@ public partial class Main : Node2D
 
   private bool TryMoveSelectedUnit(Unit unit, Vector2I targetGridPosition)
   {
-    if (IsEnemyAlive() && targetGridPosition == _enemyUnit.GridPosition)
+    if (_hasPlayerAttackedThisTurn)
+    {
+      _statusText = "Cannot move after attacking.";
+      return false;
+    }
+
+    if (targetGridPosition == _enemyUnit.GridPosition)
     {
       _statusText = "Cannot move onto the enemy tile.";
       return false;
     }
 
     var distance = GetManhattanDistance(unit.GridPosition, targetGridPosition);
-    if (distance > unit.MoveRange)
+    if (distance > _remainingPlayerMovePoints)
     {
-      _statusText = $"Target is too far. Move range is {unit.MoveRange}.";
+      _statusText = $"Target is too far. Remaining move points: {_remainingPlayerMovePoints}.";
       return false;
     }
 
     unit.MoveTo(targetGridPosition);
-    EndPlayerAction($"Player moved to {targetGridPosition}.");
+    _remainingPlayerMovePoints -= distance;
+    _statusText = $"Player moved to {targetGridPosition}. Remaining move points: {_remainingPlayerMovePoints}.";
     GD.Print($"Player moved to: {targetGridPosition}");
     return true;
   }
@@ -167,10 +187,7 @@ public partial class Main : Node2D
   private bool TryAttackEnemy(Unit unit, Vector2I targetGridPosition)
   {
     var distance = GetManhattanDistance(_playerUnit.GridPosition, _enemyUnit.GridPosition);
-    if (targetGridPosition != _enemyUnit.GridPosition)
-    {
-      return false;
-    }
+    if (targetGridPosition != _enemyUnit.GridPosition) return false;
 
     if (distance != 1)
     {
@@ -178,36 +195,51 @@ public partial class Main : Node2D
       return false;
     }
 
+    if (_hasPlayerAttackedThisTurn)
+    {
+      _statusText = "Player already attacked this turn.";
+      return false;
+    }
+
     _enemyUnit.TakeDamage(unit.AttackPower);
+    _hasPlayerAttackedThisTurn = true;
     if (_enemyUnit.Hp == 0)
     {
-      EndPlayerAction($"Enemy took {unit.AttackPower} damage and was defeated.");
+      _statusText = $"Enemy took {unit.AttackPower} damage and was defeated.";
       return true;
     }
 
-    EndPlayerAction($"Enemy took {unit.AttackPower} damage. Enemy HP: {_enemyUnit.Hp}.");
+    _statusText = $"Enemy took {unit.AttackPower} damage. Enemy HP: {_enemyUnit.Hp}.";
     return true;
   }
 
-  private void EndPlayerAction(string playerActionText)
+  private void EndPlayerTurn(string playerActionText)
   {
+    if (_gameState != GameState.PlayerTurn) return;
+
     _selectedUnit = null;
+    _remainingPlayerMovePoints = 0;
 
-    if (!IsEnemyAlive())
-    {
-      _statusText = playerActionText;
-      return;
-    }
-
-    _gameState = GameState.EnemyTurn;
-    _statusText = $"{playerActionText} {TakeEnemyTurn()}";
-    if (_gameState == GameState.EnemyTurn)
-    {
-      _gameState = GameState.PlayerTurn;
-    }
+    StartEnemyTurn(playerActionText);
   }
 
-  private string TakeEnemyTurn()
+  private void StartEnemyTurn(string playerActionText)
+  {
+    if (_gameState != GameState.PlayerTurn) return;
+
+    _gameState = GameState.EnemyTurn;
+    var enemyActionText = ResolveEnemyTurnAction();
+    EndEnemyTurn($"{playerActionText} {enemyActionText}");
+  }
+
+  private void EndEnemyTurn(string turnSummaryText)
+  {
+    if (_gameState != GameState.EnemyTurn) return;
+
+    StartPlayerTurn(turnSummaryText);
+  }
+
+  private string ResolveEnemyTurnAction()
   {
     var distance = GetManhattanDistance(_enemyUnit.GridPosition, _playerUnit.GridPosition);
     if (distance == 1)
@@ -225,10 +257,7 @@ public partial class Main : Node2D
     var stepsMoved = 0;
     for (var step = 0; step < _enemyUnit.MoveRange; step++)
     {
-      if (GetManhattanDistance(_enemyUnit.GridPosition, _playerUnit.GridPosition) == 1)
-      {
-        break;
-      }
+      if (GetManhattanDistance(_enemyUnit.GridPosition, _playerUnit.GridPosition) == 1) break;
 
       var enemyMoveDirection = GetStepToward(_enemyUnit.GridPosition, _playerUnit.GridPosition);
       _enemyUnit.MoveTo(_enemyUnit.GridPosition + enemyMoveDirection);
@@ -259,6 +288,22 @@ public partial class Main : Node2D
     _statusText = statusText;
   }
 
+  private void InitTurn()
+  {
+    _gameState = GameState.EnemyTurn;
+    StartPlayerTurn("Click the player unit to select it.");
+  }
+
+  private void StartPlayerTurn(string statusText)
+  {
+    if (_gameState != GameState.EnemyTurn) return;
+
+    _gameState = GameState.PlayerTurn;
+    _remainingPlayerMovePoints = _playerUnit.MoveRange;
+    _hasPlayerAttackedThisTurn = false;
+    _statusText = statusText;
+  }
+
   private bool IsEnemyAlive()
   {
     return _enemyUnit.Hp > 0;
@@ -272,10 +317,7 @@ public partial class Main : Node2D
   private static Vector2I GetStepToward(Vector2I from, Vector2I to)
   {
     var delta = to - from;
-    if (delta.X != 0)
-    {
-      return new Vector2I(Math.Sign(delta.X), 0);
-    }
+    if (delta.X != 0) return new Vector2I(Math.Sign(delta.X), 0);
 
     return new Vector2I(0, Math.Sign(delta.Y));
   }
@@ -285,6 +327,18 @@ public partial class Main : Node2D
     var statusPosition = BoardOrigin + new Vector2(0, BoardSize * TileSize + 36);
 
     DrawString(ThemeDB.FallbackFont, statusPosition, _statusText, fontSize: 20);
+  }
+
+  private void DrawEndTurnButton()
+  {
+    var isEnabled = _gameState == GameState.PlayerTurn;
+    var buttonColor = isEnabled
+        ? new Color(0.2f, 0.45f, 0.85f)
+        : new Color(0.45f, 0.45f, 0.45f);
+
+    DrawRect(EndTurnButtonRect, buttonColor);
+    DrawRect(EndTurnButtonRect, Colors.Black, false, 2.0f);
+    DrawString(ThemeDB.FallbackFont, EndTurnButtonRect.Position + new Vector2(16, 31), "End Turn", fontSize: 20);
   }
 
   private static bool TryGetGridPosition(Vector2 screenPosition, out Vector2I gridPosition)

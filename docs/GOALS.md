@@ -21,7 +21,7 @@ No animations, sprites, sound effects, or polish are planned for the first versi
 Focus on moving from a one-unit prototype to basic tactical decisions.
 
 - [x] Add explicit turn states.
-- [ ] Allow a player unit to move, then attack if adjacent.
+- [x] Allow a player unit to move, then attack if adjacent.
 - [ ] Add a second player unit and a second enemy unit.
 - [ ] Show simple HP information for units on the board.
 - [ ] Highlight valid movement tiles when a player unit is selected.
