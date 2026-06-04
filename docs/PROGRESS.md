@@ -21,6 +21,7 @@
 - If the enemy is adjacent to the player during its turn, it attacks and reduces player HP.
 - Otherwise, the enemy moves toward the player within its move range and stops early when it becomes adjacent.
 - Win/loss logic is implemented.
+- Gameplay flow now uses explicit `GameState` values for player turn, enemy turn, win, and loss.
 - If the enemy HP reaches 0, the game shows a win state.
 - If the player HP reaches 0, the game shows a loss state.
 - After win or loss, further gameplay input is ignored.
@@ -148,3 +149,16 @@ Done when:
 - Defined the second playable target in `docs/GOALS.md`.
 - The next phase will focus on explicit turn states, move-then-attack flow, two units per side, visible HP, and valid movement tile highlights.
 - Updated `docs/PROGRESS.md` so the next milestone points to the second playable target.
+
+### 2026-06-04T09:06:31+0800
+
+- Added `GameState.cs` with explicit player turn, enemy turn, win, and loss states.
+- Updated `Main.cs` to use `GameState` instead of separate game-over and enemy-defeated flags.
+- Enemy visibility now follows enemy HP, while gameplay input is accepted only during the player turn.
+- Updated `docs/GOALS.md` to mark explicit turn states complete for the second playable target.
+
+### 2026-06-04T09:55:12+0800
+
+- Refactored `Main.cs` input handling without changing gameplay behavior.
+- `_Input()` now delegates clicked-grid extraction, player-turn click handling, and selected-unit action handling to separate methods.
+- Kept win/loss checks centralized after player input handling.

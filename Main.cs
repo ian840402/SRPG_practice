@@ -10,8 +10,7 @@ public partial class Main : Node2D
   private readonly Unit _playerUnit = new(new Vector2I(1, 1), hp: 10, attackPower: 3, moveRange: 3, Team.Player);
   private readonly Unit _enemyUnit = new(new Vector2I(6, 6), hp: 10, attackPower: 2, moveRange: 2, Team.Enemy);
   private Unit _selectedUnit;
-  private bool _isEnemyDefeated;
-  private bool _isGameOver;
+  private GameState _gameState = GameState.PlayerTurn;
   private string _statusText = "Click the player unit to select it.";
 
   public override void _Ready()
@@ -24,7 +23,7 @@ public partial class Main : Node2D
     DrawBoard();
     DrawSelection();
     DrawUnit(_playerUnit, new Color(0.2f, 0.45f, 1.0f), "P");
-    if (!_isEnemyDefeated)
+    if (IsEnemyAlive())
     {
       DrawUnit(_enemyUnit, new Color(1.0f, 0.25f, 0.25f), "E");
     }
@@ -33,44 +32,71 @@ public partial class Main : Node2D
 
   public override void _Input(InputEvent inputEvent)
   {
-    if (_isGameOver)
+    if (!TryGetClickedGridPosition(inputEvent, out var clickedGridPosition))
     {
       return;
+    }
+
+    HandlePlayerTurnClick(clickedGridPosition);
+    UpdateGameStateAfterInput();
+    QueueRedraw();
+  }
+
+  private bool TryGetClickedGridPosition(InputEvent inputEvent, out Vector2I clickedGridPosition)
+  {
+    clickedGridPosition = default;
+    if (_gameState != GameState.PlayerTurn)
+    {
+      return false;
     }
 
     if (inputEvent is not InputEventMouseButton { Pressed: true, ButtonIndex: MouseButton.Left } mouseButton)
     {
-      return;
+      return false;
     }
 
-    if (!TryGetGridPosition(mouseButton.Position, out var clickedGridPosition))
+    if (TryGetGridPosition(mouseButton.Position, out clickedGridPosition))
     {
-      _statusText = "Clicked outside the board.";
-      QueueRedraw();
-      return;
+      return true;
     }
 
+    _statusText = "Clicked outside the board.";
+    QueueRedraw();
+    return false;
+  }
+
+  private void HandlePlayerTurnClick(Vector2I clickedGridPosition)
+  {
     GD.Print($"Clicked tile: {clickedGridPosition}");
 
     if (clickedGridPosition == _playerUnit.GridPosition)
     {
-      _selectedUnit = _playerUnit;
-      _statusText = $"Player selected at {clickedGridPosition}.";
-    }
-    else if (_selectedUnit is { Team: Team.Player } selectedUnit)
-    {
-      var playerActed = TryMoveSelectedUnit(selectedUnit, clickedGridPosition);
-      if (!playerActed)
-      {
-        TryAttackEnemy(selectedUnit, clickedGridPosition);
-      }
-    }
-    else
-    {
-      _statusText = $"Clicked tile {clickedGridPosition}.";
+      SelectPlayerUnit(clickedGridPosition);
+      return;
     }
 
-    QueueRedraw();
+    if (_selectedUnit is { Team: Team.Player } selectedUnit)
+    {
+      HandleSelectedPlayerUnitClick(selectedUnit, clickedGridPosition);
+      return;
+    }
+
+    _statusText = $"Clicked tile {clickedGridPosition}.";
+  }
+
+  private void SelectPlayerUnit(Vector2I gridPosition)
+  {
+    _selectedUnit = _playerUnit;
+    _statusText = $"Player selected at {gridPosition}.";
+  }
+
+  private void HandleSelectedPlayerUnitClick(Unit selectedUnit, Vector2I clickedGridPosition)
+  {
+    var playerActed = TryMoveSelectedUnit(selectedUnit, clickedGridPosition);
+    if (!playerActed)
+    {
+      TryAttackEnemy(selectedUnit, clickedGridPosition);
+    }
   }
 
   private void DrawBoard()
@@ -119,7 +145,7 @@ public partial class Main : Node2D
 
   private bool TryMoveSelectedUnit(Unit unit, Vector2I targetGridPosition)
   {
-    if (!_isEnemyDefeated && targetGridPosition == _enemyUnit.GridPosition)
+    if (IsEnemyAlive() && targetGridPosition == _enemyUnit.GridPosition)
     {
       _statusText = "Cannot move onto the enemy tile.";
       return false;
@@ -140,11 +166,6 @@ public partial class Main : Node2D
 
   private bool TryAttackEnemy(Unit unit, Vector2I targetGridPosition)
   {
-    if (_isEnemyDefeated)
-    {
-      return false;
-    }
-
     var distance = GetManhattanDistance(_playerUnit.GridPosition, _enemyUnit.GridPosition);
     if (targetGridPosition != _enemyUnit.GridPosition)
     {
@@ -160,9 +181,7 @@ public partial class Main : Node2D
     _enemyUnit.TakeDamage(unit.AttackPower);
     if (_enemyUnit.Hp == 0)
     {
-      _isEnemyDefeated = true;
-      _selectedUnit = null;
-      SetGameOver($"Enemy took {unit.AttackPower} damage and was defeated. You win.");
+      EndPlayerAction($"Enemy took {unit.AttackPower} damage and was defeated.");
       return true;
     }
 
@@ -174,13 +193,18 @@ public partial class Main : Node2D
   {
     _selectedUnit = null;
 
-    if (_isEnemyDefeated)
+    if (!IsEnemyAlive())
     {
       _statusText = playerActionText;
       return;
     }
 
+    _gameState = GameState.EnemyTurn;
     _statusText = $"{playerActionText} {TakeEnemyTurn()}";
+    if (_gameState == GameState.EnemyTurn)
+    {
+      _gameState = GameState.PlayerTurn;
+    }
   }
 
   private string TakeEnemyTurn()
@@ -189,13 +213,6 @@ public partial class Main : Node2D
     if (distance == 1)
     {
       _playerUnit.TakeDamage(_enemyUnit.AttackPower);
-      if (_playerUnit.Hp == 0)
-      {
-        _isGameOver = true;
-        _selectedUnit = null;
-        return $"Enemy attacked player for {_enemyUnit.AttackPower} damage. Player HP: {_playerUnit.Hp}. You lose.";
-      }
-
       return $"Enemy attacked player for {_enemyUnit.AttackPower} damage. Player HP: {_playerUnit.Hp}.";
     }
 
@@ -221,11 +238,35 @@ public partial class Main : Node2D
     return stepsMoved;
   }
 
-  private void SetGameOver(string statusText)
+  private void UpdateGameStateAfterInput()
   {
-    _isGameOver = true;
+    if (!IsEnemyAlive())
+    {
+      SetGameState(GameState.Win, $"{_statusText} You win.");
+      return;
+    }
+
+    if (!IsPlayerAlive())
+    {
+      SetGameState(GameState.Loss, $"{_statusText} You lose.");
+    }
+  }
+
+  private void SetGameState(GameState gameState, string statusText)
+  {
+    _gameState = gameState;
     _selectedUnit = null;
     _statusText = statusText;
+  }
+
+  private bool IsEnemyAlive()
+  {
+    return _enemyUnit.Hp > 0;
+  }
+
+  private bool IsPlayerAlive()
+  {
+    return _playerUnit.Hp > 0;
   }
 
   private static Vector2I GetStepToward(Vector2I from, Vector2I to)
