@@ -6,13 +6,13 @@
 - `Main.tscn` exists and is set as the main scene.
 - `Main.cs` is attached to the root `Node2D` in `Main.tscn`.
 - `Main.cs.uid` exists and matches the script UID referenced by `Main.tscn`.
-- `Main.cs` draws an 8x8 board and displays one player unit and one enemy unit.
+- `Main.cs` draws an 8x8 board and displays two player units and two enemy units.
 - Board tile clicks now resolve to grid coordinates.
 - The player unit can be selected by clicking its tile.
 - Selection feedback is shown with a highlighted tile, status text, and console output.
 - Basic unit data now includes grid position, HP, attack power, move range, and team.
 - The selected player unit can move to valid empty tiles within move range.
-- Movement uses Manhattan distance and does not allow moving onto the enemy tile.
+- Movement uses Manhattan distance and does not allow moving onto occupied tiles.
 - The selected player unit can attack the enemy when adjacent.
 - Enemy HP is reduced by the player's attack power.
 - When enemy HP reaches 0, the enemy is marked defeated, hidden, no longer blocks movement, and cannot be attacked again.
@@ -22,6 +22,10 @@
 - Otherwise, the enemy moves toward the player within its move range and stops early when it becomes adjacent.
 - Win/loss logic is implemented.
 - Gameplay flow now uses explicit `GameState` values for player turn, enemy turn, win, and loss.
+- Battle state, unit queries, movement rules, and enemy turn resolution are split into dedicated C# classes.
+- Board layout and battle rendering are split into dedicated C# classes.
+- Player action resolution is split into a dedicated C# class.
+- C# gameplay files are organized into `Core`, `Rules`, `Resolvers`, and `Rendering` folders.
 - If the enemy HP reaches 0, the game shows a win state.
 - If the player HP reaches 0, the game shows a loss state.
 - After win or loss, further gameplay input is ignored.
@@ -204,3 +208,43 @@ Done when:
 - Recorded a known enemy AI limitation for later work.
 - Current enemy movement stops immediately if the direct step toward the nearest player is occupied, even when other adjacent tiles are open.
 - Updated `docs/GOALS.md` with a follow-up item to try alternate valid movement options during a later enemy AI pass.
+
+### 2026-06-09T14:22:28+0800
+
+- Refactored gameplay architecture without changing intended gameplay behavior.
+- Added `BattleState.cs` to own player and enemy unit collections plus alive-state checks.
+- Added `UnitQuery.cs` for reusable alive-unit, occupied-tile, adjacent-unit, and nearest-unit lookups.
+- Added `MovementRules.cs` for Manhattan movement cost and direct-step movement helpers.
+- Added `EnemyTurnResolver.cs` to isolate enemy turn and simple enemy AI behavior from `Main.cs`.
+- Kept `Main.cs` focused on Godot input, drawing, player actions, and turn transitions.
+- Verified formatting with `dotnet format SRPG_practice.sln --verify-no-changes`.
+- Verified the project with `dotnet build SRPG_practice.sln`: build succeeded with 0 warnings and 0 errors.
+
+### 2026-06-09T16:49:20+0800
+
+- Refactored rendering and board layout responsibilities without changing intended gameplay behavior.
+- Added `BoardLayout.cs` to own board dimensions, tile/unit rectangles, status text position, end-turn button bounds, and screen-to-grid conversion.
+- Added `BattleRenderer.cs` to draw the board, units, selection outline, status text, and end-turn button.
+- Kept `Main.cs` focused on input handling, player actions, and turn transitions instead of draw details.
+- Verified formatting with `dotnet format SRPG_practice.sln --verify-no-changes`.
+- Verified the project with `dotnet build SRPG_practice.sln`: build succeeded with 0 warnings and 0 errors.
+
+### 2026-06-09T16:59:24+0800
+
+- Refactored player action responsibilities without changing intended gameplay behavior.
+- Added `PlayerActionResolver.cs` to handle player unit selection, movement attempts, attack attempts, and action status text.
+- Added `PlayerActionResult.cs` to return the selected unit and status text from player action resolution.
+- Kept `Main.cs` focused on Godot input, end-turn handling, turn transitions, win/loss checks, and redraw requests.
+- Verified formatting with `dotnet format SRPG_practice.sln --verify-no-changes`.
+- Verified the project with `dotnet build SRPG_practice.sln`: build succeeded with 0 warnings and 0 errors.
+
+### 2026-06-09T17:16:15+0800
+
+- Organized C# files into responsibility-based folders without changing intended gameplay behavior.
+- Moved core state and data files into `Core/`.
+- Moved query and movement rule files into `Rules/`.
+- Moved player and enemy action resolver files into `Resolvers/`.
+- Moved board layout and rendering files into `Rendering/`.
+- Kept `Main.cs` in the project root so `Main.tscn` continues to reference `res://Main.cs`.
+- Verified formatting with `dotnet format SRPG_practice.sln --verify-no-changes`.
+- Verified the project with `dotnet build SRPG_practice.sln`: build succeeded with 0 warnings and 0 errors.
