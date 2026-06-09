@@ -1,5 +1,7 @@
 using Godot;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 public partial class Main : Node2D
 {
@@ -8,12 +10,16 @@ public partial class Main : Node2D
   private static readonly Vector2 BoardOrigin = new(64, 64);
   private static readonly Rect2 EndTurnButtonRect = new(BoardOrigin + new Vector2(BoardSize * TileSize + 32, 0), new Vector2(128, 48));
 
-  private readonly Unit _playerUnit = new(new Vector2I(1, 1), hp: 10, attackPower: 3, moveRange: 3, Team.Player);
-  private readonly Unit _enemyUnit = new(new Vector2I(6, 6), hp: 10, attackPower: 2, moveRange: 2, Team.Enemy);
+  private readonly List<Unit> _playerUnits = [
+      new(new Vector2I(1, 1), hp: 10, attackPower: 3, moveRange: 3, Team.Player),
+      new(new Vector2I(1, 3), hp: 10, attackPower: 3, moveRange: 3, Team.Player)
+  ];
+  private readonly List<Unit> _enemyUnits = [
+      new(new Vector2I(6, 6), hp: 10, attackPower: 2, moveRange: 2, Team.Enemy),
+      new(new Vector2I(6, 4), hp: 10, attackPower: 2, moveRange: 2, Team.Enemy)
+  ];
   private Unit _selectedUnit;
   private GameState _gameState = GameState.PlayerTurn;
-  private int _remainingPlayerMovePoints;
-  private bool _hasPlayerAttackedThisTurn;
   private string _statusText = "Click the player unit to select it.";
 
   public override void _Ready()
@@ -26,8 +32,8 @@ public partial class Main : Node2D
   {
     DrawBoard();
     DrawSelection();
-    DrawUnitIfAlive(_playerUnit, new Color(0.2f, 0.45f, 1.0f), "P");
-    DrawUnitIfAlive(_enemyUnit, new Color(1.0f, 0.25f, 0.25f), "E");
+    DrawUnits(_playerUnits, new Color(0.2f, 0.45f, 1.0f), "P");
+    DrawUnits(_enemyUnits, new Color(1.0f, 0.25f, 0.25f), "E");
     DrawEndTurnButton();
     DrawStatusText();
   }
@@ -78,9 +84,9 @@ public partial class Main : Node2D
   {
     GD.Print($"Clicked tile: {clickedGridPosition}");
 
-    if (clickedGridPosition == _playerUnit.GridPosition)
+    if (TryGetAliveUnitAt(clickedGridPosition, Team.Player, out var playerUnit))
     {
-      SelectPlayerUnit(clickedGridPosition);
+      SelectPlayerUnit(playerUnit);
       return;
     }
 
@@ -93,10 +99,10 @@ public partial class Main : Node2D
     _statusText = $"Clicked tile {clickedGridPosition}.";
   }
 
-  private void SelectPlayerUnit(Vector2I gridPosition)
+  private void SelectPlayerUnit(Unit unit)
   {
-    _selectedUnit = _playerUnit;
-    _statusText = $"Player selected at {gridPosition}. Move points: {_remainingPlayerMovePoints}.";
+    _selectedUnit = unit;
+    _statusText = $"Player selected at {unit.GridPosition}. Move points: {unit.RemainingMovePoints}.";
   }
 
   private void HandleSelectedPlayerUnitClick(Unit selectedUnit, Vector2I clickedGridPosition)
@@ -145,6 +151,14 @@ public partial class Main : Node2D
     DrawUnit(unit, color, label);
   }
 
+  private void DrawUnits(IEnumerable<Unit> units, Color color, string label)
+  {
+    foreach (var unit in units)
+    {
+      DrawUnitIfAlive(unit, color, label);
+    }
+  }
+
   private void DrawSelection()
   {
     if (_selectedUnit is not { } selectedUnit) return;
@@ -158,58 +172,58 @@ public partial class Main : Node2D
 
   private bool TryMoveSelectedUnit(Unit unit, Vector2I targetGridPosition)
   {
-    if (_hasPlayerAttackedThisTurn)
+    if (unit.HasAttackedThisTurn)
     {
       _statusText = "Cannot move after attacking.";
       return false;
     }
 
-    if (targetGridPosition == _enemyUnit.GridPosition)
+    if (TryGetAliveUnitAt(targetGridPosition, out _))
     {
-      _statusText = "Cannot move onto the enemy tile.";
+      _statusText = "Cannot move onto an occupied tile.";
       return false;
     }
 
     var distance = GetManhattanDistance(unit.GridPosition, targetGridPosition);
-    if (distance > _remainingPlayerMovePoints)
+    if (distance > unit.RemainingMovePoints)
     {
-      _statusText = $"Target is too far. Remaining move points: {_remainingPlayerMovePoints}.";
+      _statusText = $"Target is too far. Remaining move points: {unit.RemainingMovePoints}.";
       return false;
     }
 
     unit.MoveTo(targetGridPosition);
-    _remainingPlayerMovePoints -= distance;
-    _statusText = $"Player moved to {targetGridPosition}. Remaining move points: {_remainingPlayerMovePoints}.";
+    unit.SpendMovePoints(distance);
+    _statusText = $"Player moved to {targetGridPosition}. Remaining move points: {unit.RemainingMovePoints}.";
     GD.Print($"Player moved to: {targetGridPosition}");
     return true;
   }
 
   private bool TryAttackEnemy(Unit unit, Vector2I targetGridPosition)
   {
-    var distance = GetManhattanDistance(_playerUnit.GridPosition, _enemyUnit.GridPosition);
-    if (targetGridPosition != _enemyUnit.GridPosition) return false;
+    if (!TryGetAliveUnitAt(targetGridPosition, Team.Enemy, out var targetEnemy)) return false;
 
+    var distance = GetManhattanDistance(unit.GridPosition, targetEnemy.GridPosition);
     if (distance != 1)
     {
       _statusText = "Enemy is too far to attack.";
       return false;
     }
 
-    if (_hasPlayerAttackedThisTurn)
+    if (unit.HasAttackedThisTurn)
     {
       _statusText = "Player already attacked this turn.";
       return false;
     }
 
-    _enemyUnit.TakeDamage(unit.AttackPower);
-    _hasPlayerAttackedThisTurn = true;
-    if (_enemyUnit.Hp == 0)
+    targetEnemy.TakeDamage(unit.AttackPower);
+    unit.MarkAttacked();
+    if (targetEnemy.Hp == 0)
     {
       _statusText = $"Enemy took {unit.AttackPower} damage and was defeated.";
       return true;
     }
 
-    _statusText = $"Enemy took {unit.AttackPower} damage. Enemy HP: {_enemyUnit.Hp}.";
+    _statusText = $"Enemy took {unit.AttackPower} damage. Enemy HP: {targetEnemy.Hp}.";
     return true;
   }
 
@@ -218,7 +232,6 @@ public partial class Main : Node2D
     if (_gameState != GameState.PlayerTurn) return;
 
     _selectedUnit = null;
-    _remainingPlayerMovePoints = 0;
 
     StartEnemyTurn(playerActionText);
   }
@@ -241,26 +254,42 @@ public partial class Main : Node2D
 
   private string ResolveEnemyTurnAction()
   {
-    var distance = GetManhattanDistance(_enemyUnit.GridPosition, _playerUnit.GridPosition);
-    if (distance == 1)
+    var enemyActionTexts = new List<string>();
+    foreach (var enemyUnit in GetAliveUnits(_enemyUnits))
     {
-      _playerUnit.TakeDamage(_enemyUnit.AttackPower);
-      return $"Enemy attacked player for {_enemyUnit.AttackPower} damage. Player HP: {_playerUnit.Hp}.";
+      enemyActionTexts.Add(ResolveEnemyUnitAction(enemyUnit));
     }
 
-    var stepsMoved = MoveEnemyTowardPlayer();
-    return $"Enemy moved {stepsMoved} tile(s) to {_enemyUnit.GridPosition}.";
+    return string.Join(" ", enemyActionTexts);
   }
 
-  private int MoveEnemyTowardPlayer()
+  private string ResolveEnemyUnitAction(Unit enemyUnit)
+  {
+    if (TryGetAdjacentAliveUnit(enemyUnit, Team.Player, out var playerTarget))
+    {
+      playerTarget.TakeDamage(enemyUnit.AttackPower);
+      return $"Enemy at {enemyUnit.GridPosition} attacked player at {playerTarget.GridPosition} for {enemyUnit.AttackPower} damage. Player HP: {playerTarget.Hp}.";
+    }
+
+    var stepsMoved = MoveEnemyTowardPlayer(enemyUnit);
+    return $"Enemy at {enemyUnit.GridPosition} moved {stepsMoved} tile(s).";
+  }
+
+  private int MoveEnemyTowardPlayer(Unit enemyUnit)
   {
     var stepsMoved = 0;
-    for (var step = 0; step < _enemyUnit.MoveRange; step++)
+    for (var step = 0; step < enemyUnit.MoveRange; step++)
     {
-      if (GetManhattanDistance(_enemyUnit.GridPosition, _playerUnit.GridPosition) == 1) break;
+      if (TryGetAdjacentAliveUnit(enemyUnit, Team.Player, out _)) break;
 
-      var enemyMoveDirection = GetStepToward(_enemyUnit.GridPosition, _playerUnit.GridPosition);
-      _enemyUnit.MoveTo(_enemyUnit.GridPosition + enemyMoveDirection);
+      var nearestPlayerUnit = GetNearestAliveUnit(enemyUnit, _playerUnits);
+      if (nearestPlayerUnit is null) break;
+
+      var enemyMoveDirection = GetStepToward(enemyUnit.GridPosition, nearestPlayerUnit.GridPosition);
+      var targetGridPosition = enemyUnit.GridPosition + enemyMoveDirection;
+      if (TryGetAliveUnitAt(targetGridPosition, out _)) break;
+
+      enemyUnit.MoveTo(targetGridPosition);
       stepsMoved++;
     }
 
@@ -299,19 +328,59 @@ public partial class Main : Node2D
     if (_gameState != GameState.EnemyTurn) return;
 
     _gameState = GameState.PlayerTurn;
-    _remainingPlayerMovePoints = _playerUnit.MoveRange;
-    _hasPlayerAttackedThisTurn = false;
+    foreach (var unit in GetAliveUnits(_playerUnits))
+    {
+      unit.StartTurn();
+    }
     _statusText = statusText;
   }
 
   private bool IsEnemyAlive()
   {
-    return _enemyUnit.Hp > 0;
+    return _enemyUnits.Any(unit => unit.Hp > 0);
   }
 
   private bool IsPlayerAlive()
   {
-    return _playerUnit.Hp > 0;
+    return _playerUnits.Any(unit => unit.Hp > 0);
+  }
+
+  private IEnumerable<Unit> GetAliveUnits(IEnumerable<Unit> units)
+  {
+    return units.Where(unit => unit.Hp > 0);
+  }
+
+  private Unit GetNearestAliveUnit(Unit fromUnit, IEnumerable<Unit> units)
+  {
+    return GetAliveUnits(units)
+        .OrderBy(unit => GetManhattanDistance(fromUnit.GridPosition, unit.GridPosition))
+        .FirstOrDefault();
+  }
+
+  private bool TryGetAdjacentAliveUnit(Unit fromUnit, Team team, out Unit adjacentUnit)
+  {
+    adjacentUnit = GetAliveUnits(GetUnitsByTeam(team))
+        .FirstOrDefault(unit => GetManhattanDistance(fromUnit.GridPosition, unit.GridPosition) == 1);
+    return adjacentUnit is not null;
+  }
+
+  private bool TryGetAliveUnitAt(Vector2I gridPosition, out Unit unit)
+  {
+    unit = GetAliveUnits(_playerUnits.Concat(_enemyUnits))
+        .FirstOrDefault(unit => unit.GridPosition == gridPosition);
+    return unit is not null;
+  }
+
+  private bool TryGetAliveUnitAt(Vector2I gridPosition, Team team, out Unit unit)
+  {
+    unit = GetAliveUnits(GetUnitsByTeam(team))
+        .FirstOrDefault(unit => unit.GridPosition == gridPosition);
+    return unit is not null;
+  }
+
+  private IEnumerable<Unit> GetUnitsByTeam(Team team)
+  {
+    return team == Team.Player ? _playerUnits : _enemyUnits;
   }
 
   private static Vector2I GetStepToward(Vector2I from, Vector2I to)

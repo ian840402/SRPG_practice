@@ -189,3 +189,18 @@ Done when:
 - Added `InitTurn()` in `Main.cs` for initial turn setup.
 - Added lightweight `GameState` guards to player/enemy start and end turn methods.
 - Kept initialization separate from normal player turn transitions so future first-turn ownership can change more easily.
+
+### 2026-06-04T14:28:40+0800
+
+- Added a second player unit and a second enemy unit.
+- Updated `Main.cs` to use player and enemy unit lists instead of single unit fields.
+- Player turn state is now stored per unit, including remaining move points and whether that unit attacked this turn.
+- Selection, movement, attacks, enemy turns, and win/loss checks now work against alive units in each team.
+- Enemy turns now process each alive enemy once.
+- Updated `docs/GOALS.md` to mark the multi-unit milestone complete for the second playable target.
+
+### 2026-06-09T11:14:44+0800
+
+- Recorded a known enemy AI limitation for later work.
+- Current enemy movement stops immediately if the direct step toward the nearest player is occupied, even when other adjacent tiles are open.
+- Updated `docs/GOALS.md` with a follow-up item to try alternate valid movement options during a later enemy AI pass.

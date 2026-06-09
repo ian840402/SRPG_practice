@@ -15,11 +15,29 @@ public sealed class Unit
   public int Hp { get; private set; }
   public int AttackPower { get; }
   public int MoveRange { get; }
+  public int RemainingMovePoints { get; private set; }
+  public bool HasAttackedThisTurn { get; private set; }
   public Team Team { get; }
 
   public void MoveTo(Vector2I newPosition)
   {
     GridPosition = newPosition;
+  }
+
+  public void SpendMovePoints(int movePoints)
+  {
+    RemainingMovePoints = Mathf.Max(0, RemainingMovePoints - movePoints);
+  }
+
+  public void MarkAttacked()
+  {
+    HasAttackedThisTurn = true;
+  }
+
+  public void StartTurn()
+  {
+    RemainingMovePoints = MoveRange;
+    HasAttackedThisTurn = false;
   }
 
   public void TakeDamage(int damage)

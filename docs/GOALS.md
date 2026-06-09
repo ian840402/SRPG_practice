@@ -22,7 +22,7 @@ Focus on moving from a one-unit prototype to basic tactical decisions.
 
 - [x] Add explicit turn states.
 - [x] Allow a player unit to move, then attack if adjacent.
-- [ ] Add a second player unit and a second enemy unit.
+- [x] Add a second player unit and a second enemy unit.
 - [ ] Show simple HP information for units on the board.
 - [ ] Highlight valid movement tiles when a player unit is selected.
 
@@ -83,6 +83,7 @@ Focus on moving from a one-unit prototype to basic tactical decisions.
 - [x] If the enemy is adjacent to the player, it attacks.
 - [x] Otherwise, the enemy moves toward the player within its move range.
 - [x] Do not implement full pathfinding yet.
+- [ ] Later enemy AI pass: when the direct step toward a target is occupied, try alternate valid movement options instead of stopping immediately.
 
 ### 9. Add Win and Loss Checks
 
