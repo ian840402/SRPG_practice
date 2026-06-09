@@ -44,6 +44,7 @@ public sealed class BattleRenderer
 
     canvas.DrawRect(unitRect, color);
     canvas.DrawString(ThemeDB.FallbackFont, unitRect.Position + new Vector2(16, 32), label, fontSize: 24);
+    canvas.DrawString(ThemeDB.FallbackFont, unitRect.Position + new Vector2(8, 48), $"HP: {unit.Hp}", fontSize: 14);
   }
 
   private void DrawUnitIfAlive(Node2D canvas, Unit unit, Color color, string label)

@@ -15,6 +15,7 @@
 - Movement uses Manhattan distance and does not allow moving onto occupied tiles.
 - The selected player unit can attack the enemy when adjacent.
 - Enemy HP is reduced by the player's attack power.
+- Unit HP is shown on the board.
 - When enemy HP reaches 0, the enemy is marked defeated, hidden, no longer blocks movement, and cannot be attacked again.
 - After the player successfully moves or attacks, the current player action ends by clearing the selected unit.
 - After the player successfully moves or attacks, the enemy takes a simple turn if it is not defeated.
@@ -246,5 +247,13 @@ Done when:
 - Moved player and enemy action resolver files into `Resolvers/`.
 - Moved board layout and rendering files into `Rendering/`.
 - Kept `Main.cs` in the project root so `Main.tscn` continues to reference `res://Main.cs`.
+- Verified formatting with `dotnet format SRPG_practice.sln --verify-no-changes`.
+- Verified the project with `dotnet build SRPG_practice.sln`: build succeeded with 0 warnings and 0 errors.
+
+### 2026-06-09T17:19:36+0800
+
+- Implemented simple on-board HP display for units.
+- Updated `Rendering/BattleRenderer.cs` so each alive unit draws an `HP: n` label inside its unit rectangle.
+- Updated `docs/GOALS.md` to mark the second playable HP display item complete.
 - Verified formatting with `dotnet format SRPG_practice.sln --verify-no-changes`.
 - Verified the project with `dotnet build SRPG_practice.sln`: build succeeded with 0 warnings and 0 errors.
