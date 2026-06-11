@@ -29,6 +29,7 @@
 - Player action resolution is split into a dedicated C# class.
 - C# gameplay files are organized into `Core`, `Rules`, `Resolvers`, and `Rendering` folders.
 - Design tradeoffs are documented in `docs/DESIGN_DECISIONS.md`.
+- Product vision is being documented in `docs/VISION.md`.
 - If the enemy HP reaches 0, the game shows a win state.
 - If the player HP reaches 0, the game shows a loss state.
 - After win or loss, further gameplay input is ignored.
@@ -277,3 +278,230 @@ Second playable target is complete.
 - Documented why movement range highlight currently scans the whole board instead of using BFS / flood fill from the selected unit.
 - Documented why enemy movement currently stops when the direct step toward the target is occupied.
 - Recorded when each simplified approach should be revisited.
+
+### 2026-06-11T11:08:00+0800
+
+- Added `docs/VISION.md` to record the intended final product vision before defining the next prototype scope.
+- Recorded the current core experience: fixed-character party growth, chapter-based battles, story-driven objectives, and decision-making under known information and limited resources.
+- Recorded current prototype purposes: core tactical rules, architecture practice, and a technical foundation for a future full game.
+- Listed follow-up discussion topics for gradually refining the product vision.
+
+### 2026-06-11T11:12:30+0800
+
+- Updated `docs/VISION.md` with the current direction for party and class identity.
+- Recorded that party members should join through story chapters.
+- Recorded that characters are fixed, have clear class-like tactical roles, and start bound to their class because class identity is tied to story and character background.
+
+### 2026-06-11T11:20:45+0800
+
+- Updated `docs/VISION.md` with the current direction for character growth and class progression.
+- Recorded level-based growth, active skills learned by current class and level, passive skills bound to classes, and tree-based class promotion without cross-class switching.
+- Recorded three open stat growth options: fixed character growth, Fire Emblem-like random growth, and Pokemon-like effort value growth.
+
+### 2026-06-11T11:23:35+0800
+
+- Updated `docs/VISION.md` with the current direction for combat information transparency.
+- Recorded that tactical information should be mostly transparent, while uncertainty should mainly come from hit rate and evasion rate.
+
+### 2026-06-11T11:26:31+0800
+
+- Updated `docs/VISION.md` with the current direction for chapter objectives and stage variety.
+- Recorded that objective design should be split into main clear conditions, optional conditions, and stage characteristics.
+- Recorded interest in varied story-driven objectives, optional challenge conditions, and reinforcement pressure as a stage characteristic.
+
+### 2026-06-11T11:28:42+0800
+
+- Updated `docs/VISION.md` with the current enemy AI framing.
+- Recorded that enemy AI should be considered from both basic combat logic and objective-driven behavior based on chapter goals.
+
+### 2026-06-11T11:37:15+0800
+
+- Updated `docs/VISION.md` with planned enemy basic target-selection logic.
+- Recorded class matchup considerations, enemy focus-fire behavior, and the current attack target priority order: killable target, advantaged matchup, high tactical value, low HP, then nearest target.
+
+### 2026-06-11T13:42:15+0800
+
+- Updated `docs/VISION.md` with the current resource management direction.
+- Recorded MP as the planned skill resource, permanent weapons without durability, planned consumable item types, chapter-between money/equipment/shop resources, and movement plus attack or wait as the primary action model.
+- Recorded that resource management should remain a supporting system, with the main gameplay focus staying on class identity.
+
+### 2026-06-11T13:55:50+0800
+
+- Updated `docs/VISION.md` with the current direction for death, retreat, injury, and restart rules.
+- Recorded that HP reaching 0 should cause retreat instead of permanent death, with injury carrying into later chapters until treated between chapters.
+- Recorded that chapter restart and returning to pre-battle preparation should be available.
+- Recorded in-chapter saving as an open decision because it trades modern convenience against save/load abuse and tactical risk.
+- Recorded that difficulty modes are not currently planned to avoid adding another layer of numerical balancing complexity.
+
+### 2026-06-11T14:04:38+0800
+
+- Updated `docs/VISION.md` with the current direction for story presentation and between-chapter base flow.
+- Recorded linear story progression, story scenes before and after battles, in-battle story events, and a between-chapter base for preparation and character interaction.
+- Recorded that the base should include equipment preparation, shop, class promotion, tavern-style next-map information, and character interaction, with no world map system planned.
+
+### 2026-06-11T14:14:25+0800
+
+- Updated `docs/VISION.md` with initial class design principles.
+- Recorded that class differences may come from stats, movement, range, active skills, passives, attack properties, and objective contribution, with base stats, movement, and passive abilities currently considered the most important.
+
+### 2026-06-11T14:18:31+0800
+
+- Updated `docs/VISION.md` to clarify that class identity is the central design axis.
+- Recorded that stats, movement, passives, active skills, matchup rules, enemy AI target selection, objective contribution, story identity, and promotion routes should be evaluated through how they reinforce class differences and tactical decisions.
+
+### 2026-06-11T14:29:15+0800
+
+- Updated `docs/VISION.md` with the initial combat stat model.
+- Recorded HP, MP, attack, defense, hit, evasion, luck, and movement as the current base stats.
+- Recorded the current plan to avoid separate magic attack and magic defense stats, using mage skill rules such as ignoring physical defense to create matchup value against high-defense units.
+- Recorded hit rate and critical rate as separate combat probabilities, with luck and critical rate interaction still open for design.
+
+### 2026-06-11T14:38:36+0800
+
+- Updated `docs/VISION.md` with the current in-chapter save direction.
+- Recorded that in-chapter saving should be allowed, but save data should preserve RNG state so identical actions after loading produce identical results and cannot be used only to reroll hit, evasion, or critical outcomes.
+
+### 2026-06-11T14:56:23+0800
+
+- Updated `docs/VISION.md` with initial active skill design principles.
+- Recorded sparse active skills for most non-mage classes, class promotion timing for active and passive skill acquisition, mage classes gaining more active skills and passives per promotion, MP-only skill costs, no displacement or terrain-effect skills, and mage skills not using hit or critical checks.
+
+### 2026-06-11T15:10:32+0800
+
+- Updated `docs/VISION.md` with the revised class promotion pacing.
+- Recorded that characters may start around level 2-3, major party members should join through the early-to-mid game, the first true branch promotion should happen around level 15, the later strengthening promotion around level 25, and the level cap around 30.
+- Recorded six initial class groups and the current intent for three true functional branches per group, treating pure strengthening promotions as non-functional class count increases.
+
+### 2026-06-11T15:14:37+0800
+
+- Updated `docs/VISION.md` with the revised skill acquisition schedule.
+- Recorded normal classes gaining an initial passive, a level 10 active skill, a level 15 branch passive, and a level 25 active plus passive.
+- Recorded mage classes gaining an initial active plus passive, a level 10 active skill, a level 15 active plus passive, and two active skills plus one passive at level 25.
+
+### 2026-06-11T15:51:10+0800
+
+- Updated `docs/VISION.md` with the current active skill effect scope.
+- Recorded damage, healing, buff/debuff, defensive skills, and control skills as planned skill categories.
+- Recorded that conditional class skills are currently out of scope to keep early skill rules and balance simpler.
+
+### 2026-06-11T15:56:22+0800
+
+- Updated `docs/VISION.md` to narrow defensive skill scope.
+- Recorded damage reduction and taunt as the main planned defensive skill types.
+- Recorded that guard and counter-stance style defensive interactions should stay out of the early scope to avoid adding too much frontline-system complexity.
+
+### 2026-06-11T16:01:10+0800
+
+- Updated `docs/VISION.md` to narrow control skill scope.
+- Recorded stun as the main planned control skill type.
+- Recorded that silence, immobilize, and no-counter style control effects should stay out of the early scope to keep skill and AI rules simpler.
+
+### 2026-06-11T16:02:50+0800
+
+- Updated `docs/VISION.md` with the planned buff and debuff scope.
+- Recorded attack, defense, hit rate, and movement as the main values affected by buffs and debuffs.
+- Recorded that buff and debuff design should stay focused on these core combat values in the early scope.
+
+### 2026-06-11T16:08:10+0800
+
+- Updated `docs/VISION.md` with the current next-prototype class focus: warrior, archer, and mage.
+- Recorded that combat formulas need detailed follow-up discussion before implementation.
+- Recorded current status-effect duration direction: stun lasts 1 turn, other status effects last 3 turns, and buffs/debuffs can stack.
+- Recorded enemy AI interaction with class and skill rules as a later AI design pass.
+- Updated `docs/GOALS.md` with a draft next-prototype planning section that should be split further before implementation.
+
+### 2026-06-11T16:18:57+0800
+
+- Updated `docs/VISION.md` with the current prototype combat formula direction.
+- Recorded damage as attack minus defense, hit rate as class hit coefficient minus target evasion, and critical rate as a direct percentage chance.
+- Recorded that minimum damage, hit-rate limits, critical damage multiplier, and mage defense-ignoring details still need follow-up decisions.
+- Updated `docs/GOALS.md` open planning items so combat formula discussion now focuses on the remaining detailed rules instead of the broad formula shape.
+
+### 2026-06-11T16:26:55+0800
+
+- Updated `docs/VISION.md` with detailed prototype combat formula decisions.
+- Recorded minimum damage as 1, hit-rate cap as 95% with no lower bound, and critical damage as 1.5x after base damage is calculated.
+- Updated `docs/GOALS.md` so remaining combat-formula open items focus on class hit coefficients, base critical percentages, mage damage details, and later modifier rules.
+
+### 2026-06-11T16:31:41+0800
+
+- Updated `docs/VISION.md` with the initial next-prototype class positioning for warrior, archer, and mage.
+- Recorded archers as ranged physical units that cannot attack adjacent enemies.
+- Updated `docs/GOALS.md` to note that attack range rules should support both minimum and maximum range.
+
+### 2026-06-11T16:34:04+0800
+
+- Updated `docs/VISION.md` to clarify mage class behavior.
+- Recorded that mages can use normal attacks, while their main class difference comes from having more offensive skills.
+- Recorded that mages can still use normal attacks when MP is insufficient.
+
+### 2026-06-11T16:38:06+0800
+
+- Updated `docs/VISION.md` with exact prototype attack ranges for warrior, archer, and mage normal attacks.
+- Recorded warrior attack range as 1, archer attack range as 2-3, and mage normal attack range as 1.
+- Recorded two initial mage prototype skills: a single-target high-damage skill and a range 1-2 medium-low damage skill.
+- Updated `docs/GOALS.md` to remove exact class attack ranges from the remaining open discussion items.
+
+### 2026-06-11T16:39:50+0800
+
+- Corrected the mage prototype skill plan in `docs/VISION.md`.
+- Recorded both mage skills as range 3 skills.
+- Recorded the two mage skills as a single-target medium-damage skill and a cross-shaped low-damage skill.
+- This supersedes the previous range 1-2 medium-low damage mage skill note.
+
+### 2026-06-11T16:45:16+0800
+
+- Updated `docs/VISION.md` to record fixed movement for the next prototype classes.
+- Recorded warrior, archer, and mage movement as 3 for the next prototype phase.
+- Updated `docs/GOALS.md` to keep movement differences out of the next prototype scope so attack range, damage, and skill differences can be tested first.
+
+### 2026-06-11T16:48:10+0800
+
+- Updated `docs/VISION.md` with the initial next-prototype stat table for warrior, archer, and mage.
+- Recorded initial HP, MP, attack, defense, hit coefficient, evasion, movement, and critical rate values for the three prototype classes.
+- Recorded initial mage skill values for a single-target medium-damage spell and a cross-shaped low-damage spell.
+- Updated `docs/GOALS.md` to remove class hit coefficient, base critical percentage, and mage skill rule items from the remaining open discussion list.
+
+### 2026-06-11T16:55:54+0800
+
+- Updated `docs/VISION.md` with initial mage skill damage formulas.
+- Recorded the single-target mage spell as attack + 4 and the cross-shaped mage spell as attack + 1.
+- Recorded that both mage spells ignore defense, do not use hit checks, and cannot critically hit.
+- Updated `docs/GOALS.md` to remove mage defense-ignoring damage details from the remaining open discussion list.
+
+### 2026-06-11T16:59:30+0800
+
+- Updated `docs/VISION.md` to promote mage skill behavior into a shared rule.
+- Recorded that all mage skills ignore defense, do not use hit checks, and cannot critically hit.
+- Kept the two next-prototype mage skills as concrete examples under that shared mage skill rule.
+
+### 2026-06-11T17:05:09+0800
+
+- Updated `docs/VISION.md` with remaining prototype combat and status-effect rules.
+- Recorded that the next prototype will not apply any critical-rate modifiers beyond the class table values.
+- Recorded that status effects do not stack; reapplying the same effect only resets its remaining duration.
+- Recorded that status effects apply immediately, tick down at the effect holder's turn end, and are removed at 0 remaining turns.
+- Updated `docs/GOALS.md` so the remaining open planning items focus on status-effect values and implementation order.
+
+### 2026-06-11T17:10:24+0800
+
+- Updated `docs/VISION.md` with initial buff and debuff value amounts.
+- Recorded attack and defense buffs as 1.5x, and matching debuffs as 0.5x.
+- Recorded hit-rate buffs and debuffs as +10 and -10 percentage points.
+- Recorded movement buffs and debuffs as +1 and -1 movement.
+- Updated `docs/GOALS.md` so implementation order is the only remaining open planning item.
+
+### 2026-06-11T17:24:33+0800
+
+- Updated `docs/GOALS.md` to define the third playable target around validating class differentiation.
+- Recorded that the next prototype's stat values are for observing role differences, not final balance.
+- Added done criteria for warrior, archer, mage, attack ranges, normal attacks, mage MP and skills, and UI feedback.
+- Added validation questions for playtesting whether warrior frontline use, archer range management, mage skill choice, and MP tradeoffs are visible.
+- Updated `docs/VISION.md` to record the same next-prototype balancing intent.
+
+### 2026-06-11T17:31:21+0800
+
+- Updated `docs/GOALS.md` with a detailed implementation plan for the third playable target.
+- Split the next phase into class data foundation, unit stat integration, attack range rules, normal attack formula, UI feedback, mage skills, cross spell resolution, status effect foundation, and final verification.
+- Recorded scope, done criteria, and out-of-scope items for each implementation step.
+- No C# implementation was started in this documentation pass.
