@@ -24,7 +24,7 @@ Focus on moving from a one-unit prototype to basic tactical decisions.
 - [x] Allow a player unit to move, then attack if adjacent.
 - [x] Add a second player unit and a second enemy unit.
 - [x] Show simple HP information for units on the board.
-- [ ] Highlight valid movement tiles when a player unit is selected.
+- [x] Highlight valid movement tiles when a player unit is selected.
 
 ## Todo List
 

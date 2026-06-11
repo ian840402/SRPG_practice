@@ -16,6 +16,7 @@
 - The selected player unit can attack the enemy when adjacent.
 - Enemy HP is reduced by the player's attack power.
 - Unit HP is shown on the board.
+- Valid movement tiles are highlighted when a player unit is selected.
 - When enemy HP reaches 0, the enemy is marked defeated, hidden, no longer blocks movement, and cannot be attacked again.
 - After the player successfully moves or attacks, the current player action ends by clearing the selected unit.
 - After the player successfully moves or attacks, the enemy takes a simple turn if it is not defeated.
@@ -27,6 +28,7 @@
 - Board layout and battle rendering are split into dedicated C# classes.
 - Player action resolution is split into a dedicated C# class.
 - C# gameplay files are organized into `Core`, `Rules`, `Resolvers`, and `Rendering` folders.
+- Design tradeoffs are documented in `docs/DESIGN_DECISIONS.md`.
 - If the enemy HP reaches 0, the game shows a win state.
 - If the player HP reaches 0, the game shows a loss state.
 - After win or loss, further gameplay input is ignored.
@@ -43,6 +45,8 @@ Done when:
 - The board has two player units and two enemy units.
 - Unit HP is visible on the board.
 - Valid movement tiles are highlighted when a player unit is selected.
+
+Second playable target is complete.
 
 ## Progress Log
 
@@ -257,3 +261,19 @@ Done when:
 - Updated `docs/GOALS.md` to mark the second playable HP display item complete.
 - Verified formatting with `dotnet format SRPG_practice.sln --verify-no-changes`.
 - Verified the project with `dotnet build SRPG_practice.sln`: build succeeded with 0 warnings and 0 errors.
+
+### 2026-06-09T17:24:32+0800
+
+- Implemented valid movement tile highlights for selected player units.
+- Added `Rules/MovementRangeResolver.cs` to calculate empty tiles within the selected unit's remaining Manhattan movement range.
+- Updated `Rendering/BattleRenderer.cs` to draw highlighted movement tiles before drawing the selection outline and units.
+- Updated `docs/GOALS.md` to mark the second playable movement highlight item complete.
+- Verified formatting with `dotnet format SRPG_practice.sln --verify-no-changes`.
+- Verified the project with `dotnet build SRPG_practice.sln`: build succeeded with 0 warnings and 0 errors.
+
+### 2026-06-11T09:42:29+0800
+
+- Added `docs/DESIGN_DECISIONS.md` as a Traditional Chinese record for design tradeoffs.
+- Documented why movement range highlight currently scans the whole board instead of using BFS / flood fill from the selected unit.
+- Documented why enemy movement currently stops when the direct step toward the target is occupied.
+- Recorded when each simplified approach should be revisited.

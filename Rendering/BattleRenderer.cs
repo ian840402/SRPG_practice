@@ -4,15 +4,18 @@ using System.Collections.Generic;
 public sealed class BattleRenderer
 {
   private readonly BoardLayout _layout;
+  private readonly MovementRangeResolver _movementRangeResolver;
 
-  public BattleRenderer(BoardLayout layout)
+  public BattleRenderer(BoardLayout layout, MovementRangeResolver movementRangeResolver)
   {
     _layout = layout;
+    _movementRangeResolver = movementRangeResolver;
   }
 
   public void Draw(Node2D canvas, BattleState battleState, Unit selectedUnit, GameState gameState, string statusText)
   {
     DrawBoard(canvas);
+    DrawValidMovementTiles(canvas, selectedUnit);
     DrawSelection(canvas, selectedUnit);
     DrawUnits(canvas, battleState.PlayerUnits, new Color(0.2f, 0.45f, 1.0f), "P");
     DrawUnits(canvas, battleState.EnemyUnits, new Color(1.0f, 0.25f, 0.25f), "E");
@@ -45,6 +48,16 @@ public sealed class BattleRenderer
     canvas.DrawRect(unitRect, color);
     canvas.DrawString(ThemeDB.FallbackFont, unitRect.Position + new Vector2(16, 32), label, fontSize: 24);
     canvas.DrawString(ThemeDB.FallbackFont, unitRect.Position + new Vector2(8, 48), $"HP: {unit.Hp}", fontSize: 14);
+  }
+
+  private void DrawValidMovementTiles(Node2D canvas, Unit selectedUnit)
+  {
+    foreach (var gridPosition in _movementRangeResolver.GetValidMovementTiles(selectedUnit))
+    {
+      var tileRect = _layout.GetTileRect(gridPosition);
+      canvas.DrawRect(tileRect, new Color(0.25f, 0.95f, 0.45f, 0.35f));
+      canvas.DrawRect(tileRect, new Color(0.1f, 0.6f, 0.25f), false, 2.0f);
+    }
   }
 
   private void DrawUnitIfAlive(Node2D canvas, Unit unit, Color color, string label)
