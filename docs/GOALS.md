@@ -62,6 +62,8 @@ Implement this target in small reviewable steps. Each step should keep the proje
 
 #### 1. Class Data Foundation
 
+Status: Complete as of 2026-06-12.
+
 Scope:
 
 - Add class identity for warrior, archer, and mage.

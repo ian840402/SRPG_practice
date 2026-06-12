@@ -505,3 +505,13 @@ Second playable target is complete.
 - Split the next phase into class data foundation, unit stat integration, attack range rules, normal attack formula, UI feedback, mage skills, cross spell resolution, status effect foundation, and final verification.
 - Recorded scope, done criteria, and out-of-scope items for each implementation step.
 - No C# implementation was started in this documentation pass.
+
+### 2026-06-12T16:20:52+0800
+
+- Implemented the class data foundation for the third playable target.
+- Added `UnitClass` identity for warrior, archer, and mage.
+- Added `AttackRange`, `UnitClassDefinition`, and `UnitClassDefinitions` so class HP, MP, attack, defense, hit coefficient, evasion, movement, critical rate, and normal attack range can be derived from the prototype table in `docs/VISION.md`.
+- Updated `Unit` so units can be created from a class definition while preserving the existing battle flow.
+- Updated `docs/GOALS.md` to mark the class data foundation step complete.
+- Verified formatting with `dotnet format SRPG_practice.sln --verify-no-changes`.
+- Verified the project with `dotnet build SRPG_practice.sln`: build succeeded with 0 warnings and 0 errors.
