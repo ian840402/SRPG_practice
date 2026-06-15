@@ -6,11 +6,11 @@
 - `Main.tscn` exists and is set as the main scene.
 - `Main.cs` is attached to the root `Node2D` in `Main.tscn`.
 - `Main.cs.uid` exists and matches the script UID referenced by `Main.tscn`.
-- `Main.cs` draws an 8x8 board and displays two player units and two enemy units.
+- `Main.cs` draws an 8x8 board and displays three player units and three enemy units.
 - Board tile clicks now resolve to grid coordinates.
 - The player unit can be selected by clicking its tile.
 - Selection feedback is shown with a highlighted tile, status text, and console output.
-- Basic unit data now includes grid position, HP, attack power, move range, and team.
+- Basic unit data now includes grid position, current HP, current MP, class identity, attack power, defense, hit coefficient, evasion, move range, critical rate, normal attack range, and team.
 - The selected player unit can move to valid empty tiles within move range.
 - Movement uses Manhattan distance and does not allow moving onto occupied tiles.
 - The selected player unit can attack the enemy when adjacent.
@@ -28,6 +28,7 @@
 - Board layout and battle rendering are split into dedicated C# classes.
 - Player action resolution is split into a dedicated C# class.
 - C# gameplay files are organized into `Core`, `Rules`, `Resolvers`, and `Rendering` folders.
+- Warrior, archer, and mage class data is implemented and battle setup now creates units from class definitions.
 - Design tradeoffs are documented in `docs/DESIGN_DECISIONS.md`.
 - Product vision is being documented in `docs/VISION.md`.
 - If the enemy HP reaches 0, the game shows a win state.
@@ -37,17 +38,18 @@
 
 ## Next Milestone
 
-Second playable target.
+Third playable target.
 
 Done when:
 
-- Explicit turn states are implemented.
-- A player unit can move, then attack if adjacent.
-- The board has two player units and two enemy units.
-- Unit HP is visible on the board.
-- Valid movement tiles are highlighted when a player unit is selected.
+- Warrior, archer, and mage units can be created and shown in battle.
+- The three classes use the prototype stat table from `docs/VISION.md`.
+- Attack rules support both minimum and maximum range.
+- Normal attacks use the prototype damage, hit, critical, and minimum-damage rules.
+- Mage MP and prototype skills are playable.
+- UI shows enough HP, MP, class, and action feedback for playtesting.
 
-Second playable target is complete.
+Next implementation step: attack range rules.
 
 ## Progress Log
 
@@ -513,5 +515,14 @@ Second playable target is complete.
 - Added `AttackRange`, `UnitClassDefinition`, and `UnitClassDefinitions` so class HP, MP, attack, defense, hit coefficient, evasion, movement, critical rate, and normal attack range can be derived from the prototype table in `docs/VISION.md`.
 - Updated `Unit` so units can be created from a class definition while preserving the existing battle flow.
 - Updated `docs/GOALS.md` to mark the class data foundation step complete.
+- Verified formatting with `dotnet format SRPG_practice.sln --verify-no-changes`.
+- Verified the project with `dotnet build SRPG_practice.sln`: build succeeded with 0 warnings and 0 errors.
+
+### 2026-06-15T16:51:10+0800
+
+- Implemented unit stats integration for the third playable target.
+- Updated `Unit` to store current HP and current MP, while attack, defense, hit coefficient, evasion, movement, critical rate, and normal attack range stay available through class definitions.
+- Updated battle setup so both player and enemy teams include warrior, archer, and mage units created from class data instead of hard-coded HP, attack, and movement values.
+- Updated `docs/GOALS.md` to mark the unit stats integration step complete.
 - Verified formatting with `dotnet format SRPG_practice.sln --verify-no-changes`.
 - Verified the project with `dotnet build SRPG_practice.sln`: build succeeded with 0 warnings and 0 errors.

@@ -85,6 +85,8 @@ Not included:
 
 #### 2. Unit Stats Integration
 
+Status: Complete as of 2026-06-15.
+
 Scope:
 
 - Update unit state to store current HP and current MP.
