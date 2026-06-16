@@ -107,6 +107,8 @@ Not included:
 
 #### 3. Attack Range Rules
 
+Status: Complete as of 2026-06-15.
+
 Scope:
 
 - Replace adjacency-only attack checks with minimum and maximum attack range.

@@ -80,9 +80,9 @@ public sealed class PlayerActionResolver
     }
 
     var distance = MovementRules.GetManhattanDistance(unit.GridPosition, targetEnemy.GridPosition);
-    if (distance != 1)
+    if (!unit.NormalAttackRange.Contains(distance))
     {
-      statusText = "Enemy is too far to attack.";
+      statusText = $"Enemy is outside attack range. Range: {unit.NormalAttackRange.Min}-{unit.NormalAttackRange.Max}. Distance: {distance}.";
       return true;
     }
 

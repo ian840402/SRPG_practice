@@ -22,7 +22,7 @@ public sealed class EnemyTurnResolver
 
   private string ResolveEnemyUnitAction(Unit enemyUnit)
   {
-    if (UnitQuery.TryGetAdjacentAliveUnit(_battleState, enemyUnit, Team.Player, out var playerTarget))
+    if (UnitQuery.TryGetAliveUnitInNormalAttackRange(_battleState, enemyUnit, Team.Player, out var playerTarget))
     {
       playerTarget.TakeDamage(enemyUnit.AttackPower);
       return $"Enemy at {enemyUnit.GridPosition} attacked player at {playerTarget.GridPosition} for {enemyUnit.AttackPower} damage. Player HP: {playerTarget.Hp}.";
@@ -37,7 +37,7 @@ public sealed class EnemyTurnResolver
     var stepsMoved = 0;
     for (var step = 0; step < enemyUnit.MoveRange; step++)
     {
-      if (UnitQuery.TryGetAdjacentAliveUnit(_battleState, enemyUnit, Team.Player, out _)) break;
+      if (UnitQuery.TryGetAliveUnitInNormalAttackRange(_battleState, enemyUnit, Team.Player, out _)) break;
 
       var nearestPlayerUnit = UnitQuery.GetNearestAliveUnit(enemyUnit, _battleState.PlayerUnits);
       if (nearestPlayerUnit is null) break;

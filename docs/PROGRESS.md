@@ -29,6 +29,7 @@
 - Player action resolution is split into a dedicated C# class.
 - C# gameplay files are organized into `Core`, `Rules`, `Resolvers`, and `Rendering` folders.
 - Warrior, archer, and mage class data is implemented and battle setup now creates units from class definitions.
+- Normal attack range checks support minimum and maximum range.
 - Design tradeoffs are documented in `docs/DESIGN_DECISIONS.md`.
 - Product vision is being documented in `docs/VISION.md`.
 - If the enemy HP reaches 0, the game shows a win state.
@@ -44,12 +45,11 @@ Done when:
 
 - Warrior, archer, and mage units can be created and shown in battle.
 - The three classes use the prototype stat table from `docs/VISION.md`.
-- Attack rules support both minimum and maximum range.
 - Normal attacks use the prototype damage, hit, critical, and minimum-damage rules.
 - Mage MP and prototype skills are playable.
 - UI shows enough HP, MP, class, and action feedback for playtesting.
 
-Next implementation step: attack range rules.
+Next implementation step: normal attack formula.
 
 ## Progress Log
 
@@ -524,5 +524,15 @@ Next implementation step: attack range rules.
 - Updated `Unit` to store current HP and current MP, while attack, defense, hit coefficient, evasion, movement, critical rate, and normal attack range stay available through class definitions.
 - Updated battle setup so both player and enemy teams include warrior, archer, and mage units created from class data instead of hard-coded HP, attack, and movement values.
 - Updated `docs/GOALS.md` to mark the unit stats integration step complete.
+- Verified formatting with `dotnet format SRPG_practice.sln --verify-no-changes`.
+- Verified the project with `dotnet build SRPG_practice.sln`: build succeeded with 0 warnings and 0 errors.
+
+### 2026-06-15T17:27:13+0800
+
+- Implemented normal attack range rules for the third playable target.
+- Player attacks now use each unit's normal attack minimum and maximum range instead of adjacency-only checks.
+- Invalid range attempts now show the unit's normal attack range and current target distance.
+- Enemy attacks now use normal attack range, and simple enemy movement stops once a target enters that range.
+- Updated `docs/GOALS.md` to mark the attack range rules step complete.
 - Verified formatting with `dotnet format SRPG_practice.sln --verify-no-changes`.
 - Verified the project with `dotnet build SRPG_practice.sln`: build succeeded with 0 warnings and 0 errors.
