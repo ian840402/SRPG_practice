@@ -6,7 +6,6 @@ public partial class Main : Node2D
   private readonly BattleState _battleState = new();
   private readonly BattleRenderer _battleRenderer;
   private readonly EnemyTurnResolver _enemyTurnResolver;
-  private readonly MovementRangeResolver _movementRangeResolver;
   private readonly PlayerActionResolver _playerActionResolver;
   private Unit _selectedUnit;
   private GameState _gameState = GameState.PlayerTurn;
@@ -14,8 +13,7 @@ public partial class Main : Node2D
 
   public Main()
   {
-    _movementRangeResolver = new MovementRangeResolver(_battleState);
-    _battleRenderer = new BattleRenderer(_boardLayout, _movementRangeResolver);
+    _battleRenderer = new BattleRenderer(_boardLayout);
     _enemyTurnResolver = new EnemyTurnResolver(_battleState);
     _playerActionResolver = new PlayerActionResolver(_battleState);
   }

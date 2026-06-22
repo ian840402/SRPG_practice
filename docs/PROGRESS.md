@@ -1,538 +1,538 @@
-# Current Progress
+# 目前進度
 
-## Current Status
+## 目前狀態
 
-- Godot C# project initialization is complete.
-- `Main.tscn` exists and is set as the main scene.
-- `Main.cs` is attached to the root `Node2D` in `Main.tscn`.
-- `Main.cs.uid` exists and matches the script UID referenced by `Main.tscn`.
-- `Main.cs` draws an 8x8 board and displays three player units and three enemy units.
-- Board tile clicks now resolve to grid coordinates.
-- The player unit can be selected by clicking its tile.
-- Selection feedback is shown with a highlighted tile, status text, and console output.
-- Basic unit data now includes grid position, current HP, current MP, class identity, attack power, defense, hit coefficient, evasion, move range, critical rate, normal attack range, and team.
-- The selected player unit can move to valid empty tiles within move range.
-- Movement uses Manhattan distance and does not allow moving onto occupied tiles.
-- The selected player unit can attack the enemy when adjacent.
-- Enemy HP is reduced by the player's attack power.
-- Unit HP is shown on the board.
-- Valid movement tiles are highlighted when a player unit is selected.
-- When enemy HP reaches 0, the enemy is marked defeated, hidden, no longer blocks movement, and cannot be attacked again.
-- After the player successfully moves or attacks, the current player action ends by clearing the selected unit.
-- After the player successfully moves or attacks, the enemy takes a simple turn if it is not defeated.
-- If the enemy is adjacent to the player during its turn, it attacks and reduces player HP.
-- Otherwise, the enemy moves toward the player within its move range and stops early when it becomes adjacent.
-- Win/loss logic is implemented.
-- Gameplay flow now uses explicit `GameState` values for player turn, enemy turn, win, and loss.
-- Battle state, unit queries, movement rules, and enemy turn resolution are split into dedicated C# classes.
-- Board layout and battle rendering are split into dedicated C# classes.
-- Player action resolution is split into a dedicated C# class.
-- C# gameplay files are organized into `Core`, `Rules`, `Resolvers`, and `Rendering` folders.
-- Warrior, archer, and mage class data is implemented and battle setup now creates units from class definitions.
-- Normal attack range checks support minimum and maximum range.
-- Design tradeoffs are documented in `docs/DESIGN_DECISIONS.md`.
-- Product vision is being documented in `docs/VISION.md`.
-- If the enemy HP reaches 0, the game shows a win state.
-- If the player HP reaches 0, the game shows a loss state.
-- After win or loss, further gameplay input is ignored.
-- No animation or art pass is planned for the first prototype.
+- Godot C# 專案初始化已完成。
+- `Main.tscn` 已存在，並設定為主場景。
+- `Main.cs` 已掛載到 `Main.tscn` 的根 `Node2D`。
+- `Main.cs.uid` 已存在，且與 `Main.tscn` 參照的 script UID 相符。
+- `Main.cs` 會繪製 8x8 棋盤，並顯示三個玩家單位與三個敵方單位。
+- 棋盤格點擊現在會解析為格子座標。
+- 玩家單位可以透過點擊所在格被選取。
+- 選取回饋會以高亮格、狀態文字與 console 輸出呈現。
+- 基礎單位資料現在包含格子位置、目前 HP、目前 MP、職業識別、攻擊力、防禦、命中係數、迴避、移動範圍、暴擊率、普通攻擊射程與隊伍。
+- 被選取的玩家單位可以移動到移動範圍內的有效空格。
+- 移動使用曼哈頓距離，且不允許移動到已被佔用的格子。
+- 被選取的玩家單位可以在相鄰時攻擊敵人。
+- 敵人 HP 會依照玩家攻擊力降低。
+- 單位 HP 會顯示在棋盤上。
+- 選取玩家單位時，會高亮有效移動格。
+- 敵人 HP 到達 0 時，會被標記為擊敗、隱藏、不再阻擋移動，且不能再被攻擊。
+- 玩家成功移動或攻擊後，會清除選取單位以結束目前玩家行動。
+- 玩家成功移動或攻擊後，若敵人尚未被擊敗，敵人會執行簡單回合。
+- 敵人回合中，如果敵人與玩家相鄰，敵人會攻擊並降低玩家 HP。
+- 否則，敵人會在移動範圍內朝玩家移動，並在變成相鄰時提前停止。
+- 勝敗邏輯已實作。
+- Gameplay 流程現在使用明確的 `GameState` 值表示玩家回合、敵方回合、勝利與失敗。
+- 戰鬥狀態、單位查詢、移動規則與敵方回合結算已拆分到專用 C# 類別。
+- 棋盤 layout 與戰鬥 rendering 已拆分到專用 C# 類別。
+- 玩家行動結算已拆分到專用 C# 類別。
+- C# gameplay 檔案已依照 `Core`、`Rules`、`Resolvers`、`Rendering` 資料夾整理。
+- 戰士、弓箭手與法師職業資料已實作，戰鬥配置現在會從職業定義建立單位。
+- 普通攻擊射程檢查支援最小與最大射程。
+- 設計取捨已記錄在 `docs/DESIGN_DECISIONS.md`。
+- 產品願景正在記錄於 `docs/VISION.md`。
+- 如果敵人 HP 到達 0，遊戲會顯示勝利狀態。
+- 如果玩家 HP 到達 0，遊戲會顯示失敗狀態。
+- 勝利或失敗後，會忽略後續 gameplay input。
+- 第一個原型暫不規劃動畫或美術 pass。
 
-## Next Milestone
+## 下一個里程碑
 
-Third playable target.
+第三個可玩目標。
 
-Done when:
+完成條件：
 
-- Warrior, archer, and mage units can be created and shown in battle.
-- The three classes use the prototype stat table from `docs/VISION.md`.
-- Normal attacks use the prototype damage, hit, critical, and minimum-damage rules.
-- Mage MP and prototype skills are playable.
-- UI shows enough HP, MP, class, and action feedback for playtesting.
+- 可以建立戰士、弓箭手、法師單位，並顯示在戰鬥中。
+- 三個職業使用 `docs/VISION.md` 裡的原型數值表。
+- 普通攻擊使用原型傷害、命中、暴擊與最低傷害規則。
+- 法師 MP 與原型技能可以遊玩。
+- UI 顯示足夠的 HP、MP、職業與行動回饋，以支援測試。
 
-Next implementation step: normal attack formula.
+下一個實作步驟：普通攻擊公式。
 
-## Progress Log
+## 進度紀錄
 
 ### 2026-05-26T15:58:42+0800
 
-- Confirmed project documentation rules are in place in `AGENTS.md`.
-- Confirmed `docs/GOALS.md` and `docs/PROGRESS.md` exist and are the active planning documents.
-- Confirmed `project.godot` points `run/main_scene` to the UID used by `Main.tscn`.
-- Confirmed `Main.tscn` root node is named `Main` and has `Main.cs` attached.
-- Confirmed `Main.cs` only contains a startup `Hello World!!!` print and no gameplay systems yet.
-- No prototype todo item in `docs/GOALS.md` is complete yet.
+- 確認專案文件規則已存在於 `AGENTS.md`。
+- 確認 `docs/GOALS.md` 與 `docs/PROGRESS.md` 存在，且是目前啟用的規劃文件。
+- 確認 `project.godot` 的 `run/main_scene` 指向 `Main.tscn` 使用的 UID。
+- 確認 `Main.tscn` 根節點名稱為 `Main`，且已掛載 `Main.cs`。
+- 確認 `Main.cs` 只有啟動時的 `Hello World!!!` print，尚未有 gameplay 系統。
+- `docs/GOALS.md` 中尚未有任何原型待辦項目完成。
 
 ### 2026-05-26T16:05:13+0800
 
-- Implemented the first visual prototype in `Main.cs`.
-- The game now draws an 8x8 board using simple rectangles.
-- Added one player unit at grid position `(1, 1)` and one enemy unit at grid position `(6, 6)`.
-- Player and enemy units are shown with different colors and simple labels.
-- Verified the project with `dotnet build SRPG_practice.sln`: build succeeded with 0 warnings and 0 errors.
-- Updated `docs/GOALS.md` to mark completed board and unit display items.
+- 在 `Main.cs` 實作第一個視覺原型。
+- 遊戲現在會用簡單矩形繪製 8x8 棋盤。
+- 在格子位置 `(1, 1)` 加入一個玩家單位，並在 `(6, 6)` 加入一個敵方單位。
+- 玩家與敵方單位以不同顏色和簡單標籤顯示。
+- 使用 `dotnet build SRPG_practice.sln` 驗證專案：build succeeded，0 warnings，0 errors。
+- 更新 `docs/GOALS.md`，標記棋盤與單位顯示項目完成。
 
 ### 2026-05-27T15:22:03+0800
 
-- Implemented board tile click handling in `Main.cs`.
-- Added grid coordinate resolution from mouse position.
-- Added player unit selection when clicking the player tile.
-- Added selection feedback using a highlighted tile, status text, and console output.
-- Verified the project with `dotnet build SRPG_practice.sln`: build succeeded with 0 warnings and 0 errors.
-- Updated `docs/GOALS.md` to mark tile clicking and player selection items complete.
+- 在 `Main.cs` 實作棋盤格點擊處理。
+- 加入從滑鼠位置解析格子座標的邏輯。
+- 點擊玩家格時會選取玩家單位。
+- 使用高亮格、狀態文字與 console 輸出加入選取回饋。
+- 使用 `dotnet build SRPG_practice.sln` 驗證專案：build succeeded，0 warnings，0 errors。
+- 更新 `docs/GOALS.md`，標記格子點擊與玩家選取項目完成。
 
 ### 2026-05-28T08:52:56+0800
 
-- Renamed the Godot C# project files from `test_trpg` to `SRPG_practice`.
-- Updated the Godot .NET assembly name to `SRPG_practice`.
-- Renamed the project folder from `test-trpg` to `SRPG_practice`.
-- Verified the renamed project with `dotnet build SRPG_practice.sln`: build succeeded with 0 warnings and 0 errors.
-- Removed the obsolete `test_trpg.sln` file after confirming `SRPG_practice.sln` builds successfully.
+- 將 Godot C# 專案檔案從 `test_trpg` 重新命名為 `SRPG_practice`。
+- 將 Godot .NET assembly name 更新為 `SRPG_practice`。
+- 將專案資料夾從 `test-trpg` 重新命名為 `SRPG_practice`。
+- 使用 `dotnet build SRPG_practice.sln` 驗證重新命名後的專案：build succeeded，0 warnings，0 errors。
+- 確認 `SRPG_practice.sln` 可成功 build 後，移除過時的 `test_trpg.sln` 檔案。
 
 ### 2026-05-28T14:50:03+0800
 
-- Added a simple `Unit` data structure in `Main.cs` for grid position, HP, attack power, move range, and team.
-- Updated player and enemy state to use `Unit` instances instead of separate grid position fields.
-- Implemented selected player movement to valid empty tiles within move range.
-- Movement now uses Manhattan distance and rejects movement onto the enemy tile.
-- Ran `dotnet format SRPG_practice.sln` to align `Main.cs` indentation with `.editorconfig`.
-- Verified the project with `dotnet build SRPG_practice.sln`: build succeeded with 0 warnings and 0 errors.
-- Verified formatting with `dotnet format SRPG_practice.sln --verify-no-changes`.
-- Updated `docs/GOALS.md` to mark basic unit data and player movement items complete.
+- 在 `Main.cs` 加入簡單的 `Unit` 資料結構，用於格子位置、HP、攻擊力、移動範圍與隊伍。
+- 將玩家與敵方狀態改為使用 `Unit` instance，而不是分散的格子位置欄位。
+- 實作選取玩家單位後，可移動到移動範圍內的有效空格。
+- 移動現在使用曼哈頓距離，並拒絕移動到敵人所在格。
+- 執行 `dotnet format SRPG_practice.sln`，讓 `Main.cs` 縮排符合 `.editorconfig`。
+- 使用 `dotnet build SRPG_practice.sln` 驗證專案：build succeeded，0 warnings，0 errors。
+- 使用 `dotnet format SRPG_practice.sln --verify-no-changes` 驗證格式。
+- 更新 `docs/GOALS.md`，標記基礎單位資料與玩家移動項目完成。
 
 ### 2026-05-28T15:00:48+0800
 
-- Updated `.editorconfig` to use 2-space indentation across the project.
-- Ran `dotnet format SRPG_practice.sln` to apply the new indentation setting.
-- Verified formatting with `dotnet format SRPG_practice.sln --verify-no-changes`.
-- Verified the project with `dotnet build SRPG_practice.sln`: build succeeded with 0 warnings and 0 errors.
+- 更新 `.editorconfig`，將整個專案改為使用 2-space indentation。
+- 執行 `dotnet format SRPG_practice.sln` 套用新的縮排設定。
+- 使用 `dotnet format SRPG_practice.sln --verify-no-changes` 驗證格式。
+- 使用 `dotnet build SRPG_practice.sln` 驗證專案：build succeeded，0 warnings，0 errors。
 
 ### 2026-05-28T15:10:12+0800
 
-- Split `Unit` out of `Main.cs` into `Unit.cs`.
-- Split `Team` out of `Main.cs` into `Team.cs`.
-- Kept unit rendering, input handling, and movement rules in `Main.cs` for now.
-- Verified formatting with `dotnet format SRPG_practice.sln --verify-no-changes`.
-- Verified the project with `dotnet build SRPG_practice.sln`: build succeeded with 0 warnings and 0 errors.
+- 將 `Unit` 從 `Main.cs` 拆分到 `Unit.cs`。
+- 將 `Team` 從 `Main.cs` 拆分到 `Team.cs`。
+- 單位 rendering、input handling 與移動規則暫時保留在 `Main.cs`。
+- 使用 `dotnet format SRPG_practice.sln --verify-no-changes` 驗證格式。
+- 使用 `dotnet build SRPG_practice.sln` 驗證專案：build succeeded，0 warnings，0 errors。
 
 ### 2026-06-01T10:47:16+0800
 
-- Implemented adjacent player attacks against the enemy in `Main.cs`.
-- Attacks now require clicking the enemy while the player unit is adjacent by Manhattan distance.
-- Enemy HP is reduced by the player's attack power.
-- When enemy HP reaches 0, the enemy is marked defeated, hidden, no longer blocks movement, and cannot be attacked again.
-- Verified the project with `dotnet build SRPG_practice.sln`: build succeeded with 0 warnings and 0 errors.
-- Updated `docs/GOALS.md` to mark the attack milestone complete.
+- 在 `Main.cs` 實作玩家相鄰攻擊敵人。
+- 攻擊現在需要玩家單位與敵人以曼哈頓距離相鄰時，點擊敵人才能觸發。
+- 敵人 HP 會依玩家攻擊力降低。
+- 敵人 HP 到達 0 時，會被標記為擊敗、隱藏、不再阻擋移動，且不能再被攻擊。
+- 使用 `dotnet build SRPG_practice.sln` 驗證專案：build succeeded，0 warnings，0 errors。
+- 更新 `docs/GOALS.md`，標記攻擊里程碑完成。
 
 ### 2026-06-02T15:58:41+0800
 
-- Implemented the end-player-action milestone in `Main.cs`.
-- Successful movement now clears the selected unit so the player cannot keep moving in the same action.
-- Successful attacks now clear the selected unit so the player cannot keep attacking in the same action.
-- Kept the implementation simple and did not add action points.
-- Verified the project with `dotnet build SRPG_practice.sln`: build succeeded with 0 warnings and 0 errors.
-- Updated `docs/GOALS.md` to mark the end-player-action milestone complete.
+- 在 `Main.cs` 實作結束玩家行動里程碑。
+- 成功移動後會清除選取單位，讓玩家不能在同一個行動中持續移動。
+- 成功攻擊後會清除選取單位，讓玩家不能在同一個行動中持續攻擊。
+- 維持簡單實作，未加入行動點數。
+- 使用 `dotnet build SRPG_practice.sln` 驗證專案：build succeeded，0 warnings，0 errors。
+- 更新 `docs/GOALS.md`，標記結束玩家行動里程碑完成。
 
 ### 2026-06-02T16:23:48+0800
 
-- Implemented a simple enemy turn in `Main.cs`.
-- Enemy turns now run after successful player movement or attack, unless the enemy was defeated.
-- If the enemy is adjacent to the player, it attacks and reduces player HP.
-- Otherwise, the enemy moves one tile toward the player without full pathfinding.
-- Verified the project with `dotnet build SRPG_practice.sln`: build succeeded with 0 warnings and 0 errors.
-- Updated `docs/GOALS.md` to mark the simple enemy turn milestone complete.
+- 在 `Main.cs` 實作簡單敵方回合。
+- 敵方回合現在會在玩家成功移動或攻擊後執行，除非敵人已被擊敗。
+- 如果敵人與玩家相鄰，敵人會攻擊並降低玩家 HP。
+- 否則，敵人會朝玩家移動一格，尚未實作完整尋路。
+- 使用 `dotnet build SRPG_practice.sln` 驗證專案：build succeeded，0 warnings，0 errors。
+- 更新 `docs/GOALS.md`，標記簡單敵方回合里程碑完成。
 
 ### 2026-06-02T17:03:52+0800
 
-- Refined enemy movement in `Main.cs` to use the enemy unit's move range.
-- Enemy movement now advances up to `MoveRange` tiles toward the player instead of always moving one tile.
-- Enemy movement stops early once the enemy becomes adjacent to the player, and it does not attack again in the same turn after moving.
-- Updated `docs/GOALS.md` and `docs/PROGRESS.md` to describe enemy movement as range-based rather than one-tile movement.
+- 調整 `Main.cs` 中的敵方移動，改為使用敵方單位的移動範圍。
+- 敵方移動現在會朝玩家前進最多 `MoveRange` 格，而不是永遠只移動一格。
+- 敵方移動在變成與玩家相鄰時會提前停止，且移動後不會在同一回合再次攻擊。
+- 更新 `docs/GOALS.md` 與 `docs/PROGRESS.md`，將敵方移動描述為依移動範圍移動，而不是一格移動。
 
 ### 2026-06-03T09:07:03+0800
 
-- Implemented win/loss checks in `Main.cs`.
-- Enemy defeat now shows a win state.
-- Player defeat during the enemy turn now shows a loss state.
-- After win or loss, gameplay input is ignored.
-- Updated `docs/GOALS.md` to mark the first playable win/loss milestone complete.
+- 在 `Main.cs` 實作勝敗檢查。
+- 敵人被擊敗時現在會顯示勝利狀態。
+- 玩家在敵方回合中被擊敗時現在會顯示失敗狀態。
+- 勝利或失敗後，會忽略 gameplay input。
+- 更新 `docs/GOALS.md`，標記第一個可玩目標的勝敗里程碑完成。
 
 ### 2026-06-03T11:45:12+0800
 
-- Defined the second playable target in `docs/GOALS.md`.
-- The next phase will focus on explicit turn states, move-then-attack flow, two units per side, visible HP, and valid movement tile highlights.
-- Updated `docs/PROGRESS.md` so the next milestone points to the second playable target.
+- 在 `docs/GOALS.md` 定義第二個可玩目標。
+- 下一個階段會專注在明確回合狀態、移動後攻擊流程、雙方各兩個單位、可見 HP，以及有效移動格高亮。
+- 更新 `docs/PROGRESS.md`，讓下一個里程碑指向第二個可玩目標。
 
 ### 2026-06-04T09:06:31+0800
 
-- Added `GameState.cs` with explicit player turn, enemy turn, win, and loss states.
-- Updated `Main.cs` to use `GameState` instead of separate game-over and enemy-defeated flags.
-- Enemy visibility now follows enemy HP, while gameplay input is accepted only during the player turn.
-- Updated `docs/GOALS.md` to mark explicit turn states complete for the second playable target.
+- 加入 `GameState.cs`，提供明確的玩家回合、敵方回合、勝利與失敗狀態。
+- 更新 `Main.cs`，使用 `GameState` 取代分散的 game-over 與 enemy-defeated flags。
+- 敵方顯示現在依照敵方 HP；gameplay input 只在玩家回合接受。
+- 更新 `docs/GOALS.md`，標記第二個可玩目標的明確回合狀態完成。
 
 ### 2026-06-04T09:55:12+0800
 
-- Refactored `Main.cs` input handling without changing gameplay behavior.
-- `_Input()` now delegates clicked-grid extraction, player-turn click handling, and selected-unit action handling to separate methods.
-- Kept win/loss checks centralized after player input handling.
+- 在不改變 gameplay 行為的前提下，重構 `Main.cs` input handling。
+- `_Input()` 現在會把點擊格解析、玩家回合點擊處理、選取單位行動處理委派給不同 method。
+- 勝敗檢查仍集中在玩家 input handling 之後。
 
 ### 2026-06-04T11:07:10+0800
 
-- Implemented a simple drawn `End Turn` button in `Main.cs`.
-- Player movement now consumes remaining move points instead of ending the turn immediately.
-- A selected player unit can keep moving while it has remaining move points.
-- A player unit can attack once when adjacent, then the player must click `End Turn` to trigger the enemy turn.
-- The `End Turn` button is ignored outside the player turn through the existing `GameState` input guard.
-- Updated `docs/GOALS.md` to mark the move-then-attack milestone complete for the second playable target.
+- 在 `Main.cs` 實作簡單繪製的 `End Turn` 按鈕。
+- 玩家移動現在會消耗剩餘移動點，而不是立刻結束回合。
+- 被選取的玩家單位只要還有剩餘移動點，就可以持續移動。
+- 玩家單位相鄰時可以攻擊一次，之後玩家必須點擊 `End Turn` 觸發敵方回合。
+- `End Turn` 按鈕會透過既有 `GameState` input guard，在非玩家回合時被忽略。
+- 更新 `docs/GOALS.md`，標記第二個可玩目標的移動後攻擊里程碑完成。
 
 ### 2026-06-04T11:25:25+0800
 
-- Refined turn flow naming in `Main.cs`.
-- Player turns now end by calling `StartEnemyTurn()`.
-- Enemy turn handling is split into `StartEnemyTurn()`, `ResolveEnemyTurnAction()`, and `EndEnemyTurn()` before returning to `StartPlayerTurn()`.
+- 調整 `Main.cs` 的回合流程命名。
+- 玩家回合現在會透過呼叫 `StartEnemyTurn()` 結束。
+- 敵方回合處理拆分為 `StartEnemyTurn()`、`ResolveEnemyTurnAction()` 與 `EndEnemyTurn()`，再回到 `StartPlayerTurn()`。
 
 ### 2026-06-04T11:28:21+0800
 
-- Consolidated enemy alive checks in `Main.cs`.
-- `IsEnemyAlive()` is now only used by the centralized win/loss check after input handling.
-- Movement and turn transition code now rely on `GameState` flow instead of repeating enemy alive guards.
+- 整合 `Main.cs` 中的敵方存活檢查。
+- `IsEnemyAlive()` 現在只由 input handling 之後的集中勝敗檢查使用。
+- 移動與回合轉換程式現在依賴 `GameState` flow，而不是重複敵方存活 guard。
 
 ### 2026-06-04T14:15:00+0800
 
-- Added `InitTurn()` in `Main.cs` for initial turn setup.
-- Added lightweight `GameState` guards to player/enemy start and end turn methods.
-- Kept initialization separate from normal player turn transitions so future first-turn ownership can change more easily.
+- 在 `Main.cs` 加入 `InitTurn()`，用於初始回合設定。
+- 對玩家/敵方開始與結束回合 method 加入輕量 `GameState` guard。
+- 讓初始化與一般玩家回合轉換分開，使未來第一回合歸屬更容易調整。
 
 ### 2026-06-04T14:28:40+0800
 
-- Added a second player unit and a second enemy unit.
-- Updated `Main.cs` to use player and enemy unit lists instead of single unit fields.
-- Player turn state is now stored per unit, including remaining move points and whether that unit attacked this turn.
-- Selection, movement, attacks, enemy turns, and win/loss checks now work against alive units in each team.
-- Enemy turns now process each alive enemy once.
-- Updated `docs/GOALS.md` to mark the multi-unit milestone complete for the second playable target.
+- 加入第二個玩家單位與第二個敵方單位。
+- 更新 `Main.cs`，使用玩家與敵方單位清單，而不是單一單位欄位。
+- 玩家回合狀態現在保存於每個單位，包括剩餘移動點與該單位本回合是否已攻擊。
+- 選取、移動、攻擊、敵方回合與勝敗檢查現在會針對雙方存活單位運作。
+- 敵方回合現在會讓每個存活敵人各行動一次。
+- 更新 `docs/GOALS.md`，標記第二個可玩目標的多單位里程碑完成。
 
 ### 2026-06-09T11:14:44+0800
 
-- Recorded a known enemy AI limitation for later work.
-- Current enemy movement stops immediately if the direct step toward the nearest player is occupied, even when other adjacent tiles are open.
-- Updated `docs/GOALS.md` with a follow-up item to try alternate valid movement options during a later enemy AI pass.
+- 記錄一個已知敵方 AI 限制供後續處理。
+- 目前敵方移動在朝最近玩家的直接步伐被佔用時會立刻停止，即使其他相鄰格仍可移動。
+- 更新 `docs/GOALS.md`，加入後續項目：在之後的敵方 AI pass 中嘗試其他有效移動選項。
 
 ### 2026-06-09T14:22:28+0800
 
-- Refactored gameplay architecture without changing intended gameplay behavior.
-- Added `BattleState.cs` to own player and enemy unit collections plus alive-state checks.
-- Added `UnitQuery.cs` for reusable alive-unit, occupied-tile, adjacent-unit, and nearest-unit lookups.
-- Added `MovementRules.cs` for Manhattan movement cost and direct-step movement helpers.
-- Added `EnemyTurnResolver.cs` to isolate enemy turn and simple enemy AI behavior from `Main.cs`.
-- Kept `Main.cs` focused on Godot input, drawing, player actions, and turn transitions.
-- Verified formatting with `dotnet format SRPG_practice.sln --verify-no-changes`.
-- Verified the project with `dotnet build SRPG_practice.sln`: build succeeded with 0 warnings and 0 errors.
+- 在不改變預期 gameplay 行為的前提下重構 gameplay 架構。
+- 加入 `BattleState.cs`，負責玩家與敵方單位集合，以及存活狀態檢查。
+- 加入 `UnitQuery.cs`，提供可重用的存活單位、佔用格、相鄰單位與最近單位查詢。
+- 加入 `MovementRules.cs`，負責曼哈頓移動消耗與直接步伐移動 helper。
+- 加入 `EnemyTurnResolver.cs`，將敵方回合與簡單敵方 AI 行為從 `Main.cs` 隔離。
+- 讓 `Main.cs` 專注在 Godot input、drawing、玩家行動與回合轉換。
+- 使用 `dotnet format SRPG_practice.sln --verify-no-changes` 驗證格式。
+- 使用 `dotnet build SRPG_practice.sln` 驗證專案：build succeeded，0 warnings，0 errors。
 
 ### 2026-06-09T16:49:20+0800
 
-- Refactored rendering and board layout responsibilities without changing intended gameplay behavior.
-- Added `BoardLayout.cs` to own board dimensions, tile/unit rectangles, status text position, end-turn button bounds, and screen-to-grid conversion.
-- Added `BattleRenderer.cs` to draw the board, units, selection outline, status text, and end-turn button.
-- Kept `Main.cs` focused on input handling, player actions, and turn transitions instead of draw details.
-- Verified formatting with `dotnet format SRPG_practice.sln --verify-no-changes`.
-- Verified the project with `dotnet build SRPG_practice.sln`: build succeeded with 0 warnings and 0 errors.
+- 在不改變預期 gameplay 行為的前提下，重構 rendering 與棋盤 layout 職責。
+- 加入 `BoardLayout.cs`，負責棋盤尺寸、格子/單位矩形、狀態文字位置、結束回合按鈕範圍，以及 screen-to-grid 轉換。
+- 加入 `BattleRenderer.cs`，負責繪製棋盤、單位、選取框、狀態文字與結束回合按鈕。
+- 讓 `Main.cs` 專注在 input handling、玩家行動與回合轉換，而不是 draw details。
+- 使用 `dotnet format SRPG_practice.sln --verify-no-changes` 驗證格式。
+- 使用 `dotnet build SRPG_practice.sln` 驗證專案：build succeeded，0 warnings，0 errors。
 
 ### 2026-06-09T16:59:24+0800
 
-- Refactored player action responsibilities without changing intended gameplay behavior.
-- Added `PlayerActionResolver.cs` to handle player unit selection, movement attempts, attack attempts, and action status text.
-- Added `PlayerActionResult.cs` to return the selected unit and status text from player action resolution.
-- Kept `Main.cs` focused on Godot input, end-turn handling, turn transitions, win/loss checks, and redraw requests.
-- Verified formatting with `dotnet format SRPG_practice.sln --verify-no-changes`.
-- Verified the project with `dotnet build SRPG_practice.sln`: build succeeded with 0 warnings and 0 errors.
+- 在不改變預期 gameplay 行為的前提下，重構玩家行動職責。
+- 加入 `PlayerActionResolver.cs`，負責玩家單位選取、移動嘗試、攻擊嘗試與行動狀態文字。
+- 加入 `PlayerActionResult.cs`，從玩家行動結算回傳選取單位與狀態文字。
+- 讓 `Main.cs` 專注在 Godot input、結束回合處理、回合轉換、勝敗檢查與 redraw requests。
+- 使用 `dotnet format SRPG_practice.sln --verify-no-changes` 驗證格式。
+- 使用 `dotnet build SRPG_practice.sln` 驗證專案：build succeeded，0 warnings，0 errors。
 
 ### 2026-06-09T17:16:15+0800
 
-- Organized C# files into responsibility-based folders without changing intended gameplay behavior.
-- Moved core state and data files into `Core/`.
-- Moved query and movement rule files into `Rules/`.
-- Moved player and enemy action resolver files into `Resolvers/`.
-- Moved board layout and rendering files into `Rendering/`.
-- Kept `Main.cs` in the project root so `Main.tscn` continues to reference `res://Main.cs`.
-- Verified formatting with `dotnet format SRPG_practice.sln --verify-no-changes`.
-- Verified the project with `dotnet build SRPG_practice.sln`: build succeeded with 0 warnings and 0 errors.
+- 依照職責整理 C# 檔案，未改變預期 gameplay 行為。
+- 將核心狀態與資料檔案移到 `Core/`。
+- 將查詢與移動規則檔案移到 `Rules/`。
+- 將玩家與敵方 action resolver 檔案移到 `Resolvers/`。
+- 將棋盤 layout 與 rendering 檔案移到 `Rendering/`。
+- 保留 `Main.cs` 在專案根目錄，讓 `Main.tscn` 繼續參照 `res://Main.cs`。
+- 使用 `dotnet format SRPG_practice.sln --verify-no-changes` 驗證格式。
+- 使用 `dotnet build SRPG_practice.sln` 驗證專案：build succeeded，0 warnings，0 errors。
 
 ### 2026-06-09T17:19:36+0800
 
-- Implemented simple on-board HP display for units.
-- Updated `Rendering/BattleRenderer.cs` so each alive unit draws an `HP: n` label inside its unit rectangle.
-- Updated `docs/GOALS.md` to mark the second playable HP display item complete.
-- Verified formatting with `dotnet format SRPG_practice.sln --verify-no-changes`.
-- Verified the project with `dotnet build SRPG_practice.sln`: build succeeded with 0 warnings and 0 errors.
+- 實作簡單的棋盤上單位 HP 顯示。
+- 更新 `Rendering/BattleRenderer.cs`，讓每個存活單位在單位矩形內繪製 `HP: n` 標籤。
+- 更新 `docs/GOALS.md`，標記第二個可玩目標的 HP 顯示項目完成。
+- 使用 `dotnet format SRPG_practice.sln --verify-no-changes` 驗證格式。
+- 使用 `dotnet build SRPG_practice.sln` 驗證專案：build succeeded，0 warnings，0 errors。
 
 ### 2026-06-09T17:24:32+0800
 
-- Implemented valid movement tile highlights for selected player units.
-- Added `Rules/MovementRangeResolver.cs` to calculate empty tiles within the selected unit's remaining Manhattan movement range.
-- Updated `Rendering/BattleRenderer.cs` to draw highlighted movement tiles before drawing the selection outline and units.
-- Updated `docs/GOALS.md` to mark the second playable movement highlight item complete.
-- Verified formatting with `dotnet format SRPG_practice.sln --verify-no-changes`.
-- Verified the project with `dotnet build SRPG_practice.sln`: build succeeded with 0 warnings and 0 errors.
+- 實作選取玩家單位時的有效移動格高亮。
+- 加入 `Rules/MovementRangeResolver.cs`，計算選取單位剩餘曼哈頓移動範圍內的空格。
+- 更新 `Rendering/BattleRenderer.cs`，在繪製選取框與單位前先繪製高亮移動格。
+- 更新 `docs/GOALS.md`，標記第二個可玩目標的移動高亮項目完成。
+- 使用 `dotnet format SRPG_practice.sln --verify-no-changes` 驗證格式。
+- 使用 `dotnet build SRPG_practice.sln` 驗證專案：build succeeded，0 warnings，0 errors。
 
 ### 2026-06-11T09:42:29+0800
 
-- Added `docs/DESIGN_DECISIONS.md` as a Traditional Chinese record for design tradeoffs.
-- Documented why movement range highlight currently scans the whole board instead of using BFS / flood fill from the selected unit.
-- Documented why enemy movement currently stops when the direct step toward the target is occupied.
-- Recorded when each simplified approach should be revisited.
+- 加入 `docs/DESIGN_DECISIONS.md`，作為設計取捨的繁體中文紀錄。
+- 記錄為什麼目前移動範圍高亮是掃描整個棋盤，而不是從選取單位使用 BFS / flood fill。
+- 記錄為什麼目前敵方移動會在朝目標的直接步伐被佔用時停止。
+- 記錄每個簡化做法應該重新檢視的時機。
 
 ### 2026-06-11T11:08:00+0800
 
-- Added `docs/VISION.md` to record the intended final product vision before defining the next prototype scope.
-- Recorded the current core experience: fixed-character party growth, chapter-based battles, story-driven objectives, and decision-making under known information and limited resources.
-- Recorded current prototype purposes: core tactical rules, architecture practice, and a technical foundation for a future full game.
-- Listed follow-up discussion topics for gradually refining the product vision.
+- 加入 `docs/VISION.md`，在定義下一個原型範圍前記錄預期最終產品願景。
+- 記錄目前核心體驗：固定角色隊伍成長、章節式戰鬥、劇情驅動目標，以及在已知資訊與有限資源下做決策。
+- 記錄目前原型目的：核心戰術規則、架構練習，以及未來完整遊戲的技術基礎。
+- 列出後續討論主題，用於逐步細化產品願景。
 
 ### 2026-06-11T11:12:30+0800
 
-- Updated `docs/VISION.md` with the current direction for party and class identity.
-- Recorded that party members should join through story chapters.
-- Recorded that characters are fixed, have clear class-like tactical roles, and start bound to their class because class identity is tied to story and character background.
+- 更新 `docs/VISION.md`，補上目前隊伍與職業識別方向。
+- 記錄隊友應透過劇情章節加入。
+- 記錄角色是固定的、有清楚類職業戰術定位，且初期綁定自己的職業，因為職業識別與劇情、角色背景有關。
 
 ### 2026-06-11T11:20:45+0800
 
-- Updated `docs/VISION.md` with the current direction for character growth and class progression.
-- Recorded level-based growth, active skills learned by current class and level, passive skills bound to classes, and tree-based class promotion without cross-class switching.
-- Recorded three open stat growth options: fixed character growth, Fire Emblem-like random growth, and Pokemon-like effort value growth.
+- 更新 `docs/VISION.md`，補上目前角色成長與職業進階方向。
+- 記錄等級式成長、主動技能由目前職業與等級習得、被動技能綁定職業，以及樹狀職業進階且不跨職業切換。
+- 記錄三個開放的數值成長選項：固定角色成長、Fire Emblem 式隨機成長、Pokemon 式努力值成長。
 
 ### 2026-06-11T11:23:35+0800
 
-- Updated `docs/VISION.md` with the current direction for combat information transparency.
-- Recorded that tactical information should be mostly transparent, while uncertainty should mainly come from hit rate and evasion rate.
+- 更新 `docs/VISION.md`，補上目前戰鬥資訊透明度方向。
+- 記錄戰術資訊應大多透明，而不確定性主要來自命中率與迴避率。
 
 ### 2026-06-11T11:26:31+0800
 
-- Updated `docs/VISION.md` with the current direction for chapter objectives and stage variety.
-- Recorded that objective design should be split into main clear conditions, optional conditions, and stage characteristics.
-- Recorded interest in varied story-driven objectives, optional challenge conditions, and reinforcement pressure as a stage characteristic.
+- 更新 `docs/VISION.md`，補上目前章節目標與關卡變化方向。
+- 記錄目標設計應拆成主要通關條件、可選條件與關卡特性。
+- 記錄對多樣劇情驅動目標、可選挑戰條件，以及援軍壓力作為關卡特性的興趣。
 
 ### 2026-06-11T11:28:42+0800
 
-- Updated `docs/VISION.md` with the current enemy AI framing.
-- Recorded that enemy AI should be considered from both basic combat logic and objective-driven behavior based on chapter goals.
+- 更新 `docs/VISION.md`，補上目前敵方 AI framing。
+- 記錄敵方 AI 應從基礎戰鬥邏輯與根據章節目標而來的目標驅動行為兩面思考。
 
 ### 2026-06-11T11:37:15+0800
 
-- Updated `docs/VISION.md` with planned enemy basic target-selection logic.
-- Recorded class matchup considerations, enemy focus-fire behavior, and the current attack target priority order: killable target, advantaged matchup, high tactical value, low HP, then nearest target.
+- 更新 `docs/VISION.md`，補上規劃中的敵方基礎目標選擇邏輯。
+- 記錄職業 matchup 考量、敵方集火行為，以及目前攻擊目標優先順序：可擊殺目標、有利 matchup、高戰術價值、低 HP，最後是最近目標。
 
 ### 2026-06-11T13:42:15+0800
 
-- Updated `docs/VISION.md` with the current resource management direction.
-- Recorded MP as the planned skill resource, permanent weapons without durability, planned consumable item types, chapter-between money/equipment/shop resources, and movement plus attack or wait as the primary action model.
-- Recorded that resource management should remain a supporting system, with the main gameplay focus staying on class identity.
+- 更新 `docs/VISION.md`，補上目前資源管理方向。
+- 記錄 MP 作為規劃中的技能資源、永久武器且無耐久度、規劃中的消耗品類型、章節間金錢/裝備/商店資源，以及移動加攻擊或等待作為主要行動模型。
+- 記錄資源管理應維持為支援系統，主要 gameplay 重點仍放在職業識別。
 
 ### 2026-06-11T13:55:50+0800
 
-- Updated `docs/VISION.md` with the current direction for death, retreat, injury, and restart rules.
-- Recorded that HP reaching 0 should cause retreat instead of permanent death, with injury carrying into later chapters until treated between chapters.
-- Recorded that chapter restart and returning to pre-battle preparation should be available.
-- Recorded in-chapter saving as an open decision because it trades modern convenience against save/load abuse and tactical risk.
-- Recorded that difficulty modes are not currently planned to avoid adding another layer of numerical balancing complexity.
+- 更新 `docs/VISION.md`，補上目前死亡、撤退、受傷與重開規則方向。
+- 記錄 HP 到達 0 應造成撤退而非永久死亡，且受傷會延續到後續章節，直到章節間治療。
+- 記錄章節重開與返回戰前準備應可使用。
+- 記錄章節內存檔仍是開放決策，因為它在現代便利性與 save/load 濫用、戰術風險間有所取捨。
+- 記錄目前不規劃難度模式，以避免增加另一層數值平衡複雜度。
 
 ### 2026-06-11T14:04:38+0800
 
-- Updated `docs/VISION.md` with the current direction for story presentation and between-chapter base flow.
-- Recorded linear story progression, story scenes before and after battles, in-battle story events, and a between-chapter base for preparation and character interaction.
-- Recorded that the base should include equipment preparation, shop, class promotion, tavern-style next-map information, and character interaction, with no world map system planned.
+- 更新 `docs/VISION.md`，補上目前劇情呈現與章節間基地流程方向。
+- 記錄線性劇情推進、戰前與戰後劇情、戰鬥中劇情事件，以及用於準備與角色互動的章節間基地。
+- 記錄基地應包含裝備準備、商店、職業進階、酒館式下一張地圖情報與角色互動，且不規劃世界地圖系統。
 
 ### 2026-06-11T14:14:25+0800
 
-- Updated `docs/VISION.md` with initial class design principles.
-- Recorded that class differences may come from stats, movement, range, active skills, passives, attack properties, and objective contribution, with base stats, movement, and passive abilities currently considered the most important.
+- 更新 `docs/VISION.md`，補上初始職業設計原則。
+- 記錄職業差異可來自數值、移動、射程、主動技能、被動、攻擊屬性與目標貢獻；目前認為基礎數值、移動與被動能力最重要。
 
 ### 2026-06-11T14:18:31+0800
 
-- Updated `docs/VISION.md` to clarify that class identity is the central design axis.
-- Recorded that stats, movement, passives, active skills, matchup rules, enemy AI target selection, objective contribution, story identity, and promotion routes should be evaluated through how they reinforce class differences and tactical decisions.
+- 更新 `docs/VISION.md`，釐清職業識別是核心設計軸線。
+- 記錄數值、移動、被動、主動技能、matchup 規則、敵方 AI 目標選擇、目標貢獻、劇情識別與進階路線，都應透過它們如何強化職業差異與戰術決策來評估。
 
 ### 2026-06-11T14:29:15+0800
 
-- Updated `docs/VISION.md` with the initial combat stat model.
-- Recorded HP, MP, attack, defense, hit, evasion, luck, and movement as the current base stats.
-- Recorded the current plan to avoid separate magic attack and magic defense stats, using mage skill rules such as ignoring physical defense to create matchup value against high-defense units.
-- Recorded hit rate and critical rate as separate combat probabilities, with luck and critical rate interaction still open for design.
+- 更新 `docs/VISION.md`，補上初始戰鬥數值模型。
+- 記錄 HP、MP、攻擊、防禦、命中、迴避、幸運與移動作為目前基礎數值。
+- 記錄目前規劃避免拆出魔法攻擊與魔法防禦，改用法師技能規則，例如無視物理防禦，來創造對高防禦單位的 matchup 價值。
+- 記錄命中率與暴擊率是分開的戰鬥機率，幸運與暴擊率互動仍是開放設計。
 
 ### 2026-06-11T14:38:36+0800
 
-- Updated `docs/VISION.md` with the current in-chapter save direction.
-- Recorded that in-chapter saving should be allowed, but save data should preserve RNG state so identical actions after loading produce identical results and cannot be used only to reroll hit, evasion, or critical outcomes.
+- 更新 `docs/VISION.md`，補上目前章節內存檔方向。
+- 記錄應允許章節內存檔，但存檔資料應保存 RNG 狀態，讓讀檔後相同行動產生相同結果，不能只用來重抽命中、迴避或暴擊結果。
 
 ### 2026-06-11T14:56:23+0800
 
-- Updated `docs/VISION.md` with initial active skill design principles.
-- Recorded sparse active skills for most non-mage classes, class promotion timing for active and passive skill acquisition, mage classes gaining more active skills and passives per promotion, MP-only skill costs, no displacement or terrain-effect skills, and mage skills not using hit or critical checks.
+- 更新 `docs/VISION.md`，補上初始主動技能設計原則。
+- 記錄多數非法師職業的主動技能較稀疏、職業進階時間點會影響主動與被動技能取得、法師職業每次進階會取得更多主動技能與被動、技能成本只使用 MP、不做位移或地形效果技能，且法師技能不使用命中或暴擊判定。
 
 ### 2026-06-11T15:10:32+0800
 
-- Updated `docs/VISION.md` with the revised class promotion pacing.
-- Recorded that characters may start around level 2-3, major party members should join through the early-to-mid game, the first true branch promotion should happen around level 15, the later strengthening promotion around level 25, and the level cap around 30.
-- Recorded six initial class groups and the current intent for three true functional branches per group, treating pure strengthening promotions as non-functional class count increases.
+- 更新 `docs/VISION.md`，補上調整後的職業進階節奏。
+- 記錄角色可能從等級 2-3 左右開始，主要隊友應在遊戲早期到中期加入，第一次真正分支進階約在等級 15，後續強化進階約在等級 25，等級上限約為 30。
+- 記錄六個初始職業群，以及目前每群規劃三個真正功能性分支；純強化進階不計入功能性職業數增加。
 
 ### 2026-06-11T15:14:37+0800
 
-- Updated `docs/VISION.md` with the revised skill acquisition schedule.
-- Recorded normal classes gaining an initial passive, a level 10 active skill, a level 15 branch passive, and a level 25 active plus passive.
-- Recorded mage classes gaining an initial active plus passive, a level 10 active skill, a level 15 active plus passive, and two active skills plus one passive at level 25.
+- 更新 `docs/VISION.md`，補上調整後的技能取得時程。
+- 記錄一般職業會取得初始被動、等級 10 主動技能、等級 15 分支被動，以及等級 25 主動加被動。
+- 記錄法師職業會取得初始主動加被動、等級 10 主動技能、等級 15 主動加被動，以及等級 25 兩個主動技能加一個被動。
 
 ### 2026-06-11T15:51:10+0800
 
-- Updated `docs/VISION.md` with the current active skill effect scope.
-- Recorded damage, healing, buff/debuff, defensive skills, and control skills as planned skill categories.
-- Recorded that conditional class skills are currently out of scope to keep early skill rules and balance simpler.
+- 更新 `docs/VISION.md`，補上目前主動技能效果範圍。
+- 記錄傷害、治療、buff/debuff、防禦技能與控制技能作為規劃中的技能類型。
+- 記錄條件式職業技能目前不在範圍內，以保持早期技能規則與平衡較簡單。
 
 ### 2026-06-11T15:56:22+0800
 
-- Updated `docs/VISION.md` to narrow defensive skill scope.
-- Recorded damage reduction and taunt as the main planned defensive skill types.
-- Recorded that guard and counter-stance style defensive interactions should stay out of the early scope to avoid adding too much frontline-system complexity.
+- 更新 `docs/VISION.md`，縮小防禦技能範圍。
+- 記錄傷害減免與嘲諷作為主要規劃中的防禦技能類型。
+- 記錄 guard 與 counter-stance 風格防禦互動應保持在早期範圍外，以避免加入過多前線系統複雜度。
 
 ### 2026-06-11T16:01:10+0800
 
-- Updated `docs/VISION.md` to narrow control skill scope.
-- Recorded stun as the main planned control skill type.
-- Recorded that silence, immobilize, and no-counter style control effects should stay out of the early scope to keep skill and AI rules simpler.
+- 更新 `docs/VISION.md`，縮小控制技能範圍。
+- 記錄暈眩作為主要規劃中的控制技能類型。
+- 記錄沉默、定身與無反擊風格控制效果應保持在早期範圍外，以維持技能與 AI 規則較簡單。
 
 ### 2026-06-11T16:02:50+0800
 
-- Updated `docs/VISION.md` with the planned buff and debuff scope.
-- Recorded attack, defense, hit rate, and movement as the main values affected by buffs and debuffs.
-- Recorded that buff and debuff design should stay focused on these core combat values in the early scope.
+- 更新 `docs/VISION.md`，補上規劃中的 buff 與 debuff 範圍。
+- 記錄攻擊、防禦、命中率與移動作為 buff/debuff 主要影響的數值。
+- 記錄 buff/debuff 設計在早期範圍內應專注於這些核心戰鬥數值。
 
 ### 2026-06-11T16:08:10+0800
 
-- Updated `docs/VISION.md` with the current next-prototype class focus: warrior, archer, and mage.
-- Recorded that combat formulas need detailed follow-up discussion before implementation.
-- Recorded current status-effect duration direction: stun lasts 1 turn, other status effects last 3 turns, and buffs/debuffs can stack.
-- Recorded enemy AI interaction with class and skill rules as a later AI design pass.
-- Updated `docs/GOALS.md` with a draft next-prototype planning section that should be split further before implementation.
+- 更新 `docs/VISION.md`，補上目前下一個原型的職業焦點：戰士、弓箭手與法師。
+- 記錄戰鬥公式在實作前需要進一步細談。
+- 記錄目前狀態效果持續時間方向：暈眩持續 1 回合，其他狀態效果持續 3 回合，buff/debuff 可以堆疊。
+- 記錄敵方 AI 與職業/技能規則互動會作為後續 AI 設計 pass。
+- 更新 `docs/GOALS.md`，加入下一個原型規劃草稿區塊，之後實作前應再拆細。
 
 ### 2026-06-11T16:18:57+0800
 
-- Updated `docs/VISION.md` with the current prototype combat formula direction.
-- Recorded damage as attack minus defense, hit rate as class hit coefficient minus target evasion, and critical rate as a direct percentage chance.
-- Recorded that minimum damage, hit-rate limits, critical damage multiplier, and mage defense-ignoring details still need follow-up decisions.
-- Updated `docs/GOALS.md` open planning items so combat formula discussion now focuses on the remaining detailed rules instead of the broad formula shape.
+- 更新 `docs/VISION.md`，補上目前原型戰鬥公式方向。
+- 記錄傷害為攻擊減防禦，命中率為職業命中係數減目標迴避，暴擊率為直接百分比機率。
+- 記錄最低傷害、命中率限制、暴擊傷害倍率與法師無視防禦細節仍需後續決定。
+- 更新 `docs/GOALS.md` 開放規劃項目，讓戰鬥公式討論聚焦在剩餘詳細規則，而不是整體公式形狀。
 
 ### 2026-06-11T16:26:55+0800
 
-- Updated `docs/VISION.md` with detailed prototype combat formula decisions.
-- Recorded minimum damage as 1, hit-rate cap as 95% with no lower bound, and critical damage as 1.5x after base damage is calculated.
-- Updated `docs/GOALS.md` so remaining combat-formula open items focus on class hit coefficients, base critical percentages, mage damage details, and later modifier rules.
+- 更新 `docs/VISION.md`，補上詳細原型戰鬥公式決策。
+- 記錄最低傷害為 1，命中率上限為 95% 且沒有下限，暴擊傷害為基礎傷害計算後乘以 1.5。
+- 更新 `docs/GOALS.md`，讓剩餘戰鬥公式開放項目聚焦在職業命中係數、基礎暴擊百分比、法師傷害細節與後續 modifier 規則。
 
 ### 2026-06-11T16:31:41+0800
 
-- Updated `docs/VISION.md` with the initial next-prototype class positioning for warrior, archer, and mage.
-- Recorded archers as ranged physical units that cannot attack adjacent enemies.
-- Updated `docs/GOALS.md` to note that attack range rules should support both minimum and maximum range.
+- 更新 `docs/VISION.md`，補上戰士、弓箭手與法師的初始下一個原型職業定位。
+- 記錄弓箭手是遠程物理單位，不能攻擊相鄰敵人。
+- 更新 `docs/GOALS.md`，註明攻擊射程規則應支援最小與最大射程。
 
 ### 2026-06-11T16:34:04+0800
 
-- Updated `docs/VISION.md` to clarify mage class behavior.
-- Recorded that mages can use normal attacks, while their main class difference comes from having more offensive skills.
-- Recorded that mages can still use normal attacks when MP is insufficient.
+- 更新 `docs/VISION.md`，釐清法師職業行為。
+- 記錄法師可以使用普通攻擊，而主要職業差異來自擁有更多攻擊技能。
+- 記錄法師在 MP 不足時仍可以使用普通攻擊。
 
 ### 2026-06-11T16:38:06+0800
 
-- Updated `docs/VISION.md` with exact prototype attack ranges for warrior, archer, and mage normal attacks.
-- Recorded warrior attack range as 1, archer attack range as 2-3, and mage normal attack range as 1.
-- Recorded two initial mage prototype skills: a single-target high-damage skill and a range 1-2 medium-low damage skill.
-- Updated `docs/GOALS.md` to remove exact class attack ranges from the remaining open discussion items.
+- 更新 `docs/VISION.md`，補上戰士、弓箭手與法師普通攻擊的精確原型射程。
+- 記錄戰士攻擊射程為 1，弓箭手攻擊射程為 2-3，法師普通攻擊射程為 1。
+- 記錄兩個初始法師原型技能：單體高傷害技能，以及射程 1-2 的中低傷害技能。
+- 更新 `docs/GOALS.md`，從剩餘開放討論項目移除精確職業攻擊射程。
 
 ### 2026-06-11T16:39:50+0800
 
-- Corrected the mage prototype skill plan in `docs/VISION.md`.
-- Recorded both mage skills as range 3 skills.
-- Recorded the two mage skills as a single-target medium-damage skill and a cross-shaped low-damage skill.
-- This supersedes the previous range 1-2 medium-low damage mage skill note.
+- 修正法師原型技能規劃於 `docs/VISION.md`。
+- 記錄兩個法師技能都為射程 3。
+- 記錄兩個法師技能分別為單體中傷害技能與十字範圍低傷害技能。
+- 此紀錄取代前一筆射程 1-2 的中低傷害法師技能註記。
 
 ### 2026-06-11T16:45:16+0800
 
-- Updated `docs/VISION.md` to record fixed movement for the next prototype classes.
-- Recorded warrior, archer, and mage movement as 3 for the next prototype phase.
-- Updated `docs/GOALS.md` to keep movement differences out of the next prototype scope so attack range, damage, and skill differences can be tested first.
+- 更新 `docs/VISION.md`，記錄下一個原型職業的固定移動力。
+- 記錄戰士、弓箭手與法師在下一個原型階段的移動力皆為 3。
+- 更新 `docs/GOALS.md`，將移動差異排除在下一個原型範圍外，讓測試先聚焦在攻擊射程、傷害與技能差異。
 
 ### 2026-06-11T16:48:10+0800
 
-- Updated `docs/VISION.md` with the initial next-prototype stat table for warrior, archer, and mage.
-- Recorded initial HP, MP, attack, defense, hit coefficient, evasion, movement, and critical rate values for the three prototype classes.
-- Recorded initial mage skill values for a single-target medium-damage spell and a cross-shaped low-damage spell.
-- Updated `docs/GOALS.md` to remove class hit coefficient, base critical percentage, and mage skill rule items from the remaining open discussion list.
+- 更新 `docs/VISION.md`，補上戰士、弓箭手與法師的初始下一個原型數值表。
+- 記錄三個原型職業的初始 HP、MP、攻擊、防禦、命中係數、迴避、移動力與暴擊率。
+- 記錄單體中傷害法術與十字範圍低傷害法術的初始法師技能數值。
+- 更新 `docs/GOALS.md`，從剩餘開放討論清單移除職業命中係數、基礎暴擊百分比與法師技能規則項目。
 
 ### 2026-06-11T16:55:54+0800
 
-- Updated `docs/VISION.md` with initial mage skill damage formulas.
-- Recorded the single-target mage spell as attack + 4 and the cross-shaped mage spell as attack + 1.
-- Recorded that both mage spells ignore defense, do not use hit checks, and cannot critically hit.
-- Updated `docs/GOALS.md` to remove mage defense-ignoring damage details from the remaining open discussion list.
+- 更新 `docs/VISION.md`，補上初始法師技能傷害公式。
+- 記錄單體法師法術為攻擊 + 4，十字範圍法師法術為攻擊 + 1。
+- 記錄兩個法師法術都無視防禦、不使用命中判定，且不能暴擊。
+- 更新 `docs/GOALS.md`，從剩餘開放討論清單移除法師無視防禦傷害細節。
 
 ### 2026-06-11T16:59:30+0800
 
-- Updated `docs/VISION.md` to promote mage skill behavior into a shared rule.
-- Recorded that all mage skills ignore defense, do not use hit checks, and cannot critically hit.
-- Kept the two next-prototype mage skills as concrete examples under that shared mage skill rule.
+- 更新 `docs/VISION.md`，將法師技能行為提升為共用規則。
+- 記錄所有法師技能都無視防禦、不使用命中判定，且不能暴擊。
+- 將兩個下一個原型法師技能保留為該共用法師技能規則下的具體例子。
 
 ### 2026-06-11T17:05:09+0800
 
-- Updated `docs/VISION.md` with remaining prototype combat and status-effect rules.
-- Recorded that the next prototype will not apply any critical-rate modifiers beyond the class table values.
-- Recorded that status effects do not stack; reapplying the same effect only resets its remaining duration.
-- Recorded that status effects apply immediately, tick down at the effect holder's turn end, and are removed at 0 remaining turns.
-- Updated `docs/GOALS.md` so the remaining open planning items focus on status-effect values and implementation order.
+- 更新 `docs/VISION.md`，補上剩餘原型戰鬥與狀態效果規則。
+- 記錄下一個原型不會套用職業表數值以外的任何暴擊率 modifier。
+- 記錄狀態效果不堆疊；重新套用同一效果只會重置剩餘持續時間。
+- 記錄狀態效果立即套用，在效果持有者回合結束時遞減，並在剩餘 0 回合時移除。
+- 更新 `docs/GOALS.md`，讓剩餘開放規劃項目聚焦在狀態效果數值與實作順序。
 
 ### 2026-06-11T17:10:24+0800
 
-- Updated `docs/VISION.md` with initial buff and debuff value amounts.
-- Recorded attack and defense buffs as 1.5x, and matching debuffs as 0.5x.
-- Recorded hit-rate buffs and debuffs as +10 and -10 percentage points.
-- Recorded movement buffs and debuffs as +1 and -1 movement.
-- Updated `docs/GOALS.md` so implementation order is the only remaining open planning item.
+- 更新 `docs/VISION.md`，補上初始 buff 與 debuff 數值。
+- 記錄攻擊與防禦 buff 為 1.5x，對應 debuff 為 0.5x。
+- 記錄命中率 buff 與 debuff 為 +10 與 -10 percentage points。
+- 記錄移動 buff 與 debuff 為 +1 與 -1 移動。
+- 更新 `docs/GOALS.md`，讓實作順序成為唯一剩餘開放規劃項目。
 
 ### 2026-06-11T17:24:33+0800
 
-- Updated `docs/GOALS.md` to define the third playable target around validating class differentiation.
-- Recorded that the next prototype's stat values are for observing role differences, not final balance.
-- Added done criteria for warrior, archer, mage, attack ranges, normal attacks, mage MP and skills, and UI feedback.
-- Added validation questions for playtesting whether warrior frontline use, archer range management, mage skill choice, and MP tradeoffs are visible.
-- Updated `docs/VISION.md` to record the same next-prototype balancing intent.
+- 更新 `docs/GOALS.md`，將第三個可玩目標定義為驗證職業差異。
+- 記錄下一個原型的數值是用於觀察角色定位差異，不是最終平衡。
+- 加入戰士、弓箭手、法師、攻擊射程、普通攻擊、法師 MP 與技能、UI 回饋的完成條件。
+- 加入驗證問題，用於測試戰士前線使用、弓箭手距離管理、法師技能選擇與 MP 取捨是否可觀察。
+- 更新 `docs/VISION.md`，記錄相同的下一個原型平衡意圖。
 
 ### 2026-06-11T17:31:21+0800
 
-- Updated `docs/GOALS.md` with a detailed implementation plan for the third playable target.
-- Split the next phase into class data foundation, unit stat integration, attack range rules, normal attack formula, UI feedback, mage skills, cross spell resolution, status effect foundation, and final verification.
-- Recorded scope, done criteria, and out-of-scope items for each implementation step.
-- No C# implementation was started in this documentation pass.
+- 更新 `docs/GOALS.md`，加入第三個可玩目標的詳細實作計畫。
+- 將下一階段拆分為職業資料基礎、單位數值整合、攻擊射程規則、普通攻擊公式、UI 回饋、法師技能、十字法術結算、狀態效果基礎與最終驗證。
+- 記錄每個實作步驟的範圍、完成條件與排除範圍。
+- 這次文件 pass 未開始任何 C# 實作。
 
 ### 2026-06-12T16:20:52+0800
 
-- Implemented the class data foundation for the third playable target.
-- Added `UnitClass` identity for warrior, archer, and mage.
-- Added `AttackRange`, `UnitClassDefinition`, and `UnitClassDefinitions` so class HP, MP, attack, defense, hit coefficient, evasion, movement, critical rate, and normal attack range can be derived from the prototype table in `docs/VISION.md`.
-- Updated `Unit` so units can be created from a class definition while preserving the existing battle flow.
-- Updated `docs/GOALS.md` to mark the class data foundation step complete.
-- Verified formatting with `dotnet format SRPG_practice.sln --verify-no-changes`.
-- Verified the project with `dotnet build SRPG_practice.sln`: build succeeded with 0 warnings and 0 errors.
+- 實作第三個可玩目標的職業資料基礎。
+- 加入戰士、弓箭手與法師的 `UnitClass` 識別。
+- 加入 `AttackRange`、`UnitClassDefinition` 與 `UnitClassDefinitions`，讓職業 HP、MP、攻擊、防禦、命中係數、迴避、移動力、暴擊率與普通攻擊射程可以從 `docs/VISION.md` 原型表推導。
+- 更新 `Unit`，讓單位可以從職業定義建立，同時保留既有戰鬥流程。
+- 更新 `docs/GOALS.md`，標記職業資料基礎步驟完成。
+- 使用 `dotnet format SRPG_practice.sln --verify-no-changes` 驗證格式。
+- 使用 `dotnet build SRPG_practice.sln` 驗證專案：build succeeded，0 warnings，0 errors。
 
 ### 2026-06-15T16:51:10+0800
 
-- Implemented unit stats integration for the third playable target.
-- Updated `Unit` to store current HP and current MP, while attack, defense, hit coefficient, evasion, movement, critical rate, and normal attack range stay available through class definitions.
-- Updated battle setup so both player and enemy teams include warrior, archer, and mage units created from class data instead of hard-coded HP, attack, and movement values.
-- Updated `docs/GOALS.md` to mark the unit stats integration step complete.
-- Verified formatting with `dotnet format SRPG_practice.sln --verify-no-changes`.
-- Verified the project with `dotnet build SRPG_practice.sln`: build succeeded with 0 warnings and 0 errors.
+- 實作第三個可玩目標的單位數值整合。
+- 更新 `Unit` 以保存目前 HP 與目前 MP，而攻擊、防禦、命中係數、迴避、移動力、暴擊率與普通攻擊射程仍透過職業定義取得。
+- 更新戰鬥配置，讓玩家與敵方隊伍都包含從職業資料建立的戰士、弓箭手與法師單位，而不是硬編碼 HP、攻擊與移動值。
+- 更新 `docs/GOALS.md`，標記單位數值整合步驟完成。
+- 使用 `dotnet format SRPG_practice.sln --verify-no-changes` 驗證格式。
+- 使用 `dotnet build SRPG_practice.sln` 驗證專案：build succeeded，0 warnings，0 errors。
 
 ### 2026-06-15T17:27:13+0800
 
-- Implemented normal attack range rules for the third playable target.
-- Player attacks now use each unit's normal attack minimum and maximum range instead of adjacency-only checks.
-- Invalid range attempts now show the unit's normal attack range and current target distance.
-- Enemy attacks now use normal attack range, and simple enemy movement stops once a target enters that range.
-- Updated `docs/GOALS.md` to mark the attack range rules step complete.
-- Verified formatting with `dotnet format SRPG_practice.sln --verify-no-changes`.
-- Verified the project with `dotnet build SRPG_practice.sln`: build succeeded with 0 warnings and 0 errors.
+- 實作第三個可玩目標的普通攻擊射程規則。
+- 玩家攻擊現在使用每個單位的普通攻擊最小與最大射程，而不是只檢查相鄰。
+- 無效射程嘗試現在會顯示單位的普通攻擊射程與目前目標距離。
+- 敵方攻擊現在使用普通攻擊射程，且簡單敵方移動會在目標進入射程後停止。
+- 更新 `docs/GOALS.md`，標記攻擊射程規則步驟完成。
+- 使用 `dotnet format SRPG_practice.sln --verify-no-changes` 驗證格式。
+- 使用 `dotnet build SRPG_practice.sln` 驗證專案：build succeeded，0 warnings，0 errors。

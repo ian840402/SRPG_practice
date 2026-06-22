@@ -4,18 +4,16 @@ using System.Collections.Generic;
 public sealed class BattleRenderer
 {
   private readonly BoardLayout _layout;
-  private readonly MovementRangeResolver _movementRangeResolver;
 
-  public BattleRenderer(BoardLayout layout, MovementRangeResolver movementRangeResolver)
+  public BattleRenderer(BoardLayout layout)
   {
     _layout = layout;
-    _movementRangeResolver = movementRangeResolver;
   }
 
   public void Draw(Node2D canvas, BattleState battleState, Unit selectedUnit, GameState gameState, string statusText)
   {
     DrawBoard(canvas);
-    DrawValidMovementTiles(canvas, selectedUnit);
+    DrawValidMovementTiles(canvas, battleState, selectedUnit);
     DrawSelection(canvas, selectedUnit);
     DrawUnits(canvas, battleState.PlayerUnits, new Color(0.2f, 0.45f, 1.0f), "P");
     DrawUnits(canvas, battleState.EnemyUnits, new Color(1.0f, 0.25f, 0.25f), "E");
@@ -50,9 +48,9 @@ public sealed class BattleRenderer
     canvas.DrawString(ThemeDB.FallbackFont, unitRect.Position + new Vector2(8, 48), $"HP: {unit.Hp}", fontSize: 14);
   }
 
-  private void DrawValidMovementTiles(Node2D canvas, Unit selectedUnit)
+  private void DrawValidMovementTiles(Node2D canvas, BattleState battleState, Unit selectedUnit)
   {
-    foreach (var gridPosition in _movementRangeResolver.GetValidMovementTiles(selectedUnit))
+    foreach (var gridPosition in MovementRangeResolver.GetValidMovementTiles(battleState, selectedUnit))
     {
       var tileRect = _layout.GetTileRect(gridPosition);
       canvas.DrawRect(tileRect, new Color(0.25f, 0.95f, 0.45f, 0.35f));
@@ -60,18 +58,13 @@ public sealed class BattleRenderer
     }
   }
 
-  private void DrawUnitIfAlive(Node2D canvas, Unit unit, Color color, string label)
-  {
-    if (unit.Hp == 0) return;
-
-    DrawUnit(canvas, unit, color, label);
-  }
-
   private void DrawUnits(Node2D canvas, IEnumerable<Unit> units, Color color, string label)
   {
     foreach (var unit in units)
     {
-      DrawUnitIfAlive(canvas, unit, color, label);
+      if (unit.Hp == 0) continue;
+
+      DrawUnit(canvas, unit, color, label);
     }
   }
 

@@ -16,13 +16,6 @@ public static class UnitQuery
         .FirstOrDefault();
   }
 
-  public static bool TryGetAdjacentAliveUnit(BattleState battleState, Unit fromUnit, Team team, out Unit adjacentUnit)
-  {
-    adjacentUnit = GetAliveUnits(battleState.GetUnitsByTeam(team))
-        .FirstOrDefault(unit => MovementRules.GetManhattanDistance(fromUnit.GridPosition, unit.GridPosition) == 1);
-    return adjacentUnit is not null;
-  }
-
   public static bool TryGetAliveUnitInNormalAttackRange(BattleState battleState, Unit attacker, Team targetTeam, out Unit targetUnit)
   {
     targetUnit = GetAliveUnits(battleState.GetUnitsByTeam(targetTeam))

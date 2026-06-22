@@ -12,7 +12,7 @@ config_version=5
 
 config/name="SRPG_practice"
 run/main_scene="uid://drqus43r6cbsh"
-config/features=PackedStringArray("4.6", "C#", "Forward Plus")
+config/features=PackedStringArray("4.7", "C#", "Forward Plus")
 config/icon="res://icon.svg"
 
 [dotnet]

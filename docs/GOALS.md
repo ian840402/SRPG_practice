@@ -1,320 +1,320 @@
-# Prototype Goals
+# 原型目標
 
-## Main Goal
+## 主要目標
 
-Build a very small 2D tactical RPG prototype focused only on core gameplay logic.
+建立一個非常小型的 2D 戰棋 RPG 原型，只專注在核心遊戲邏輯。
 
-No animations, sprites, sound effects, or polish are planned for the first version.
+第一版暫不規劃動畫、角色圖、音效或美術打磨。
 
-## First Playable Target
+## 第一個可玩目標
 
-- [x] An 8x8 board exists.
-- [x] One player unit and one enemy unit are placed on the board.
-- [x] The player can select their unit.
-- [x] The player can move the selected unit to a valid empty tile.
-- [x] The player can attack the enemy when adjacent.
-- [x] The enemy can take a very simple turn.
-- [x] The game can detect win or loss.
+- [x] 有一個 8x8 棋盤。
+- [x] 棋盤上放置一個玩家單位與一個敵方單位。
+- [x] 玩家可以選取自己的單位。
+- [x] 玩家可以將選取的單位移動到有效的空格。
+- [x] 玩家可以在相鄰時攻擊敵人。
+- [x] 敵人可以執行非常簡單的回合。
+- [x] 遊戲可以判定勝利或失敗。
 
-## Second Playable Target
+## 第二個可玩目標
 
-Focus on moving from a one-unit prototype to basic tactical decisions.
+重點是從單一單位原型推進到基礎戰術決策。
 
-- [x] Add explicit turn states.
-- [x] Allow a player unit to move, then attack if adjacent.
-- [x] Add a second player unit and a second enemy unit.
-- [x] Show simple HP information for units on the board.
-- [x] Highlight valid movement tiles when a player unit is selected.
+- [x] 加入明確的回合狀態。
+- [x] 允許玩家單位移動後，若敵人在攻擊範圍內則可以攻擊。
+- [x] 加入第二個玩家單位與第二個敵方單位。
+- [x] 在棋盤上顯示簡單的單位 HP 資訊。
+- [x] 選取玩家單位時，高亮顯示有效移動格。
 
-## Third Playable Target
+## 第三個可玩目標
 
-Focus on validating whether three basic classes create visible tactical differences.
+重點是驗證三個基礎職業是否能產生可觀察的戰術差異。
 
-The goal is not final combat balance. The first stat values are intentionally simple and should be judged by whether class roles are observable during play.
+目標不是完成最終戰鬥平衡。第一版數值刻意保持簡單，評估重點應放在遊玩時是否能觀察到職業定位。
 
-Done when:
+完成條件：
 
-- Warrior, archer, and mage units can be created and shown in battle.
-- The three classes use the prototype stat table from `docs/VISION.md`.
-- Warrior, archer, and mage all have movement fixed at 3.
-- Attack rules support both minimum and maximum range.
-- Warrior normal attack range is 1.
-- Archer normal attack range is 2-3 and cannot hit adjacent enemies.
-- Mage normal attack range is 1.
-- Normal attacks use the prototype damage, hit, critical, and minimum-damage rules.
-- Mage has MP and can use normal attacks.
-- Mage has a single-target spell and a cross-shaped spell using the prototype skill rules.
-- Mage skills ignore defense, do not use hit checks, and cannot critically hit.
-- UI shows enough HP, MP, class, and action feedback for playtesting.
-- Enemy AI can stay simple, but it must not break the basic combat flow.
+- 可以建立戰士、弓箭手、法師單位，並顯示在戰鬥中。
+- 三個職業使用 `docs/VISION.md` 裡的原型數值表。
+- 戰士、弓箭手、法師的移動力都固定為 3。
+- 攻擊規則支援最小與最大射程。
+- 戰士普通攻擊射程為 1。
+- 弓箭手普通攻擊射程為 2-3，且不能攻擊相鄰敵人。
+- 法師普通攻擊射程為 1。
+- 普通攻擊使用原型傷害、命中、暴擊與最低傷害規則。
+- 法師有 MP，且可以使用普通攻擊。
+- 法師有一個單體法術與一個十字範圍法術，並使用原型技能規則。
+- 法師技能無視防禦、不做命中判定，且不能暴擊。
+- UI 顯示足夠的 HP、MP、職業與行動回饋，以支援測試。
+- 敵方 AI 可以維持簡單，但不能破壞基本戰鬥流程。
 
-Validation questions:
+驗證問題：
 
-- Does the player naturally place warriors near the front?
-- Does the player try to keep archers at range because adjacent enemies are a problem?
-- Does the player choose between mage normal attack, single-target spell, and cross-shaped spell for different situations?
-- Does MP create a meaningful reason to avoid casting every time?
-- Are the initial values good enough to reveal class differences, even if they are not balanced yet?
+- 玩家是否自然地把戰士放在前線附近？
+- 玩家是否會因為相鄰敵人會造成問題，而嘗試讓弓箭手保持距離？
+- 玩家是否會在不同情境下，選擇法師普通攻擊、單體法術或十字法術？
+- MP 是否讓玩家有明確理由不要每次都施法？
+- 初始數值是否足以呈現職業差異，即使還沒有完全平衡？
 
-### Third Playable Implementation Plan
+### 第三個可玩目標實作計畫
 
-Implement this target in small reviewable steps. Each step should keep the project buildable before moving to the next one.
+用小而可審查的步驟實作這個目標。每一步在進入下一步前，都應保持專案可建置。
 
-#### 1. Class Data Foundation
+#### 1. 職業資料基礎
 
-Status: Complete as of 2026-06-12.
+狀態：已於 2026-06-12 完成。
 
-Scope:
+範圍：
 
-- Add class identity for warrior, archer, and mage.
-- Add a class definition table matching the prototype values in `docs/VISION.md`.
-- Keep the existing battle flow unchanged.
+- 加入戰士、弓箭手、法師的職業識別。
+- 加入符合 `docs/VISION.md` 原型數值的職業定義表。
+- 保持既有戰鬥流程不變。
 
-Done when:
+完成條件：
 
-- Units can be assigned a class.
-- Unit HP, MP, attack, defense, hit coefficient, evasion, movement, critical rate, and normal attack range can be derived from class data.
-- Existing units still appear and can take turns.
+- 單位可以被指定職業。
+- 單位 HP、MP、攻擊、防禦、命中係數、迴避、移動力、暴擊率與普通攻擊射程可以從職業資料推導。
+- 既有單位仍會顯示，且可以正常進行回合。
 
-Not included:
+不包含：
 
-- Hit rolls.
-- Critical rolls.
-- Mage skills.
-- UI redesign.
+- 命中擲骰。
+- 暴擊擲骰。
+- 法師技能。
+- UI 重新設計。
 
-#### 2. Unit Stats Integration
+#### 2. 單位數值整合
 
-Status: Complete as of 2026-06-15.
+狀態：已於 2026-06-15 完成。
 
-Scope:
+範圍：
 
-- Update unit state to store current HP and current MP.
-- Keep max HP, max MP, attack, defense, hit coefficient, evasion, movement, critical rate, and normal attack range available through the unit or class definition.
-- Initialize player and enemy units with the three prototype classes.
+- 更新單位狀態以保存目前 HP 與目前 MP。
+- 透過單位或職業定義，保留最大 HP、最大 MP、攻擊、防禦、命中係數、迴避、移動力、暴擊率與普通攻擊射程。
+- 用三個原型職業初始化玩家與敵方單位。
 
-Done when:
+完成條件：
 
-- Battle setup uses warrior, archer, and mage data instead of hard-coded attack and move values.
-- Movement still works with movement fixed at 3.
-- Existing simple attacks still work, even if they temporarily keep the old fixed-damage behavior until the combat formula step.
+- 戰鬥配置使用戰士、弓箭手、法師資料，而不是硬編碼攻擊與移動值。
+- 移動仍能運作，且移動力固定為 3。
+- 既有簡單攻擊仍能運作，即使在戰鬥公式步驟前暫時保留舊的固定傷害行為。
 
-Not included:
+不包含：
 
-- Full combat formula.
-- Skill selection.
-- Status effects.
+- 完整戰鬥公式。
+- 技能選擇。
+- 狀態效果。
 
-#### 3. Attack Range Rules
+#### 3. 攻擊射程規則
 
-Status: Complete as of 2026-06-15.
+狀態：已於 2026-06-15 完成。
 
-Scope:
+範圍：
 
-- Replace adjacency-only attack checks with minimum and maximum attack range.
-- Apply normal attack ranges:
-  - Warrior: 1.
-  - Archer: 2-3.
-  - Mage normal attack: 1.
+- 將只允許相鄰攻擊的檢查，替換為最小與最大攻擊射程。
+- 套用普通攻擊射程：
+  - 戰士：1。
+  - 弓箭手：2-3。
+  - 法師普通攻擊：1。
 
-Done when:
+完成條件：
 
-- Warriors can attack adjacent enemies.
-- Archers can attack enemies 2-3 tiles away.
-- Archers cannot attack adjacent enemies.
-- Mages can normal attack adjacent enemies.
-- Invalid range attempts show a clear status message.
+- 戰士可以攻擊相鄰敵人。
+- 弓箭手可以攻擊 2-3 格外的敵人。
+- 弓箭手不能攻擊相鄰敵人。
+- 法師可以普通攻擊相鄰敵人。
+- 無效射程嘗試會顯示清楚的狀態訊息。
 
-Not included:
+不包含：
 
-- Attack range highlight.
-- Enemy AI range awareness beyond what is required to avoid breaking combat flow.
+- 攻擊射程高亮。
+- 敵方 AI 的射程意識，除非需要避免破壞基本戰鬥流程。
 
-#### 4. Normal Attack Formula
+#### 4. 普通攻擊公式
 
-Scope:
+範圍：
 
-- Implement normal attack hit checks, evasion, critical chance, critical damage, and minimum damage.
-- Use the prototype formula from `docs/VISION.md`.
+- 實作普通攻擊命中判定、迴避、暴擊機率、暴擊傷害與最低傷害。
+- 使用 `docs/VISION.md` 裡的原型公式。
 
-Done when:
+完成條件：
 
-- Normal attack damage is `attack - defense`, minimum 1.
-- Hit rate is `attacker hit coefficient - defender evasion`, capped at 95%.
-- Hit rate has no lower bound.
-- Critical chance uses the class table value with no extra modifiers.
-- Critical damage is calculated after base damage, then multiplied by 1.5.
-- Status text shows hit, miss, damage, and critical results clearly enough for playtesting.
+- 普通攻擊傷害為 `attack - defense`，最低 1。
+- 命中率為 `攻擊者命中係數 - 防禦者迴避`，上限 95%。
+- 命中率沒有下限。
+- 暴擊機率使用職業表數值，不加額外修正。
+- 暴擊傷害在基礎傷害計算後，再乘以 1.5。
+- 狀態文字清楚顯示命中、未命中、傷害與暴擊結果，足以支援測試。
 
-Not included:
+不包含：
 
-- Combat forecast UI.
-- Saved RNG state.
-- Balancing pass.
+- 戰鬥預測 UI。
+- 保存 RNG 狀態。
+- 平衡調整。
 
-#### 5. Basic UI Feedback
+#### 5. 基礎 UI 回饋
 
-Scope:
+範圍：
 
-- Show enough unit information for playtesting class differences.
-- Prefer simple text over polished UI.
+- 顯示足夠的單位資訊，以支援職業差異測試。
+- 優先使用簡單文字，而不是精緻 UI。
 
-Done when:
+完成條件：
 
-- Units show HP.
-- Mage units show MP.
-- Units show class identity in a minimal readable way.
-- Status text explains failed actions, damage results, misses, critical hits, and MP shortage.
+- 單位顯示 HP。
+- 法師單位顯示 MP。
+- 單位以最小但可讀的方式顯示職業識別。
+- 狀態文字說明失敗行動、傷害結果、未命中、暴擊與 MP 不足。
 
-Not included:
+不包含：
 
-- Full character panels.
-- Detailed combat forecast.
-- Animation or visual polish.
+- 完整角色面板。
+- 詳細戰鬥預測。
+- 動畫或視覺打磨。
 
-#### 6. Mage MP And Skill Selection
+#### 6. 法師 MP 與技能選擇
 
-Scope:
+範圍：
 
-- Add a minimal way for mage units to choose normal attack, single-target spell, or cross spell.
-- Spend MP when a mage skill is used.
-- Apply shared mage skill rules.
+- 加入一個最小方式，讓法師單位選擇普通攻擊、單體法術或十字法術。
+- 法師技能使用時消耗 MP。
+- 套用共用的法師技能規則。
 
-Done when:
+完成條件：
 
-- Mages can still use normal attacks.
-- Single-target spell costs 3 MP, has range 3, deals `mage attack + 4`, ignores defense, does not miss, and cannot crit.
-- Cross spell costs 4 MP, has range 3, deals `mage attack + 1`, ignores defense, does not miss, and cannot crit.
-- Skills cannot be used without enough MP.
+- 法師仍可以使用普通攻擊。
+- 單體法術消耗 3 MP，射程 3，造成 `法師攻擊 + 4`，無視防禦，不會未命中，且不能暴擊。
+- 十字法術消耗 4 MP，射程 3，造成 `法師攻擊 + 1`，無視防禦，不會未命中，且不能暴擊。
+- MP 不足時不能使用技能。
 
-Not included:
+不包含：
 
-- Large skill menu.
-- Skill hotkeys.
-- Skill range preview.
+- 大型技能選單。
+- 技能快捷鍵。
+- 技能射程預覽。
 
-#### 7. Cross Spell Area Resolution
+#### 7. 十字法術範圍結算
 
-Scope:
+範圍：
 
-- Resolve the cross spell area as target tile plus up, down, left, and right by 1 tile.
-- Damage all enemy units in the affected tiles.
+- 將十字法術範圍解析為目標格，以及上下左右各 1 格。
+- 對受影響格子中的所有敵方單位造成傷害。
 
-Done when:
+完成條件：
 
-- Cross spell can hit multiple enemies.
-- Empty affected tiles are ignored.
-- Allied units are not affected in the first version.
-- Defeated enemies are ignored by later actions.
+- 十字法術可以擊中多個敵人。
+- 空的受影響格會被忽略。
+- 第一版不影響友方單位。
+- 已被擊敗的敵人會被後續行動忽略。
 
-Not included:
+不包含：
 
-- Friendly fire.
-- Complex area preview.
-- Obstacles blocking area effects.
+- 友軍傷害。
+- 複雜範圍預覽。
+- 障礙物阻擋範圍效果。
 
-#### 8. Status Effect Foundation
+#### 8. 狀態效果基礎
 
-Scope:
+範圍：
 
-- Add data structures for temporary status effects.
-- Implement duration handling rules without requiring every planned status to be used immediately.
+- 加入暫時性狀態效果的資料結構。
+- 實作持續時間處理規則，但不要求立即使用所有規劃中的狀態。
 
-Done when:
+完成條件：
 
-- A unit can hold status effects.
-- The same status effect cannot stack.
-- Reapplying the same status resets its remaining duration.
-- Status effects apply immediately.
-- Status effects tick down at the effect holder's turn end.
-- Status effects are removed at 0 remaining turns.
+- 單位可以持有狀態效果。
+- 同一種狀態效果不能堆疊。
+- 重新套用同一狀態會重置剩餘持續時間。
+- 狀態效果會立即套用。
+- 狀態效果在持有者回合結束時遞減。
+- 狀態效果在剩餘 0 回合時移除。
 
-Not included:
+不包含：
 
-- Full buff/debuff skill set.
-- Taunt AI behavior.
-- Complete stun behavior across all edge cases.
+- 完整 buff/debuff 技能組。
+- 嘲諷 AI 行為。
+- 完整處理所有暈眩邊界情境。
 
-#### 9. Third Playable Verification
+#### 9. 第三個可玩目標驗證
 
-Scope:
+範圍：
 
-- Run the project checks.
-- Playtest the target manually enough to answer the validation questions.
-- Update documentation with what was learned.
+- 執行專案檢查。
+- 進行足夠的手動測試，以回答驗證問題。
+- 更新文件記錄學到的內容。
 
-Done when:
+完成條件：
 
-- `dotnet format SRPG_practice.sln --verify-no-changes` passes.
-- `dotnet build SRPG_practice.sln` succeeds.
-- `docs/PROGRESS.md` records what was implemented and verified.
-- Any follow-up balancing or AI work is recorded without blocking this target unless it breaks the core flow.
+- `dotnet format SRPG_practice.sln --verify-no-changes` 通過。
+- `dotnet build SRPG_practice.sln` 成功。
+- `docs/PROGRESS.md` 記錄已實作與已驗證的內容。
+- 任何後續平衡或 AI 工作都有記錄；除非破壞核心流程，否則不阻擋此目標完成。
 
-## Todo List
+## 待辦清單
 
-### 1. Create the Board
+### 1. 建立棋盤
 
-- [x] Create an 8x8 grid.
-- [x] Each tile should be clickable.
-- [x] Use simple colored rectangles or default Godot nodes.
-- [x] No tile art is needed yet.
+- [x] 建立 8x8 格子。
+- [x] 每個格子應該可以被點擊。
+- [x] 使用簡單彩色矩形或 Godot 預設節點。
+- [x] 目前不需要格子美術。
 
-### 2. Create Basic Unit Data
+### 2. 建立基礎單位資料
 
-- [x] Create one player unit.
-- [x] Create one enemy unit.
-- [x] Each unit needs:
-  - Grid position
+- [x] 建立一個玩家單位。
+- [x] 建立一個敵方單位。
+- [x] 每個單位需要：
+  - 格子位置
   - HP
-  - Attack power
-  - Move range
-  - Team
+  - 攻擊力
+  - 移動範圍
+  - 隊伍
 
-### 3. Display Unit Positions
+### 3. 顯示單位位置
 
-- [x] Show the player unit on the board.
-- [x] Show the enemy unit on the board.
-- [x] Use different simple colors to distinguish teams.
+- [x] 在棋盤上顯示玩家單位。
+- [x] 在棋盤上顯示敵方單位。
+- [x] 使用不同的簡單顏色區分隊伍。
 
-### 4. Select the Player Unit
+### 4. 選取玩家單位
 
-- [x] Clicking the player unit tile selects the unit.
-- [x] Store the selected unit in game state.
-- [x] A console log or simple label is enough for feedback.
+- [x] 點擊玩家單位所在格會選取該單位。
+- [x] 在遊戲狀態中保存選取的單位。
+- [x] 使用 console log 或簡單標籤作為回饋即可。
 
-### 5. Move the Player Unit
+### 5. 移動玩家單位
 
-- [x] After selecting the player unit, clicking an empty tile attempts movement.
-- [x] Allow movement only within move range.
-- [x] Use Manhattan distance only.
-- [x] Do not allow diagonal movement.
-- Do not implement terrain costs yet.
+- [x] 選取玩家單位後，點擊空格會嘗試移動。
+- [x] 只允許移動到移動範圍內。
+- [x] 只使用曼哈頓距離。
+- [x] 不允許斜向移動。
+- 目前不實作地形消耗。
 
-### 6. Attack the Enemy
+### 6. 攻擊敵人
 
-- [x] If the player unit is adjacent to the enemy, clicking the enemy attacks it.
-- [x] Reduce enemy HP by the player's attack power.
-- [x] Remove the enemy when HP is 0 or below.
+- [x] 如果玩家單位與敵人相鄰，點擊敵人會攻擊。
+- [x] 依照玩家攻擊力降低敵人 HP。
+- [x] 敵人 HP 為 0 或以下時移除敵人。
 
-### 7. End the Player Action
+### 7. 結束玩家行動
 
-- [x] After the player moves or attacks, end the player's action.
-- Keep the first version to one player unit only.
-- Do not implement action points yet.
+- [x] 玩家移動或攻擊後，結束玩家行動。
+- 第一版維持只有一個玩家單位。
+- 目前不實作行動點數。
 
-### 8. Add a Simple Enemy Turn
+### 8. 加入簡單敵方回合
 
-- [x] If the enemy is adjacent to the player, it attacks.
-- [x] Otherwise, the enemy moves toward the player within its move range.
-- [x] Do not implement full pathfinding yet.
-- [ ] Later enemy AI pass: when the direct step toward a target is occupied, try alternate valid movement options instead of stopping immediately.
+- [x] 如果敵人與玩家相鄰，敵人會攻擊。
+- [x] 否則，敵人會在自己的移動範圍內朝玩家移動。
+- [x] 目前不實作完整尋路。
+- [ ] 後續敵方 AI pass：當朝目標的直接步伐被佔用時，嘗試其他有效移動選項，而不是立刻停止。
 
-### 9. Add Win and Loss Checks
+### 9. 加入勝敗判定
 
-- [x] If the enemy HP reaches 0, show a win state.
-- [x] If the player HP reaches 0, show a loss state.
+- [x] 如果敵人 HP 到達 0，顯示勝利狀態。
+- [x] 如果玩家 HP 到達 0，顯示失敗狀態。
 
-### 10. Keep the First Version Simple
+### 10. 保持第一版簡單
 
-- Keep the first gameplay implementation in `Main.cs`.
-- Split into files like `Board.cs`, `Unit.cs`, or `TurnManager.cs` only after the logic becomes harder to read.
+- 第一版 gameplay 實作維持在 `Main.cs`。
+- 只有當邏輯變得難以閱讀後，才拆分成 `Board.cs`、`Unit.cs` 或 `TurnManager.cs` 之類的檔案。
