@@ -78,7 +78,7 @@ public sealed class BattleRenderer
 
   private void DrawStatusText(Node2D canvas, string statusText)
   {
-    canvas.DrawString(ThemeDB.FallbackFont, _layout.GetStatusTextPosition(), statusText, fontSize: 20);
+    canvas.DrawMultilineString(ThemeDB.FallbackFont, _layout.GetStatusTextPosition(), statusText, fontSize: 20);
   }
 
   private void DrawEndTurnButton(Node2D canvas, GameState gameState)

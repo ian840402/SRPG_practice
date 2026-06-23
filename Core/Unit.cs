@@ -2,10 +2,11 @@ using Godot;
 
 public sealed class Unit
 {
-  public Unit(Vector2I gridPosition, UnitClass unitClass, Team team)
+  public Unit(string name, Vector2I gridPosition, UnitClass unitClass, Team team)
   {
     var definition = UnitClassDefinitions.Get(unitClass);
     GridPosition = gridPosition;
+    Name = name;
     Hp = definition.MaxHp;
     Mp = definition.MaxMp;
     Team = team;
@@ -13,6 +14,7 @@ public sealed class Unit
   }
 
   public Vector2I GridPosition { get; private set; }
+  public string Name { get; }
   public int Hp { get; private set; }
   public int Mp { get; private set; }
   public UnitClass UnitClass { get; }

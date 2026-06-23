@@ -26,7 +26,7 @@ public sealed class PlayerActionResolver
 
   private PlayerActionResult SelectPlayerUnit(Unit unit)
   {
-    return new PlayerActionResult(unit, $"Player selected at {unit.GridPosition}. Move points: {unit.RemainingMovePoints}.");
+    return new PlayerActionResult(unit, $"{unit.Name} selected at {unit.GridPosition}. Move points: {unit.RemainingMovePoints}.");
   }
 
   private PlayerActionResult ResolveSelectedPlayerUnitClick(Unit selectedUnit, Vector2I clickedGridPosition)
@@ -66,8 +66,8 @@ public sealed class PlayerActionResolver
 
     unit.MoveTo(targetGridPosition);
     unit.SpendMovePoints(distance);
-    statusText = $"Player moved to {targetGridPosition}. Remaining move points: {unit.RemainingMovePoints}.";
-    GD.Print($"Player moved to: {targetGridPosition}");
+    statusText = $"{unit.Name} moved to {targetGridPosition}. Remaining move points: {unit.RemainingMovePoints}.";
+    GD.Print($"{unit.Name} moved to: {targetGridPosition}");
     return true;
   }
 
@@ -82,25 +82,28 @@ public sealed class PlayerActionResolver
     var distance = MovementRules.GetManhattanDistance(unit.GridPosition, targetEnemy.GridPosition);
     if (!unit.NormalAttackRange.Contains(distance))
     {
-      statusText = $"Enemy is outside attack range. Range: {unit.NormalAttackRange.Min}-{unit.NormalAttackRange.Max}. Distance: {distance}.";
+      statusText = $"{targetEnemy.Name} is outside attack range. Range: {unit.NormalAttackRange.Min}-{unit.NormalAttackRange.Max}. Distance: {distance}.";
       return true;
     }
 
     if (unit.HasAttackedThisTurn)
     {
-      statusText = "Player already attacked this turn.";
+      statusText = $"{unit.Name} already attacked this turn.";
       return true;
     }
 
-    targetEnemy.TakeDamage(unit.AttackPower);
+    var damageResult = CombatResolver.ResolveNormalAttack(unit, targetEnemy);
+    var damageInfo = CombatResolver.FormatAttackResult(unit.Name, damageResult.IsHit, damageResult.IsCritical);
+
+    targetEnemy.TakeDamage(damageResult.Damage);
     unit.MarkAttacked();
     if (targetEnemy.Hp == 0)
     {
-      statusText = $"Enemy took {unit.AttackPower} damage and was defeated.";
+      statusText = $"{damageInfo}\n{targetEnemy.Name} took {damageResult.Damage} damage and was defeated.";
       return true;
     }
 
-    statusText = $"Enemy took {unit.AttackPower} damage. Enemy HP: {targetEnemy.Hp}.";
+    statusText = $"{damageInfo}\n{targetEnemy.Name} took {damageResult.Damage} damage. {targetEnemy.Name} HP: {targetEnemy.Hp}.";
     return true;
   }
 }

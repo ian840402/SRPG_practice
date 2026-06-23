@@ -24,12 +24,15 @@ public sealed class EnemyTurnResolver
   {
     if (UnitQuery.TryGetAliveUnitInNormalAttackRange(_battleState, enemyUnit, Team.Player, out var playerTarget))
     {
-      playerTarget.TakeDamage(enemyUnit.AttackPower);
-      return $"Enemy at {enemyUnit.GridPosition} attacked player at {playerTarget.GridPosition} for {enemyUnit.AttackPower} damage. Player HP: {playerTarget.Hp}.";
+      var damageResult = CombatResolver.ResolveNormalAttack(enemyUnit, playerTarget);
+      var damageInfo = CombatResolver.FormatAttackResult(enemyUnit.Name, damageResult.IsHit, damageResult.IsCritical);
+
+      playerTarget.TakeDamage(damageResult.Damage);
+      return $"{enemyUnit.Name} at {enemyUnit.GridPosition} attacked {playerTarget.Name}!\n{damageInfo}, {playerTarget.Name} took {damageResult.Damage} damage. Player HP: {playerTarget.Hp}.";
     }
 
     var stepsMoved = MoveEnemyTowardPlayer(enemyUnit);
-    return $"Enemy at {enemyUnit.GridPosition} moved {stepsMoved} tile(s).";
+    return $"{enemyUnit.Name} at {enemyUnit.GridPosition} moved {stepsMoved} tile(s).";
   }
 
   private int MoveEnemyTowardPlayer(Unit enemyUnit)

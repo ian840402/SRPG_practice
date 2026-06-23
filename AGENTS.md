@@ -9,6 +9,14 @@
 
 - For simple guard clauses or early returns, omit braces and keep the whole statement on a single line when readability remains clear, for example `if (unit.Hp == 0) return;`.
 
+## Learning Workflow
+
+- Prefer using this project as C# / OOP practice, not only as an implementation target.
+- For each next milestone, Codex should first provide a small task card with goal, files to inspect, completion criteria, and learning focus.
+- The user should attempt the implementation first.
+- After the user finishes, Codex should review the result, explain relevant C# / OOP concepts, and suggest the smallest useful improvements.
+- Avoid taking over implementation before the user has had a chance to practice, unless the user explicitly asks Codex to implement directly.
+
 ## Progress Tracking
 
 When the user asks to "紀錄目前專案狀態", "記錄目前專案狀態", "更新目前進度", or makes an equivalent request:

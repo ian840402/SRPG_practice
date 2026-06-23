@@ -30,6 +30,7 @@
 - C# gameplay 檔案已依照 `Core`、`Rules`、`Resolvers`、`Rendering` 資料夾整理。
 - 戰士、弓箭手與法師職業資料已實作，戰鬥配置現在會從職業定義建立單位。
 - 普通攻擊射程檢查支援最小與最大射程。
+- 普通攻擊公式已實作，包含命中、迴避、暴擊、最低傷害與狀態文字回饋。
 - 設計取捨已記錄在 `docs/DESIGN_DECISIONS.md`。
 - 產品願景正在記錄於 `docs/VISION.md`。
 - 如果敵人 HP 到達 0，遊戲會顯示勝利狀態。
@@ -49,9 +50,21 @@
 - 法師 MP 與原型技能可以遊玩。
 - UI 顯示足夠的 HP、MP、職業與行動回饋，以支援測試。
 
-下一個實作步驟：普通攻擊公式。
+下一個練習步驟：namespace pass。完成後回到第三個可玩目標的基礎 UI 回饋。
 
 ## 進度紀錄
+
+### 2026-06-23T15:51:09+0800
+
+- 完成普通攻擊公式練習：玩家與敵人的普通攻擊現在共用 `CombatResolver.ResolveNormalAttack()` 結算命中、暴擊與傷害。
+- 命中率規格調整為下限 0%、上限 95%，並同步更新 `docs/GOALS.md`。
+- 使用 `dotnet format SRPG_practice.sln --verify-no-changes` 與 `dotnet build SRPG_practice.sln` 驗證通過；build succeeded，0 warnings，0 errors。
+- 下一個插入練習為 namespace pass。
+
+### 2026-06-23T09:32:39+0800
+
+- 將後續協作方式調整為學習導向流程：Codex 先提出下一階段任務卡，使用者先自行實作，完成後再由 Codex review、校正 C# / OOP 觀念並提出最小優化。
+- 目前下一個實作練習仍是普通攻擊公式。
 
 ### 2026-05-26T15:58:42+0800
 
