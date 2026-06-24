@@ -32,6 +32,7 @@
 - 戰士、弓箭手與法師職業資料已實作，戰鬥配置現在會從職業定義建立單位。
 - 普通攻擊射程檢查支援最小與最大射程。
 - 普通攻擊公式已實作，包含命中、迴避、暴擊、最低傷害與狀態文字回饋。
+- 選取玩家單位時，右側會顯示基礎單位資訊面板，包含名稱、職業、HP、法師 MP、攻防、命中/迴避、暴擊與普通攻擊射程。
 - 設計取捨已記錄在 `docs/DESIGN_DECISIONS.md`。
 - 產品願景正在記錄於 `docs/VISION.md`。
 - 如果敵人 HP 到達 0，遊戲會顯示勝利狀態。
@@ -51,9 +52,16 @@
 - 法師 MP 與原型技能可以遊玩。
 - UI 顯示足夠的 HP、MP、職業與行動回饋，以支援測試。
 
-下一個實作步驟：基礎 UI 回饋。
+下一個實作步驟：法師 MP 與技能選擇。
 
 ## 進度紀錄
+
+### 2026-06-24T14:57:08+0800
+
+- 完成基礎 UI 回饋：新增 `SelectedUnitPanel`，選取玩家單位時在棋盤右側顯示名稱、職業、HP、法師 MP、攻防、命中/迴避、暴擊與普通攻擊射程。
+- 面板使用 Godot `PanelContainer`、`VBoxContainer` 與 `Label`，避免繼續用手動畫字串承載詳細資訊。
+- 使用 `dotnet format SRPG_practice.sln --verify-no-changes` 與 `dotnet build SRPG_practice.sln` 驗證通過；build succeeded，0 warnings，0 errors。
+- 下一步進入法師 MP 與技能選擇。
 
 ### 2026-06-24T08:54:09+0800
 

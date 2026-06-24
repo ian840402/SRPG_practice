@@ -11,6 +11,7 @@ public partial class Main : Node2D
   private readonly BoardLayout _boardLayout = new();
   private readonly BattleState _battleState = new();
   private readonly BattleRenderer _battleRenderer;
+  private readonly SelectedUnitPanel _selectedUnitPanel;
   private readonly EnemyTurnResolver _enemyTurnResolver;
   private readonly PlayerActionResolver _playerActionResolver;
   private Unit _selectedUnit;
@@ -20,8 +21,11 @@ public partial class Main : Node2D
   public Main()
   {
     _battleRenderer = new BattleRenderer(_boardLayout);
+    _selectedUnitPanel = new SelectedUnitPanel(new Vector2(_boardLayout.EndTurnButtonRect.Position.X, _boardLayout.EndTurnButtonRect.End.Y + 32));
     _enemyTurnResolver = new EnemyTurnResolver(_battleState);
     _playerActionResolver = new PlayerActionResolver(_battleState);
+
+    AddChild(_selectedUnitPanel);
   }
 
   public override void _Ready()
@@ -84,6 +88,15 @@ public partial class Main : Node2D
     var actionResult = _playerActionResolver.ResolveClick(_selectedUnit, clickedGridPosition);
     _selectedUnit = actionResult.SelectedUnit;
     _statusText = actionResult.StatusText;
+    if (_selectedUnit == null)
+    {
+      _selectedUnitPanel.ShowInfo(false);
+    }
+    else
+    {
+      _selectedUnitPanel.SetUnitInfo(_selectedUnit);
+      _selectedUnitPanel.ShowInfo(true);
+    }
   }
 
   private void EndPlayerTurn(string playerActionText)
@@ -91,6 +104,7 @@ public partial class Main : Node2D
     if (_gameState != GameState.PlayerTurn) return;
 
     _selectedUnit = null;
+    _selectedUnitPanel.ShowInfo(false);
 
     StartEnemyTurn(playerActionText);
   }
@@ -129,6 +143,7 @@ public partial class Main : Node2D
   {
     _gameState = gameState;
     _selectedUnit = null;
+    _selectedUnitPanel.ShowInfo(false);
     _statusText = statusText;
   }
 

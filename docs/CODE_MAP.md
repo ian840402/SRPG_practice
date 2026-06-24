@@ -49,13 +49,14 @@
 
 - `Rendering/BoardLayout.cs`：處理棋盤與 UI 的座標，例如格子矩形、單位矩形、狀態文字位置、結束回合按鈕範圍。
 - `Rendering/BattleRenderer.cs`：負責畫出目前戰鬥畫面。
+- `Rendering/SelectedUnitPanel.cs`：負責顯示選取玩家單位的基礎資訊面板。
 
 ## 下一步實作入口
 
-下一個功能是普通攻擊公式。建議先看：
+下一個功能是法師 MP 與技能選擇。建議先看：
 
 1. `PlayerActionResolver.TryResolveAttackStatusText()`
-2. `EnemyTurnResolver.ResolveEnemyUnitAction()`
-3. `Unit` 與 `UnitClassDefinition` 目前提供的攻擊、防禦、命中、迴避、暴擊資料
+2. `CombatResolver.ResolveNormalAttack()`
+3. `Unit` 與 `UnitClassDefinition` 目前提供的 MP、攻擊與射程資料
 
-普通攻擊公式很可能需要一個新的 resolver，例如 `CombatResolver`，用來集中處理命中、傷害、暴擊與結果文字。
+法師技能第一版可以維持簡單輸入方式，重點是先讓普通攻擊、單體法術與十字法術能被測試。

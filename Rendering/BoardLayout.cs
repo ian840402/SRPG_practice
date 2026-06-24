@@ -12,8 +12,8 @@ public sealed class BoardLayout
   public Vector2 BoardOrigin { get; } = new(64, 64);
 
   public Rect2 EndTurnButtonRect => new(
-      BoardOrigin + new Vector2(BoardSize * TileSize + 32, 0),
-      new Vector2(128, 48));
+    BoardOrigin + new Vector2(BoardSize * TileSize + 32, 0),
+    new Vector2(128, 48));
 
   public Rect2 GetTileRect(Vector2I gridPosition)
   {
