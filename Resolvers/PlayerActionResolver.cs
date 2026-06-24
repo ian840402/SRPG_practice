@@ -13,7 +13,7 @@ public sealed class PlayerActionResolver
     _battleState = battleState;
   }
 
-  public PlayerActionResult ResolveClick(Unit selectedUnit, Vector2I clickedGridPosition)
+  public PlayerActionResult ResolveClick(Unit? selectedUnit, Vector2I clickedGridPosition)
   {
     if (UnitQuery.TryGetAliveUnitAt(_battleState, clickedGridPosition, Team.Player, out var playerUnit))
     {
@@ -28,7 +28,7 @@ public sealed class PlayerActionResolver
     return new PlayerActionResult(selectedUnit, $"Clicked tile {clickedGridPosition}.");
   }
 
-  private PlayerActionResult SelectPlayerUnit(Unit unit)
+  private static PlayerActionResult SelectPlayerUnit(Unit unit)
   {
     return new PlayerActionResult(unit, $"{unit.Name} selected at {unit.GridPosition}. Move points: {unit.RemainingMovePoints}.");
   }
@@ -79,7 +79,7 @@ public sealed class PlayerActionResolver
   {
     if (!UnitQuery.TryGetAliveUnitAt(_battleState, targetGridPosition, Team.Enemy, out var targetEnemy))
     {
-      statusText = default;
+      statusText = "No enemy found.";
       return false;
     }
 
@@ -112,4 +112,4 @@ public sealed class PlayerActionResolver
   }
 }
 
-public sealed record PlayerActionResult(Unit SelectedUnit, string StatusText);
+public sealed record PlayerActionResult(Unit? SelectedUnit, string StatusText);

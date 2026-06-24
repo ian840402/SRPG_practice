@@ -14,7 +14,7 @@ public partial class Main : Node2D
   private readonly SelectedUnitPanel _selectedUnitPanel;
   private readonly EnemyTurnResolver _enemyTurnResolver;
   private readonly PlayerActionResolver _playerActionResolver;
-  private Unit _selectedUnit;
+  private Unit? _selectedUnit;
   private GameState _gameState = GameState.PlayerTurn;
   private string _statusText = "Click the player unit to select it.";
 
@@ -88,7 +88,7 @@ public partial class Main : Node2D
     var actionResult = _playerActionResolver.ResolveClick(_selectedUnit, clickedGridPosition);
     _selectedUnit = actionResult.SelectedUnit;
     _statusText = actionResult.StatusText;
-    if (_selectedUnit == null)
+    if (_selectedUnit is null)
     {
       _selectedUnitPanel.ShowInfo(false);
     }

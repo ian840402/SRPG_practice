@@ -29,6 +29,7 @@
 - 玩家行動結算已拆分到專用 C# 類別。
 - C# gameplay 檔案已依照 `Core`、`Rules`、`Resolvers`、`Rendering` 資料夾整理。
 - C# gameplay 型別已加入 `SRPGPractice` root namespace，並依 `Core`、`Rules`、`Resolvers`、`Rendering` 分層。
+- C# nullable reference types 已啟用，會用型別標註可為 null 的選取單位與查詢結果。
 - 戰士、弓箭手與法師職業資料已實作，戰鬥配置現在會從職業定義建立單位。
 - 普通攻擊射程檢查支援最小與最大射程。
 - 普通攻擊公式已實作，包含命中、迴避、暴擊、最低傷害與狀態文字回饋。
@@ -55,6 +56,14 @@
 下一個實作步驟：法師 MP 與技能選擇。
 
 ## 進度紀錄
+
+### 2026-06-24T15:41:01+0800
+
+- 完成 nullable pass：在 `.csproj` 啟用 `<Nullable>enable</Nullable>`。
+- 將可為 null 的選取單位與查詢結果標註為 nullable，例如 `_selectedUnit`、`PlayerActionResult.SelectedUnit` 與 `UnitQuery` 的查詢回傳。
+- 為 `TryGetAliveUnitAt` 與 `TryGetAliveUnitInNormalAttackRange` 的 out 參數加入 `[NotNullWhen(true)]`，讓 compiler 能正確理解 Try pattern。
+- 使用 `dotnet format SRPG_practice.sln --verify-no-changes` 與 `dotnet build SRPG_practice.sln` 驗證通過；build succeeded，0 warnings，0 errors。
+- 下一步回到法師 MP 與技能選擇。
 
 ### 2026-06-24T14:57:08+0800
 

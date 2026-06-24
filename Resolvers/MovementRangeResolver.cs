@@ -8,7 +8,7 @@ namespace SRPGPractice.Resolvers;
 
 public static class MovementRangeResolver
 {
-  public static IEnumerable<Vector2I> GetValidMovementTiles(BattleState battleState, Unit unit)
+  public static IEnumerable<Vector2I> GetValidMovementTiles(BattleState battleState, Unit? unit)
   {
     if (unit is null) yield break;
     if (unit.Team != Team.Player) yield break;

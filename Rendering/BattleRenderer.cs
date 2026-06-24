@@ -14,7 +14,7 @@ public sealed class BattleRenderer
     _layout = layout;
   }
 
-  public void Draw(Node2D canvas, BattleState battleState, Unit selectedUnit, GameState gameState, string statusText)
+  public void Draw(Node2D canvas, BattleState battleState, Unit? selectedUnit, GameState gameState, string statusText)
   {
     DrawBoard(canvas);
     DrawValidMovementTiles(canvas, battleState, selectedUnit);
@@ -52,8 +52,10 @@ public sealed class BattleRenderer
     canvas.DrawString(ThemeDB.FallbackFont, unitRect.Position + new Vector2(8, 48), $"HP: {unit.Hp}", fontSize: 14);
   }
 
-  private void DrawValidMovementTiles(Node2D canvas, BattleState battleState, Unit selectedUnit)
+  private void DrawValidMovementTiles(Node2D canvas, BattleState battleState, Unit? selectedUnit)
   {
+    if (selectedUnit is null) return;
+
     foreach (var gridPosition in MovementRangeResolver.GetValidMovementTiles(battleState, selectedUnit))
     {
       var tileRect = _layout.GetTileRect(gridPosition);
@@ -72,7 +74,7 @@ public sealed class BattleRenderer
     }
   }
 
-  private void DrawSelection(Node2D canvas, Unit selectedUnit)
+  private void DrawSelection(Node2D canvas, Unit? selectedUnit)
   {
     if (selectedUnit is null) return;
 
