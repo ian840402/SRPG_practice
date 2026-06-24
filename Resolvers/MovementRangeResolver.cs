@@ -1,5 +1,10 @@
 using Godot;
 using System.Collections.Generic;
+using SRPGPractice.Core;
+using SRPGPractice.Rendering;
+using SRPGPractice.Rules;
+
+namespace SRPGPractice.Resolvers;
 
 public static class MovementRangeResolver
 {

@@ -1,5 +1,8 @@
 using Godot;
 using System;
+using SRPGPractice.Core;
+
+namespace SRPGPractice.Rules;
 
 public static class MovementRules
 {

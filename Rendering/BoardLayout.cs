@@ -1,5 +1,7 @@
 using Godot;
 
+namespace SRPGPractice.Rendering;
+
 public sealed class BoardLayout
 {
   public const int BoardSize = 8;

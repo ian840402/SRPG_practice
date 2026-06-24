@@ -2,6 +2,8 @@ using Godot;
 using System.Collections.Generic;
 using System.Linq;
 
+namespace SRPGPractice.Core;
+
 public sealed class BattleState
 {
   public List<Unit> PlayerUnits { get; } = [

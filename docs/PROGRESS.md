@@ -28,6 +28,7 @@
 - 棋盤 layout 與戰鬥 rendering 已拆分到專用 C# 類別。
 - 玩家行動結算已拆分到專用 C# 類別。
 - C# gameplay 檔案已依照 `Core`、`Rules`、`Resolvers`、`Rendering` 資料夾整理。
+- C# gameplay 型別已加入 `SRPGPractice` root namespace，並依 `Core`、`Rules`、`Resolvers`、`Rendering` 分層。
 - 戰士、弓箭手與法師職業資料已實作，戰鬥配置現在會從職業定義建立單位。
 - 普通攻擊射程檢查支援最小與最大射程。
 - 普通攻擊公式已實作，包含命中、迴避、暴擊、最低傷害與狀態文字回饋。
@@ -50,9 +51,17 @@
 - 法師 MP 與原型技能可以遊玩。
 - UI 顯示足夠的 HP、MP、職業與行動回饋，以支援測試。
 
-下一個練習步驟：namespace pass。完成後回到第三個可玩目標的基礎 UI 回饋。
+下一個實作步驟：基礎 UI 回饋。
 
 ## 進度紀錄
+
+### 2026-06-24T08:54:09+0800
+
+- 完成 namespace pass：加入 `SRPGPractice` root namespace，並將 C# 型別依 `Core`、`Rules`、`Resolvers`、`Rendering` 分層。
+- 在 `.csproj` 設定 `RootNamespace` 為 `SRPGPractice`。
+- 將 `MovementRangeResolver` 歸到 `Resolvers`，並同步更新 `docs/CODE_MAP.md` 與 `docs/DESIGN_DECISIONS.md` 的檔案路徑。
+- 使用 `dotnet format SRPG_practice.sln --verify-no-changes` 與 `dotnet build SRPG_practice.sln` 驗證通過；build succeeded，0 warnings，0 errors。
+- 下一步回到第三個可玩目標的基礎 UI 回饋。
 
 ### 2026-06-23T15:51:09+0800
 

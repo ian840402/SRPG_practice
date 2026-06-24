@@ -1,4 +1,7 @@
 using Godot;
+using SRPGPractice.Core;
+
+namespace SRPGPractice.Resolvers;
 
 public sealed record AttackResult(
   bool IsHit,

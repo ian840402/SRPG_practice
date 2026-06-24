@@ -72,7 +72,7 @@
 
 ### 相關檔案
 
-- `Rules/MovementRangeResolver.cs`
+- `Resolvers/MovementRangeResolver.cs`
 - `Rules/MovementRules.cs`
 - `Rules/UnitQuery.cs`
 - `Resolvers/PlayerActionResolver.cs`
@@ -130,5 +130,5 @@
 
 - `Resolvers/EnemyTurnResolver.cs`
 - `Rules/MovementRules.cs`
-- `Rules/MovementRangeResolver.cs`
+- `Resolvers/MovementRangeResolver.cs`
 - `Rules/UnitQuery.cs`

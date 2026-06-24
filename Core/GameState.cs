@@ -1,3 +1,5 @@
+namespace SRPGPractice.Core;
+
 public enum GameState
 {
   PlayerTurn,

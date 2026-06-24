@@ -1,4 +1,10 @@
 using Godot;
+using SRPGPractice.Core;
+using SRPGPractice.Rendering;
+using SRPGPractice.Resolvers;
+using SRPGPractice.Rules;
+
+namespace SRPGPractice;
 
 public partial class Main : Node2D
 {

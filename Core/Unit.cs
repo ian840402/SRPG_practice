@@ -1,5 +1,7 @@
 using Godot;
 
+namespace SRPGPractice.Core;
+
 public sealed class Unit
 {
   public Unit(string name, Vector2I gridPosition, UnitClass unitClass, Team team)

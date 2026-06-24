@@ -36,7 +36,6 @@
 ### Rules
 
 - `Rules/MovementRules.cs`：處理曼哈頓距離、移動消耗，以及敵人朝目標前進的一步方向。
-- `Rules/MovementRangeResolver.cs`：用 static helper 計算選取玩家單位目前可以移動到哪些空格。
 - `Rules/UnitQuery.cs`：查詢單位，例如存活單位、指定格子的單位、最近單位、普通攻擊範圍內目標。
 
 ### Resolvers
@@ -44,6 +43,7 @@
 - `Resolvers/PlayerActionResolver.cs`：處理玩家點擊棋盤後要做什麼，包括選取、移動與普通攻擊。
 - `Resolvers/PlayerActionResolver.cs` 內的 `PlayerActionResult`：回傳玩家行動後的選取單位與狀態文字。
 - `Resolvers/EnemyTurnResolver.cs`：處理簡單敵方回合；敵人能攻擊就攻擊，否則朝最近玩家移動。
+- `Resolvers/MovementRangeResolver.cs`：用 static helper 計算選取玩家單位目前可以移動到哪些空格。
 
 ### Rendering
 

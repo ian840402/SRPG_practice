@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 
+namespace SRPGPractice.Core;
+
 public static class UnitClassDefinitions
 {
   private static readonly Dictionary<UnitClass, UnitClassDefinition> Definitions = new()

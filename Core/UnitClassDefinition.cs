@@ -1,3 +1,5 @@
+namespace SRPGPractice.Core;
+
 public sealed record UnitClassDefinition(
     UnitClass UnitClass,
     string DisplayName,

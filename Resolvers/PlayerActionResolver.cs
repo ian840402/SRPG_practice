@@ -1,4 +1,8 @@
 using Godot;
+using SRPGPractice.Core;
+using SRPGPractice.Rules;
+
+namespace SRPGPractice.Resolvers;
 
 public sealed class PlayerActionResolver
 {

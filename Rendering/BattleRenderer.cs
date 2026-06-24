@@ -1,5 +1,9 @@
 using Godot;
 using System.Collections.Generic;
+using SRPGPractice.Core;
+using SRPGPractice.Resolvers;
+
+namespace SRPGPractice.Rendering;
 
 public sealed class BattleRenderer
 {

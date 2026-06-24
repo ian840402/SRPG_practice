@@ -1,3 +1,5 @@
+namespace SRPGPractice.Core;
+
 public readonly record struct AttackRange(int Min, int Max)
 {
   public bool Contains(int distance)
