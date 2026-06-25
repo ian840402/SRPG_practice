@@ -12,7 +12,9 @@
 ## Learning Workflow
 
 - Prefer using this project as C# / OOP practice, not only as an implementation target.
-- For each next milestone, Codex should first provide a small task card with goal, files to inspect, completion criteria, and learning focus.
+- For each next milestone, Codex should first provide a small task card with only three sections: goal, completion criteria, and non-goals.
+- Task cards should use concise bullet points, and may use light emoji for readability.
+- Completion criteria should describe observable outcomes, not implementation details, so the user can practice designing the implementation.
 - The user should attempt the implementation first.
 - After the user finishes, Codex should review the result, explain relevant C# / OOP concepts, and suggest the smallest useful improvements.
 - Avoid taking over implementation before the user has had a chance to practice, unless the user explicitly asks Codex to implement directly.
