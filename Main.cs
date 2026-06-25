@@ -41,6 +41,15 @@ public partial class Main : Node2D
 
   public override void _Input(InputEvent inputEvent)
   {
+    if (inputEvent is InputEventKey { Keycode: Key.W, Pressed: true } && _gameState == GameState.PlayerTurn && _selectedUnit is not null)
+    {
+      _selectedUnit.MarkWaited();
+      _statusText = $"{_selectedUnit.Name} is waited!";
+      _selectedUnit = null;
+      QueueRedraw();
+      return;
+    }
+
     if (!TryGetPlayerTurnMouseClick(inputEvent, out var clickPosition)) return;
 
     if (TryHandleEndTurnButtonClick(clickPosition))

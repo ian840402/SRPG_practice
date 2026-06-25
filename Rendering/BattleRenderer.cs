@@ -17,11 +17,15 @@ public sealed class BattleRenderer
   public void Draw(Node2D canvas, BattleState battleState, Unit? selectedUnit, GameState gameState, string statusText)
   {
     DrawBoard(canvas);
-    DrawValidMovementTiles(canvas, battleState, selectedUnit);
-    DrawSelection(canvas, selectedUnit);
+    DrawEndTurnButton(canvas, gameState);
     DrawUnits(canvas, battleState.PlayerUnits, new Color(0.2f, 0.45f, 1.0f), "P");
     DrawUnits(canvas, battleState.EnemyUnits, new Color(1.0f, 0.25f, 0.25f), "E");
-    DrawEndTurnButton(canvas, gameState);
+    if (selectedUnit is not null)
+    {
+      DrawSelection(canvas, selectedUnit);
+
+      if (selectedUnit.CanMoveThisTurn) DrawValidMovementTiles(canvas, battleState, selectedUnit);
+    }
     DrawStatusText(canvas, statusText);
   }
 
@@ -54,8 +58,6 @@ public sealed class BattleRenderer
 
   private void DrawValidMovementTiles(Node2D canvas, BattleState battleState, Unit? selectedUnit)
   {
-    if (selectedUnit is null) return;
-
     foreach (var gridPosition in MovementRangeResolver.GetValidMovementTiles(battleState, selectedUnit))
     {
       var tileRect = _layout.GetTileRect(gridPosition);
@@ -74,10 +76,8 @@ public sealed class BattleRenderer
     }
   }
 
-  private void DrawSelection(Node2D canvas, Unit? selectedUnit)
+  private void DrawSelection(Node2D canvas, Unit selectedUnit)
   {
-    if (selectedUnit is null) return;
-
     var tileRect = _layout.GetSelectionRect(selectedUnit.GridPosition);
     canvas.DrawRect(tileRect, new Color(1.0f, 0.9f, 0.1f), false, 4.0f);
   }

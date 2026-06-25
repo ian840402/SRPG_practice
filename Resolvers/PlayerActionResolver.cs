@@ -35,6 +35,11 @@ public sealed class PlayerActionResolver
 
   private PlayerActionResult ResolveSelectedPlayerUnitClick(Unit selectedUnit, Vector2I clickedGridPosition)
   {
+    if (selectedUnit.HasWaitedThisTurn)
+    {
+      return new PlayerActionResult(selectedUnit, "This unit is waiting!");
+    }
+
     if (TryMoveSelectedUnit(selectedUnit, clickedGridPosition, out var moveStatusText))
     {
       return new PlayerActionResult(selectedUnit, moveStatusText);
