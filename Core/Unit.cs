@@ -32,7 +32,11 @@ public sealed class Unit
   public AttackRange NormalAttackRange => ClassDefinition.NormalAttackRange;
   public int RemainingMovePoints { get; private set; }
   public bool HasAttackedThisTurn { get; private set; }
+  public bool HasWaitedThisTurn { get; private set; }
+  public bool CanMoveThisTurn => RemainingMovePoints > 0 && !HasWaitedThisTurn;
+  public bool CanAttackThisTurn => !HasAttackedThisTurn && !HasWaitedThisTurn;
   public Team Team { get; }
+  public UnitState UnitState { get; private set; }
 
   public void MoveTo(Vector2I newPosition)
   {
@@ -49,10 +53,17 @@ public sealed class Unit
     HasAttackedThisTurn = true;
   }
 
+  public void MarkWaited()
+  {
+    HasWaitedThisTurn = true;
+  }
+
   public void StartTurn()
   {
+    UnitState = UnitState.UnSelect;
     RemainingMovePoints = MoveRange;
     HasAttackedThisTurn = false;
+    HasWaitedThisTurn = false;
   }
 
   public void TakeDamage(int damage)

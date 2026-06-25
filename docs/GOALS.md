@@ -194,18 +194,19 @@
 
 範圍：
 
-- 新增 `HasMovedThisTurn`。
 - 保留並沿用 `HasAttackedThisTurn`。
 - 新增 `HasWaitedThisTurn`。
-- 新增 `MarkMoved()`。
+- 新增 `CanMoveThisTurn`，由 `RemainingMovePoints` 與待機狀態推導。
+- 新增 `CanAttackThisTurn`，由攻擊與待機狀態推導。
 - 新增 `MarkWaited()`。
-- `StartTurn()` 重設移動、攻擊與待機狀態。
+- `StartTurn()` 重設移動力、攻擊與待機狀態。
 
 完成條件：
 
 - 現有 gameplay 行為不變。
 - 目前移動仍照 `RemainingMovePoints` 運作。
 - 目前攻擊仍照 `HasAttackedThisTurn` 運作。
+- `CanMoveThisTurn` 與 `CanAttackThisTurn` 先作為後續流程使用，暫不替換現有 resolver 行為。
 - 專案可建置。
 
 ##### 6B. 新增待機
