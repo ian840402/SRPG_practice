@@ -24,7 +24,7 @@ public sealed class BattleRenderer
     {
       DrawSelection(canvas, selectedUnit);
 
-      if (selectedUnit.CanMoveThisTurn) DrawValidMovementTiles(canvas, battleState, selectedUnit);
+      if (selectedUnit.ActionMode == UnitActionMode.Move && selectedUnit.CanMoveThisTurn) DrawValidMovementTiles(canvas, battleState, selectedUnit);
     }
     DrawStatusText(canvas, statusText);
   }

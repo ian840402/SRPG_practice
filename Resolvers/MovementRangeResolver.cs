@@ -12,7 +12,7 @@ public static class MovementRangeResolver
   {
     if (unit is null) yield break;
     if (unit.Team != Team.Player) yield break;
-    if (unit.HasAttackedThisTurn) yield break;
+    if (!unit.CanMoveThisTurn) yield break;
 
     for (var y = 0; y < BoardLayout.BoardSize; y++)
     {

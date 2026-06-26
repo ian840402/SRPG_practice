@@ -40,66 +40,40 @@ public sealed class PlayerActionResolver
       return new PlayerActionResult(selectedUnit, "This unit is waiting!");
     }
 
-    if (TryMoveSelectedUnit(selectedUnit, clickedGridPosition, out var moveStatusText))
+    return selectedUnit.ActionMode switch
     {
-      return new PlayerActionResult(selectedUnit, moveStatusText);
-    }
-
-    var statusText = TryResolveAttackStatusText(selectedUnit, clickedGridPosition, out var attackStatusText)
-        ? attackStatusText
-        : moveStatusText;
-
-    return new PlayerActionResult(selectedUnit, statusText);
+      UnitActionMode.Move => ResolveMoveClick(selectedUnit, clickedGridPosition),
+      UnitActionMode.NormalAttack => ResolveAttackClick(selectedUnit, clickedGridPosition),
+      _ => new PlayerActionResult(selectedUnit, "Select an action mode!")
+    };
   }
 
-  private bool TryMoveSelectedUnit(Unit unit, Vector2I targetGridPosition, out string statusText)
+  private PlayerActionResult ResolveMoveClick(Unit unit, Vector2I targetGridPosition)
   {
-    if (unit.HasAttackedThisTurn)
-    {
-      statusText = "Cannot move after attacking.";
-      return false;
-    }
-
     if (UnitQuery.TryGetAliveUnitAt(_battleState, targetGridPosition, out _))
-    {
-      statusText = "Cannot move onto an occupied tile.";
-      return false;
-    }
+      return new PlayerActionResult(unit, "Cannot move onto an occupied tile.");
 
     var distance = MovementRules.GetMoveCost(unit.GridPosition, targetGridPosition);
     if (!MovementRules.IsWithinRemainingMovePoints(unit, targetGridPosition))
-    {
-      statusText = $"Target is too far. Remaining move points: {unit.RemainingMovePoints}.";
-      return false;
-    }
+      return new PlayerActionResult(unit, $"Target is too far. Remaining move points: {unit.RemainingMovePoints}.");
 
     unit.MoveTo(targetGridPosition);
     unit.SpendMovePoints(distance);
-    statusText = $"{unit.Name} moved to {targetGridPosition}. Remaining move points: {unit.RemainingMovePoints}.";
     GD.Print($"{unit.Name} moved to: {targetGridPosition}");
-    return true;
+    return new PlayerActionResult(unit, $"{unit.Name} moved to {targetGridPosition}. Remaining move points: {unit.RemainingMovePoints}.");
   }
 
-  private bool TryResolveAttackStatusText(Unit unit, Vector2I targetGridPosition, out string statusText)
+  private PlayerActionResult ResolveAttackClick(Unit unit, Vector2I targetGridPosition)
   {
     if (!UnitQuery.TryGetAliveUnitAt(_battleState, targetGridPosition, Team.Enemy, out var targetEnemy))
-    {
-      statusText = "No enemy found.";
-      return false;
-    }
+      return new PlayerActionResult(unit, "No enemy found.");
 
     var distance = MovementRules.GetManhattanDistance(unit.GridPosition, targetEnemy.GridPosition);
     if (!unit.NormalAttackRange.Contains(distance))
-    {
-      statusText = $"{targetEnemy.Name} is outside attack range. Range: {unit.NormalAttackRange.Min}-{unit.NormalAttackRange.Max}. Distance: {distance}.";
-      return true;
-    }
+      return new PlayerActionResult(unit, $"{targetEnemy.Name} is outside attack range. Range: {unit.NormalAttackRange.Min}-{unit.NormalAttackRange.Max}. Distance: {distance}.");
 
     if (unit.HasAttackedThisTurn)
-    {
-      statusText = $"{unit.Name} already attacked this turn.";
-      return true;
-    }
+      return new PlayerActionResult(unit, $"{unit.Name} already attacked this turn.");
 
     var damageResult = CombatResolver.ResolveNormalAttack(unit, targetEnemy);
     var damageInfo = CombatResolver.FormatAttackResult(unit.Name, damageResult.IsHit, damageResult.IsCritical);
@@ -107,13 +81,9 @@ public sealed class PlayerActionResolver
     targetEnemy.TakeDamage(damageResult.Damage);
     unit.MarkAttacked();
     if (targetEnemy.Hp == 0)
-    {
-      statusText = $"{damageInfo}\n{targetEnemy.Name} took {damageResult.Damage} damage and was defeated.";
-      return true;
-    }
+      return new PlayerActionResult(unit, $"{damageInfo}\n{targetEnemy.Name} took {damageResult.Damage} damage and was defeated.");
 
-    statusText = $"{damageInfo}\n{targetEnemy.Name} took {damageResult.Damage} damage. {targetEnemy.Name} HP: {targetEnemy.Hp}.";
-    return true;
+    return new PlayerActionResult(unit, $"{damageInfo}\n{targetEnemy.Name} took {damageResult.Damage} damage. {targetEnemy.Name} HP: {targetEnemy.Hp}.");
   }
 }
 

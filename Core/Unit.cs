@@ -36,7 +36,7 @@ public sealed class Unit
   public bool CanMoveThisTurn => RemainingMovePoints > 0 && !HasWaitedThisTurn;
   public bool CanAttackThisTurn => !HasAttackedThisTurn && !HasWaitedThisTurn;
   public Team Team { get; }
-  public UnitState UnitState { get; private set; }
+  public UnitActionMode ActionMode { get; private set; }
 
   public void MoveTo(Vector2I newPosition)
   {
@@ -56,11 +56,22 @@ public sealed class Unit
   public void MarkWaited()
   {
     HasWaitedThisTurn = true;
+    TrySetState(UnitActionMode.UnSelected);
+  }
+
+  public bool TrySetState(UnitActionMode state)
+  {
+    if (state == UnitActionMode.Move && !CanMoveThisTurn) return false;
+    if (state == UnitActionMode.NormalAttack && !CanAttackThisTurn) return false;
+
+    ActionMode = state;
+
+    return true;
   }
 
   public void StartTurn()
   {
-    UnitState = UnitState.UnSelect;
+    ActionMode = UnitActionMode.UnSelected;
     RemainingMovePoints = MoveRange;
     HasAttackedThisTurn = false;
     HasWaitedThisTurn = false;

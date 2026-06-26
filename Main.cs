@@ -41,11 +41,31 @@ public partial class Main : Node2D
 
   public override void _Input(InputEvent inputEvent)
   {
-    if (inputEvent is InputEventKey { Keycode: Key.W, Pressed: true } && _gameState == GameState.PlayerTurn && _selectedUnit is not null)
+    if (inputEvent is InputEventKey { Pressed: true, Keycode: Key.A | Key.M | Key.W } keyButton && _gameState == GameState.PlayerTurn && _selectedUnit is not null)
     {
-      _selectedUnit.MarkWaited();
-      _statusText = $"{_selectedUnit.Name} is waited!";
-      _selectedUnit = null;
+      if (_selectedUnit.HasWaitedThisTurn)
+      {
+        _statusText = "This unit is waiting!";
+        return;
+      }
+
+      switch (keyButton.Keycode)
+      {
+        case Key.A:
+          _statusText = _selectedUnit.TrySetState(UnitActionMode.NormalAttack) ? "Attack Mode" : "This unit has attacked!";
+          break;
+        case Key.M:
+          _statusText = _selectedUnit.TrySetState(UnitActionMode.Move) ? "Move Mode" : "This unit has moved!";
+          break;
+        case Key.W:
+          _selectedUnit.MarkWaited();
+          _statusText = $"{_selectedUnit.Name} is waiting!";
+          UnSelectUnit();
+          break;
+        default:
+          break;
+      }
+
       QueueRedraw();
       return;
     }
@@ -95,14 +115,22 @@ public partial class Main : Node2D
     GD.Print($"Clicked tile: {clickedGridPosition}");
 
     var actionResult = _playerActionResolver.ResolveClick(_selectedUnit, clickedGridPosition);
+
+    if (actionResult.SelectedUnit != _selectedUnit && _selectedUnit is not null)
+    {
+      _selectedUnit.TrySetState(UnitActionMode.UnSelected);
+    }
+
     _selectedUnit = actionResult.SelectedUnit;
     _statusText = actionResult.StatusText;
+
     if (_selectedUnit is null)
     {
       _selectedUnitPanel.ShowInfo(false);
     }
     else
     {
+      _selectedUnit.TrySetState(UnitActionMode.Selected);
       _selectedUnitPanel.SetUnitInfo(_selectedUnit);
       _selectedUnitPanel.ShowInfo(true);
     }
@@ -112,9 +140,7 @@ public partial class Main : Node2D
   {
     if (_gameState != GameState.PlayerTurn) return;
 
-    _selectedUnit = null;
-    _selectedUnitPanel.ShowInfo(false);
-
+    UnSelectUnit();
     StartEnemyTurn(playerActionText);
   }
 
@@ -151,9 +177,8 @@ public partial class Main : Node2D
   private void SetGameState(GameState gameState, string statusText)
   {
     _gameState = gameState;
-    _selectedUnit = null;
-    _selectedUnitPanel.ShowInfo(false);
     _statusText = statusText;
+    UnSelectUnit();
   }
 
   private void InitTurn()
@@ -172,6 +197,12 @@ public partial class Main : Node2D
       unit.StartTurn();
     }
     _statusText = statusText;
+  }
+
+  private void UnSelectUnit()
+  {
+    _selectedUnit = null;
+    _selectedUnitPanel.ShowInfo(false);
   }
 
 }

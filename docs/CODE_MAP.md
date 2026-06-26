@@ -6,7 +6,11 @@
 
 玩家點擊棋盤時：
 
-`Main._Input()` -> `BoardLayout.TryGetGridPosition()` -> `Main.HandlePlayerTurnClick()` -> `PlayerActionResolver.ResolveClick()` -> 選取、移動或攻擊 -> `Main.UpdateGameStateAfterInput()`
+`Main._Input()` -> `BoardLayout.TryGetGridPosition()` -> `Main.HandlePlayerTurnClick()` -> `PlayerActionResolver.ResolveClick()` -> 選取或依目前行動模式移動/攻擊 -> `Main.UpdateGameStateAfterInput()`
+
+玩家切換行動模式或待機時：
+
+`Main._Input()` -> 鍵盤 `M` / `A` / `W` -> `Unit.TrySetState()` 或 `Unit.MarkWaited()` -> 更新狀態文字與選取狀態。
 
 玩家按下結束回合時：
 
@@ -25,7 +29,8 @@
 ### Core
 
 - `Core/BattleState.cs`：保存玩家與敵方單位清單，並提供雙方是否仍有存活單位的檢查。
-- `Core/Unit.cs`：保存單位目前狀態，例如位置、HP、MP、剩餘移動點、本回合是否已攻擊。
+- `Core/Unit.cs`：保存單位目前狀態，例如位置、HP、MP、剩餘移動點、本回合是否已攻擊/待機，以及目前行動模式。
+- `Core/UnitActionMode.cs`：定義選取後的暫時操作模式，例如查看、移動與普通攻擊。
 - `Core/UnitClass.cs`：定義目前原型使用的職業種類。
 - `Core/UnitClassDefinition.cs`：定義單一職業的數值資料格式。
 - `Core/UnitClassDefinitions.cs`：保存戰士、弓箭手、法師的原型數值表。
@@ -40,7 +45,7 @@
 
 ### Resolvers
 
-- `Resolvers/PlayerActionResolver.cs`：處理玩家點擊棋盤後要做什麼，包括選取、移動與普通攻擊。
+- `Resolvers/PlayerActionResolver.cs`：處理玩家點擊棋盤後要做什麼，包括選取，以及依目前行動模式執行移動或普通攻擊。
 - `Resolvers/PlayerActionResolver.cs` 內的 `PlayerActionResult`：回傳玩家行動後的選取單位與狀態文字。
 - `Resolvers/EnemyTurnResolver.cs`：處理簡單敵方回合；敵人能攻擊就攻擊，否則朝最近玩家移動。
 - `Resolvers/MovementRangeResolver.cs`：用 static helper 計算選取玩家單位目前可以移動到哪些空格。
@@ -53,10 +58,11 @@
 
 ## 下一步實作入口
 
-下一個功能是法師 MP 與技能選擇。建議先看：
+下一個功能是顯示普通攻擊範圍。建議先看：
 
-1. `PlayerActionResolver.TryResolveAttackStatusText()`
-2. `CombatResolver.ResolveNormalAttack()`
-3. `Unit` 與 `UnitClassDefinition` 目前提供的 MP、攻擊與射程資料
+1. `BattleRenderer.Draw()`
+2. `MovementRangeResolver.GetValidMovementTiles()`
+3. `PlayerActionResolver.ResolveAttackClick()`
+4. `Unit.NormalAttackRange`
 
-法師技能第一版可以維持簡單輸入方式，重點是先讓普通攻擊、單體法術與十字法術能被測試。
+6D 第一版只顯示普通攻擊範圍，不處理技能範圍或障礙物。

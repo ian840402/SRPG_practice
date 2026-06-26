@@ -1,8 +1,8 @@
 namespace SRPGPractice.Core;
 
-public enum UnitState
+public enum UnitActionMode
 {
-  UnSelect,
+  UnSelected,
   Selected,
   Move,
   NormalAttack,
