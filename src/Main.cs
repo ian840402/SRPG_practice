@@ -41,7 +41,7 @@ public partial class Main : Node2D
 
   public override void _Input(InputEvent inputEvent)
   {
-    if (inputEvent is InputEventKey { Pressed: true, Keycode: Key.A | Key.M | Key.W } keyButton && _gameState == GameState.PlayerTurn && _selectedUnit is not null)
+    if (inputEvent is InputEventKey { Pressed: true, Keycode: Key.A or Key.M or Key.W } keyButton && _gameState == GameState.PlayerTurn && _selectedUnit is not null)
     {
       if (_selectedUnit.HasWaitedThisTurn)
       {
