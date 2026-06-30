@@ -20,11 +20,11 @@ public sealed class BattleRenderer
     DrawEndTurnButton(canvas, gameState);
     DrawUnits(canvas, battleState.PlayerUnits, new Color(0.2f, 0.45f, 1.0f), "P");
     DrawUnits(canvas, battleState.EnemyUnits, new Color(1.0f, 0.25f, 0.25f), "E");
-    if (selectedUnit is not null)
+    if (selectedUnit is not null && gameState is GameState.PlayerTurn)
     {
       DrawSelection(canvas, selectedUnit);
 
-      if (selectedUnit.ActionMode == UnitActionMode.Move && selectedUnit.CanMoveThisTurn) DrawValidMovementTiles(canvas, battleState, selectedUnit);
+      if (selectedUnit.ActionMode == UnitActionMode.Move && selectedUnit.CanMoveThisTurn) DrawValidMovementTiles(canvas, selectedUnit);
     }
     DrawStatusText(canvas, statusText);
   }
@@ -56,9 +56,9 @@ public sealed class BattleRenderer
     canvas.DrawString(ThemeDB.FallbackFont, unitRect.Position + new Vector2(8, 48), $"HP: {unit.Hp}", fontSize: 14);
   }
 
-  private void DrawValidMovementTiles(Node2D canvas, BattleState battleState, Unit? selectedUnit)
+  private void DrawValidMovementTiles(Node2D canvas, Unit selectedUnit)
   {
-    foreach (var gridPosition in MovementRangeResolver.GetValidMovementTiles(battleState, selectedUnit))
+    foreach (var gridPosition in selectedUnit.ValidMovementTiles.Keys)
     {
       var tileRect = _layout.GetTileRect(gridPosition);
       canvas.DrawRect(tileRect, new Color(0.25f, 0.95f, 0.45f, 0.35f));

@@ -55,7 +55,15 @@ public partial class Main : Node2D
           _statusText = _selectedUnit.TrySetState(UnitActionMode.NormalAttack) ? "Attack Mode" : "This unit has attacked!";
           break;
         case Key.M:
-          _statusText = _selectedUnit.TrySetState(UnitActionMode.Move) ? "Move Mode" : "This unit has moved!";
+          if (_selectedUnit.TrySetState(UnitActionMode.Move))
+          {
+            _selectedUnit.SetValidMovementTiles(MovementRangeResolver.GetValidMovementTiles(_battleState, _selectedUnit));
+            _statusText = "Move Mode";
+          }
+          else
+          {
+            _statusText = "This unit has moved!";
+          }
           break;
         case Key.W:
           _selectedUnit.MarkWaited();

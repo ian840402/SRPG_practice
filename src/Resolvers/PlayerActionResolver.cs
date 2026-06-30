@@ -53,8 +53,7 @@ public sealed class PlayerActionResolver
     if (UnitQuery.TryGetAliveUnitAt(_battleState, targetGridPosition, out _))
       return new PlayerActionResult(unit, "Cannot move onto an occupied tile.");
 
-    var distance = MovementRules.GetMoveCost(unit.GridPosition, targetGridPosition);
-    if (!MovementRules.IsWithinRemainingMovePoints(unit, targetGridPosition))
+    if (!unit.ValidMovementTiles.TryGetValue(targetGridPosition, out int distance))
       return new PlayerActionResult(unit, $"Target is too far. Remaining move points: {unit.RemainingMovePoints}.");
 
     unit.MoveTo(targetGridPosition);

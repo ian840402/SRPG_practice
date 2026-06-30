@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Godot;
 
 namespace SRPGPractice.Core;
@@ -37,6 +38,7 @@ public sealed class Unit
   public bool CanAttackThisTurn => !HasAttackedThisTurn && !HasWaitedThisTurn;
   public Team Team { get; }
   public UnitActionMode ActionMode { get; private set; }
+  public Dictionary<Vector2I, int> ValidMovementTiles { get; private set; } = new();
 
   public void MoveTo(Vector2I newPosition)
   {
@@ -75,6 +77,11 @@ public sealed class Unit
     RemainingMovePoints = MoveRange;
     HasAttackedThisTurn = false;
     HasWaitedThisTurn = false;
+  }
+
+  public void SetValidMovementTiles(Dictionary<Vector2I, int> tiles)
+  {
+    ValidMovementTiles = tiles;
   }
 
   public void TakeDamage(int damage)

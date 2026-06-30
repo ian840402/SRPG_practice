@@ -8,23 +8,44 @@ namespace SRPGPractice.Resolvers;
 
 public static class MovementRangeResolver
 {
-  public static IEnumerable<Vector2I> GetValidMovementTiles(BattleState battleState, Unit? unit)
+  // Friendly units are passable for preview, but occupied tiles are rejected when moving.
+  public static Dictionary<Vector2I, int> GetValidMovementTiles(BattleState battleState, Unit unit)
   {
-    if (unit is null) yield break;
-    if (unit.Team != Team.Player) yield break;
-    if (!unit.CanMoveThisTurn) yield break;
+    var startPoint = unit.GridPosition;
+    var queue = new Queue<Vector2I>();
+    var distances = new Dictionary<Vector2I, int>();
 
-    for (var y = 0; y < BoardLayout.BoardSize; y++)
+    queue.Enqueue(startPoint);
+    distances[startPoint] = 0;
+
+    while (queue.Count > 0)
     {
-      for (var x = 0; x < BoardLayout.BoardSize; x++)
-      {
-        var gridPosition = new Vector2I(x, y);
-        if (gridPosition == unit.GridPosition) continue;
-        if (!MovementRules.IsWithinRemainingMovePoints(unit, gridPosition)) continue;
-        if (UnitQuery.TryGetAliveUnitAt(battleState, gridPosition, out _)) continue;
+      var current = queue.Dequeue();
+      var currentDistance = distances[current];
+      if (currentDistance == unit.RemainingMovePoints) continue;
 
-        yield return gridPosition;
+      var neighbors = new[]
+      {
+        current + new Vector2I(0, 1),
+        current + new Vector2I(0, -1),
+        current + new Vector2I(1, 0),
+        current + new Vector2I(-1, 0),
+      };
+
+      foreach (var item in neighbors)
+      {
+        if (distances.ContainsKey(item)) continue;
+        if (UnitQuery.TryGetAliveUnitAt(battleState, item, Team.Enemy, out _)) continue;
+        if (item.X is < 0 or >= BoardLayout.BoardSize) continue;
+        if (item.Y is < 0 or >= BoardLayout.BoardSize) continue;
+
+        distances[item] = currentDistance + 1;
+        queue.Enqueue(item);
       }
     }
+
+    distances.Remove(startPoint);
+
+    return distances;
   }
 }
