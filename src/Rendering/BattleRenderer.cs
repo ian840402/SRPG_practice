@@ -14,7 +14,7 @@ public sealed class BattleRenderer
     _layout = layout;
   }
 
-  public void Draw(Node2D canvas, BattleState battleState, Unit? selectedUnit, GameState gameState, string statusText)
+  public void Draw(Node2D canvas, BattleState battleState, Unit? selectedUnit, GameState gameState, PlayerActionMode actionMode, string statusText)
   {
     DrawBoard(canvas);
     DrawEndTurnButton(canvas, gameState);
@@ -24,7 +24,7 @@ public sealed class BattleRenderer
     {
       DrawSelection(canvas, selectedUnit);
 
-      if (selectedUnit.ActionMode == UnitActionMode.Move && selectedUnit.CanMoveThisTurn) DrawValidMovementTiles(canvas, selectedUnit);
+      if (actionMode == PlayerActionMode.Move && selectedUnit.CanMoveThisTurn) DrawValidMovementTiles(canvas, selectedUnit);
     }
     DrawStatusText(canvas, statusText);
   }

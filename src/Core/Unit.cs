@@ -37,7 +37,6 @@ public sealed class Unit
   public bool CanMoveThisTurn => RemainingMovePoints > 0 && !HasWaitedThisTurn;
   public bool CanAttackThisTurn => !HasAttackedThisTurn && !HasWaitedThisTurn;
   public Team Team { get; }
-  public UnitActionMode ActionMode { get; private set; }
   public Dictionary<Vector2I, int> ValidMovementTiles { get; private set; } = new();
 
   public void MoveTo(Vector2I newPosition)
@@ -58,22 +57,10 @@ public sealed class Unit
   public void MarkWaited()
   {
     HasWaitedThisTurn = true;
-    TrySetState(UnitActionMode.UnSelected);
-  }
-
-  public bool TrySetState(UnitActionMode state)
-  {
-    if (state == UnitActionMode.Move && !CanMoveThisTurn) return false;
-    if (state == UnitActionMode.NormalAttack && !CanAttackThisTurn) return false;
-
-    ActionMode = state;
-
-    return true;
   }
 
   public void StartTurn()
   {
-    ActionMode = UnitActionMode.UnSelected;
     RemainingMovePoints = MoveRange;
     HasAttackedThisTurn = false;
     HasWaitedThisTurn = false;

@@ -6,7 +6,8 @@
 - Gameplay 型別已整理到 `src/Core`、`src/Rules`、`src/Resolvers`、`src/Rendering`。
 - 已啟用 nullable reference types 與 `SRPGPractice` root namespace。
 - 目前正在第三個可玩目標：驗證戰士、弓箭手、法師的職業差異。
-- 下一步：6D，將行動模式移出 `Unit`，改由玩家操作流程保存。
+- 已完成 6D：行動模式已移出 `Unit`，改由玩家操作流程保存。
+- 下一步：6E，攻擊模式顯示普通攻擊範圍。
 
 ## 已完成摘要
 
@@ -40,8 +41,19 @@
   - 敵軍阻擋路徑。
   - 友軍可穿越。
   - 實際移動使用 BFS 結果與距離扣移動點。
+- 行動模式已從 `Unit` 移到玩家操作流程：
+  - `Unit` 不再持有目前行動模式。
+  - 移動/攻擊模式下點擊友軍不會切換選取單位。
+  - 新增 Escape 返回選取狀態。
 
 ## 最近紀錄
+
+### 2026-06-30T17:05:12+0800
+
+- 完成 6D：將行動模式移出單位資料，改由玩家操作流程保存目前 action mode。
+- `Unit` 不再持有 action mode；玩家點擊解析會依目前 `PlayerActionMode` 分流。
+- 移動與攻擊模式下，點擊友軍單位不會切換選取單位；Escape 可返回選取狀態。
+- 驗證：`dotnet format SRPG_practice.sln --verify-no-changes`、`dotnet build SRPG_practice.sln` 通過，0 warnings，0 errors。
 
 ### 2026-06-30T11:36:14+0800
 
@@ -112,5 +124,5 @@
 
 ## 下一步
 
-- 實作 6D：將行動模式移出單位資料。
+- 實作 6E：攻擊模式顯示普通攻擊範圍。
 - 完成後更新 `docs/GOALS.md` 與本檔。

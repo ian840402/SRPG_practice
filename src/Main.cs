@@ -16,6 +16,7 @@ public partial class Main : Node2D
   private readonly PlayerActionResolver _playerActionResolver;
   private Unit? _selectedUnit;
   private GameState _gameState = GameState.PlayerTurn;
+  private PlayerActionMode _actionMode = PlayerActionMode.UnSelected;
   private string _statusText = "Click the player unit to select it.";
 
   public Main()
@@ -36,26 +37,27 @@ public partial class Main : Node2D
 
   public override void _Draw()
   {
-    _battleRenderer.Draw(this, _battleState, _selectedUnit, _gameState, _statusText);
+    _battleRenderer.Draw(this, _battleState, _selectedUnit, _gameState, _actionMode, _statusText);
   }
 
   public override void _Input(InputEvent inputEvent)
   {
-    if (inputEvent is InputEventKey { Pressed: true, Keycode: Key.A or Key.M or Key.W } keyButton && _gameState == GameState.PlayerTurn && _selectedUnit is not null)
+    if (inputEvent is InputEventKey { Pressed: true, Keycode: Key.A or Key.M or Key.W or Key.Escape } keyButton && _gameState == GameState.PlayerTurn && _selectedUnit is not null)
     {
       if (_selectedUnit.HasWaitedThisTurn)
       {
         _statusText = "This unit is waiting!";
+        QueueRedraw();
         return;
       }
 
       switch (keyButton.Keycode)
       {
         case Key.A:
-          _statusText = _selectedUnit.TrySetState(UnitActionMode.NormalAttack) ? "Attack Mode" : "This unit has attacked!";
+          _statusText = TrySetActionMode(PlayerActionMode.NormalAttack, _selectedUnit) ? "Attack Mode" : "This unit has attacked!";
           break;
         case Key.M:
-          if (_selectedUnit.TrySetState(UnitActionMode.Move))
+          if (TrySetActionMode(PlayerActionMode.Move, _selectedUnit))
           {
             _selectedUnit.SetValidMovementTiles(MovementRangeResolver.GetValidMovementTiles(_battleState, _selectedUnit));
             _statusText = "Move Mode";
@@ -67,10 +69,13 @@ public partial class Main : Node2D
           break;
         case Key.W:
           _selectedUnit.MarkWaited();
-          _statusText = $"{_selectedUnit.Name} is waiting!";
+          _statusText = "This unit is waiting!";
           UnSelectUnit();
           break;
-        default:
+        case Key.Escape:
+          if (_actionMode is PlayerActionMode.Move or PlayerActionMode.NormalAttack)
+            TrySetActionMode(PlayerActionMode.Selected);
+          _statusText = "This unit is selected!";
           break;
       }
 
@@ -120,28 +125,19 @@ public partial class Main : Node2D
 
   private void HandlePlayerTurnClick(Vector2I clickedGridPosition)
   {
-    GD.Print($"Clicked tile: {clickedGridPosition}");
+    var actionResult = _playerActionResolver.ResolveClick(_selectedUnit, _actionMode, clickedGridPosition);
 
-    var actionResult = _playerActionResolver.ResolveClick(_selectedUnit, clickedGridPosition);
-
-    if (actionResult.SelectedUnit != _selectedUnit && _selectedUnit is not null)
+    if (actionResult.SelectedUnit is null)
     {
-      _selectedUnit.TrySetState(UnitActionMode.UnSelected);
+      UnSelectUnit();
+      TrySetActionMode(actionResult.NextActionMode);
+      _statusText = actionResult.StatusText;
+      return;
     }
 
-    _selectedUnit = actionResult.SelectedUnit;
+    SelectUnit(actionResult.SelectedUnit);
+    TrySetActionMode(actionResult.NextActionMode, actionResult.SelectedUnit);
     _statusText = actionResult.StatusText;
-
-    if (_selectedUnit is null)
-    {
-      _selectedUnitPanel.ShowInfo(false);
-    }
-    else
-    {
-      _selectedUnit.TrySetState(UnitActionMode.Selected);
-      _selectedUnitPanel.SetUnitInfo(_selectedUnit);
-      _selectedUnitPanel.ShowInfo(true);
-    }
   }
 
   private void EndPlayerTurn(string playerActionText)
@@ -207,10 +203,34 @@ public partial class Main : Node2D
     _statusText = statusText;
   }
 
+  private void SelectUnit(Unit unit)
+  {
+    _selectedUnit = unit;
+    _selectedUnitPanel.SetUnitInfo(_selectedUnit);
+    _selectedUnitPanel.ShowInfo(true);
+  }
+
   private void UnSelectUnit()
   {
     _selectedUnit = null;
     _selectedUnitPanel.ShowInfo(false);
+  }
+
+  private bool TrySetActionMode(PlayerActionMode mode)
+  {
+    if (mode is PlayerActionMode.Move or PlayerActionMode.NormalAttack) return false;
+    _actionMode = mode;
+    return true;
+  }
+
+  private bool TrySetActionMode(PlayerActionMode mode, Unit unit)
+  {
+    if (mode == PlayerActionMode.Move && !unit.CanMoveThisTurn) return false;
+    if (mode == PlayerActionMode.NormalAttack && !unit.CanAttackThisTurn) return false;
+
+    _actionMode = mode;
+
+    return true;
   }
 
 }

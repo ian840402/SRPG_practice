@@ -1,6 +1,6 @@
 namespace SRPGPractice.Core;
 
-public enum UnitActionMode
+public enum PlayerActionMode
 {
   UnSelected,
   Selected,
