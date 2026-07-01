@@ -63,15 +63,11 @@ public sealed class PlayerActionResolver
 
   private PlayerActionResult ResolveAttackClick(Unit unit, Vector2I targetGridPosition)
   {
+    if (!unit.ValidAttackTiles.ContainsKey(targetGridPosition))
+      return new PlayerActionResult(unit, PlayerActionMode.NormalAttack, $"Target is outside attack range. Range: {unit.NormalAttackRange.Min}-{unit.NormalAttackRange.Max}.");
+
     if (!UnitQuery.TryGetAliveUnitAt(_battleState, targetGridPosition, Team.Enemy, out var targetEnemy))
       return new PlayerActionResult(unit, PlayerActionMode.NormalAttack, "No enemy found.");
-
-    var distance = MovementRules.GetManhattanDistance(unit.GridPosition, targetEnemy.GridPosition);
-    if (!unit.NormalAttackRange.Contains(distance))
-      return new PlayerActionResult(unit, PlayerActionMode.NormalAttack, $"{targetEnemy.Name} is outside attack range. Range: {unit.NormalAttackRange.Min}-{unit.NormalAttackRange.Max}. Distance: {distance}.");
-
-    if (unit.HasAttackedThisTurn)
-      return new PlayerActionResult(unit, PlayerActionMode.NormalAttack, $"{unit.Name} already attacked this turn.");
 
     var damageResult = CombatResolver.ResolveNormalAttack(unit, targetEnemy);
     var damageInfo = CombatResolver.FormatAttackResult(unit.Name, damageResult.IsHit, damageResult.IsCritical);

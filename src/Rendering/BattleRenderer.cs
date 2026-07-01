@@ -25,6 +25,7 @@ public sealed class BattleRenderer
       DrawSelection(canvas, selectedUnit);
 
       if (actionMode == PlayerActionMode.Move && selectedUnit.CanMoveThisTurn) DrawValidMovementTiles(canvas, selectedUnit);
+      if (actionMode == PlayerActionMode.NormalAttack && selectedUnit.CanAttackThisTurn) DrawValidAttackTiles(canvas, selectedUnit);
     }
     DrawStatusText(canvas, statusText);
   }
@@ -63,6 +64,16 @@ public sealed class BattleRenderer
       var tileRect = _layout.GetTileRect(gridPosition);
       canvas.DrawRect(tileRect, new Color(0.25f, 0.95f, 0.45f, 0.35f));
       canvas.DrawRect(tileRect, new Color(0.1f, 0.6f, 0.25f), false, 2.0f);
+    }
+  }
+
+  private void DrawValidAttackTiles(Node2D canvas, Unit selectedUnit)
+  {
+    foreach (var gridPosition in selectedUnit.ValidAttackTiles.Keys)
+    {
+      var tileRect = _layout.GetTileRect(gridPosition);
+      canvas.DrawRect(tileRect, new Color(1.0f, 0.2f, 0.2f, 0.35f));
+      canvas.DrawRect(tileRect, new Color(0.75f, 0.05f, 0.05f), false, 2.0f);
     }
   }
 

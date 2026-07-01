@@ -54,7 +54,15 @@ public partial class Main : Node2D
       switch (keyButton.Keycode)
       {
         case Key.A:
-          _statusText = TrySetActionMode(PlayerActionMode.NormalAttack, _selectedUnit) ? "Attack Mode" : "This unit has attacked!";
+          if (TrySetActionMode(PlayerActionMode.NormalAttack, _selectedUnit))
+          {
+            _selectedUnit.SetValidAttackTiles(MovementRangeResolver.GetValidNormalAttackTiles(_selectedUnit));
+            _statusText = "Attack Mode";
+          }
+          else
+          {
+            _statusText = "This unit has attacked!";
+          }
           break;
         case Key.M:
           if (TrySetActionMode(PlayerActionMode.Move, _selectedUnit))

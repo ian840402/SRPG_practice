@@ -37,7 +37,8 @@ public sealed class Unit
   public bool CanMoveThisTurn => RemainingMovePoints > 0 && !HasWaitedThisTurn;
   public bool CanAttackThisTurn => !HasAttackedThisTurn && !HasWaitedThisTurn;
   public Team Team { get; }
-  public Dictionary<Vector2I, int> ValidMovementTiles { get; private set; } = new();
+  public Dictionary<Vector2I, int> ValidMovementTiles { get; private set; } = [];
+  public Dictionary<Vector2I, int> ValidAttackTiles { get; private set; } = [];
 
   public void MoveTo(Vector2I newPosition)
   {
@@ -69,6 +70,11 @@ public sealed class Unit
   public void SetValidMovementTiles(Dictionary<Vector2I, int> tiles)
   {
     ValidMovementTiles = tiles;
+  }
+
+  public void SetValidAttackTiles(Dictionary<Vector2I, int> tiles)
+  {
+    ValidAttackTiles = tiles;
   }
 
   public void TakeDamage(int damage)
