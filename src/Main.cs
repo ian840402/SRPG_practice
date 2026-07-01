@@ -56,7 +56,7 @@ public partial class Main : Node2D
         case Key.A:
           if (TrySetActionMode(PlayerActionMode.NormalAttack, _selectedUnit))
           {
-            _selectedUnit.SetValidAttackTiles(MovementRangeResolver.GetValidNormalAttackTiles(_selectedUnit));
+            _selectedUnit.SetValidAttackGridPositions(MovementRangeResolver.GetValidNormalAttackGridPositions(_selectedUnit));
             _statusText = "Attack Mode";
           }
           else
@@ -67,7 +67,7 @@ public partial class Main : Node2D
         case Key.M:
           if (TrySetActionMode(PlayerActionMode.Move, _selectedUnit))
           {
-            _selectedUnit.SetValidMovementTiles(MovementRangeResolver.GetValidMovementTiles(_battleState, _selectedUnit));
+            _selectedUnit.SetValidMovementGridPositions(MovementRangeResolver.GetValidMovementGridPositions(_battleState, _selectedUnit));
             _statusText = "Move Mode";
           }
           else

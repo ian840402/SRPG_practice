@@ -9,8 +9,8 @@ namespace SRPGPractice.Resolvers;
 
 public static class MovementRangeResolver
 {
-  // Friendly units are passable for preview, but occupied tiles are rejected when moving.
-  public static Dictionary<Vector2I, int> GetValidMovementTiles(BattleState battleState, Unit unit)
+  // Friendly units are passable for preview, but occupied grid positions are rejected when moving.
+  public static Dictionary<Vector2I, int> GetValidMovementGridPositions(BattleState battleState, Unit unit)
   {
     var startPoint = unit.GridPosition;
     var queue = new Queue<Vector2I>();
@@ -44,7 +44,7 @@ public static class MovementRangeResolver
     return distances;
   }
 
-  public static Dictionary<Vector2I, int> GetValidNormalAttackTiles(Unit unit)
+  public static Dictionary<Vector2I, int> GetValidNormalAttackGridPositions(Unit unit)
   {
     var startPoint = unit.GridPosition;
     var queue = new Queue<Vector2I>();

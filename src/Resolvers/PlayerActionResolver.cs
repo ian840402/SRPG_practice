@@ -28,7 +28,7 @@ public sealed class PlayerActionResolver
     if (UnitQuery.TryGetAliveUnitAt(_battleState, clickedGridPosition, Team.Player, out var playerUnit))
       return new PlayerActionResult(playerUnit, PlayerActionMode.Selected, $"{playerUnit.Name} selected at {playerUnit.GridPosition}. Move points: {playerUnit.RemainingMovePoints}.");
 
-    return new PlayerActionResult(null, PlayerActionMode.UnSelected, $"Clicked tile {clickedGridPosition}.");
+    return new PlayerActionResult(null, PlayerActionMode.UnSelected, $"Clicked grid {clickedGridPosition}.");
   }
 
   private PlayerActionResult ResolveSelectedPlayerUnitClick(Unit selectedUnit, PlayerActionMode actionMode, Vector2I clickedGridPosition)
@@ -50,9 +50,9 @@ public sealed class PlayerActionResolver
   private PlayerActionResult ResolveMoveClick(Unit unit, Vector2I targetGridPosition)
   {
     if (UnitQuery.TryGetAliveUnitAt(_battleState, targetGridPosition, out _))
-      return new PlayerActionResult(unit, PlayerActionMode.Move, "Cannot move onto an occupied tile.");
+      return new PlayerActionResult(unit, PlayerActionMode.Move, "Cannot move onto an occupied grid.");
 
-    if (!unit.ValidMovementTiles.TryGetValue(targetGridPosition, out int distance))
+    if (!unit.ValidMovementGridPositions.TryGetValue(targetGridPosition, out int distance))
       return new PlayerActionResult(unit, PlayerActionMode.Move, $"Target is too far. Remaining move points: {unit.RemainingMovePoints}.");
 
     unit.MoveTo(targetGridPosition);
@@ -63,7 +63,7 @@ public sealed class PlayerActionResolver
 
   private PlayerActionResult ResolveAttackClick(Unit unit, Vector2I targetGridPosition)
   {
-    if (!unit.ValidAttackTiles.ContainsKey(targetGridPosition))
+    if (!unit.ValidAttackGridPositions.ContainsKey(targetGridPosition))
       return new PlayerActionResult(unit, PlayerActionMode.NormalAttack, $"Target is outside attack range. Range: {unit.NormalAttackRange.Min}-{unit.NormalAttackRange.Max}.");
 
     if (!UnitQuery.TryGetAliveUnitAt(_battleState, targetGridPosition, Team.Enemy, out var targetEnemy))

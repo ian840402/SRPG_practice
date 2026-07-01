@@ -24,8 +24,8 @@ public sealed class BattleRenderer
     {
       DrawSelection(canvas, selectedUnit);
 
-      if (actionMode == PlayerActionMode.Move && selectedUnit.CanMoveThisTurn) DrawValidMovementTiles(canvas, selectedUnit);
-      if (actionMode == PlayerActionMode.NormalAttack && selectedUnit.CanAttackThisTurn) DrawValidAttackTiles(canvas, selectedUnit);
+      if (actionMode == PlayerActionMode.Move && selectedUnit.CanMoveThisTurn) DrawValidMovementGridPositions(canvas, selectedUnit);
+      if (actionMode == PlayerActionMode.NormalAttack && selectedUnit.CanAttackThisTurn) DrawValidAttackGridPositions(canvas, selectedUnit);
     }
     DrawStatusText(canvas, statusText);
   }
@@ -37,13 +37,13 @@ public sealed class BattleRenderer
       for (var x = 0; x < BoardLayout.BoardSize; x++)
       {
         var gridPosition = new Vector2I(x, y);
-        var tileRect = _layout.GetTileRect(gridPosition);
-        var tileColor = (x + y) % 2 == 0
+        var gridRect = _layout.GetGridRect(gridPosition);
+        var gridColor = (x + y) % 2 == 0
             ? new Color(0.78f, 0.78f, 0.78f)
             : new Color(0.64f, 0.64f, 0.64f);
 
-        canvas.DrawRect(tileRect, tileColor);
-        canvas.DrawRect(tileRect, Colors.Black, false, 1.0f);
+        canvas.DrawRect(gridRect, gridColor);
+        canvas.DrawRect(gridRect, Colors.Black, false, 1.0f);
       }
     }
   }
@@ -57,23 +57,23 @@ public sealed class BattleRenderer
     canvas.DrawString(ThemeDB.FallbackFont, unitRect.Position + new Vector2(8, 48), $"HP: {unit.Hp}", fontSize: 14);
   }
 
-  private void DrawValidMovementTiles(Node2D canvas, Unit selectedUnit)
+  private void DrawValidMovementGridPositions(Node2D canvas, Unit selectedUnit)
   {
-    foreach (var gridPosition in selectedUnit.ValidMovementTiles.Keys)
+    foreach (var gridPosition in selectedUnit.ValidMovementGridPositions.Keys)
     {
-      var tileRect = _layout.GetTileRect(gridPosition);
-      canvas.DrawRect(tileRect, new Color(0.25f, 0.95f, 0.45f, 0.35f));
-      canvas.DrawRect(tileRect, new Color(0.1f, 0.6f, 0.25f), false, 2.0f);
+      var gridRect = _layout.GetGridRect(gridPosition);
+      canvas.DrawRect(gridRect, new Color(0.25f, 0.95f, 0.45f, 0.35f));
+      canvas.DrawRect(gridRect, new Color(0.1f, 0.6f, 0.25f), false, 2.0f);
     }
   }
 
-  private void DrawValidAttackTiles(Node2D canvas, Unit selectedUnit)
+  private void DrawValidAttackGridPositions(Node2D canvas, Unit selectedUnit)
   {
-    foreach (var gridPosition in selectedUnit.ValidAttackTiles.Keys)
+    foreach (var gridPosition in selectedUnit.ValidAttackGridPositions.Keys)
     {
-      var tileRect = _layout.GetTileRect(gridPosition);
-      canvas.DrawRect(tileRect, new Color(1.0f, 0.2f, 0.2f, 0.35f));
-      canvas.DrawRect(tileRect, new Color(0.75f, 0.05f, 0.05f), false, 2.0f);
+      var gridRect = _layout.GetGridRect(gridPosition);
+      canvas.DrawRect(gridRect, new Color(1.0f, 0.2f, 0.2f, 0.35f));
+      canvas.DrawRect(gridRect, new Color(0.75f, 0.05f, 0.05f), false, 2.0f);
     }
   }
 
@@ -89,8 +89,8 @@ public sealed class BattleRenderer
 
   private void DrawSelection(Node2D canvas, Unit selectedUnit)
   {
-    var tileRect = _layout.GetSelectionRect(selectedUnit.GridPosition);
-    canvas.DrawRect(tileRect, new Color(1.0f, 0.9f, 0.1f), false, 4.0f);
+    var gridRect = _layout.GetSelectionRect(selectedUnit.GridPosition);
+    canvas.DrawRect(gridRect, new Color(1.0f, 0.9f, 0.1f), false, 4.0f);
   }
 
   private void DrawStatusText(Node2D canvas, string statusText)

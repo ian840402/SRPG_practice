@@ -36,7 +36,7 @@ public sealed class EnemyTurnResolver
     }
 
     var stepsMoved = MoveEnemyTowardPlayer(enemyUnit);
-    return $"{enemyUnit.Name} at {enemyUnit.GridPosition} moved {stepsMoved} tile(s).";
+    return $"{enemyUnit.Name} at {enemyUnit.GridPosition} moved {stepsMoved} grid(s).";
   }
 
   private int MoveEnemyTowardPlayer(Unit enemyUnit)

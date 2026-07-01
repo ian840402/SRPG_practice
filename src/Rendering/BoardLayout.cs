@@ -5,44 +5,44 @@ namespace SRPGPractice.Rendering;
 public sealed class BoardLayout
 {
   public const int BoardSize = 8;
-  public const int TileSize = 64;
+  public const int GridCellSize = 64;
 
   private const int UnitPadding = 10;
 
   public Vector2 BoardOrigin { get; } = new(64, 64);
 
   public Rect2 EndTurnButtonRect => new(
-    BoardOrigin + new Vector2(BoardSize * TileSize + 32, 0),
+    BoardOrigin + new Vector2(BoardSize * GridCellSize + 32, 0),
     new Vector2(128, 48));
 
-  public Rect2 GetTileRect(Vector2I gridPosition)
+  public Rect2 GetGridRect(Vector2I gridPosition)
   {
-    return new Rect2(GetTilePosition(gridPosition), new Vector2(TileSize, TileSize));
+    return new Rect2(GetGridCellPosition(gridPosition), new Vector2(GridCellSize, GridCellSize));
   }
 
   public Rect2 GetSelectionRect(Vector2I gridPosition)
   {
-    return new Rect2(GetTilePosition(gridPosition) + new Vector2(3, 3), new Vector2(TileSize - 6, TileSize - 6));
+    return new Rect2(GetGridCellPosition(gridPosition) + new Vector2(3, 3), new Vector2(GridCellSize - 6, GridCellSize - 6));
   }
 
   public Rect2 GetUnitRect(Vector2I gridPosition)
   {
     return new Rect2(
-        BoardOrigin + new Vector2(gridPosition.X * TileSize + UnitPadding, gridPosition.Y * TileSize + UnitPadding),
-        new Vector2(TileSize - UnitPadding * 2, TileSize - UnitPadding * 2));
+        BoardOrigin + new Vector2(gridPosition.X * GridCellSize + UnitPadding, gridPosition.Y * GridCellSize + UnitPadding),
+        new Vector2(GridCellSize - UnitPadding * 2, GridCellSize - UnitPadding * 2));
   }
 
   public Vector2 GetStatusTextPosition()
   {
-    return BoardOrigin + new Vector2(0, BoardSize * TileSize + 36);
+    return BoardOrigin + new Vector2(0, BoardSize * GridCellSize + 36);
   }
 
   public bool TryGetGridPosition(Vector2 screenPosition, out Vector2I gridPosition)
   {
     var localPosition = screenPosition - BoardOrigin;
     gridPosition = new Vector2I(
-        Mathf.FloorToInt(localPosition.X / TileSize),
-        Mathf.FloorToInt(localPosition.Y / TileSize));
+        Mathf.FloorToInt(localPosition.X / GridCellSize),
+        Mathf.FloorToInt(localPosition.Y / GridCellSize));
 
     return gridPosition.X >= 0
         && gridPosition.X < BoardSize
@@ -50,8 +50,8 @@ public sealed class BoardLayout
         && gridPosition.Y < BoardSize;
   }
 
-  private Vector2 GetTilePosition(Vector2I gridPosition)
+  private Vector2 GetGridCellPosition(Vector2I gridPosition)
   {
-    return BoardOrigin + new Vector2(gridPosition.X * TileSize, gridPosition.Y * TileSize);
+    return BoardOrigin + new Vector2(gridPosition.X * GridCellSize, gridPosition.Y * GridCellSize);
   }
 }
