@@ -4,6 +4,8 @@ using SRPGPractice.Rendering;
 using SRPGPractice.Resolvers;
 using SRPGPractice.Rules;
 
+//FIXME: 選擇待機單位無法再次選取其他單位
+
 namespace SRPGPractice;
 
 public partial class Main : Node2D
@@ -25,12 +27,15 @@ public partial class Main : Node2D
     _selectedUnitPanel = new SelectedUnitPanel(new Vector2(_boardLayout.EndTurnButtonRect.Position.X, _boardLayout.EndTurnButtonRect.End.Y + 32));
     _enemyTurnResolver = new EnemyTurnResolver(_battleState);
     _playerActionResolver = new PlayerActionResolver(_battleState);
-
     AddChild(_selectedUnitPanel);
   }
 
   public override void _Ready()
   {
+    _selectedUnitPanel.MoveRequested += HandlePlayerMoveButtonClick;
+    _selectedUnitPanel.AttackRequested += HandlePlayerAttackButtonClick;
+    _selectedUnitPanel.WaitRequested += HandlePlayerWaitButtonClick;
+
     InitTurn();
     QueueRedraw();
   }
@@ -40,7 +45,7 @@ public partial class Main : Node2D
     _battleRenderer.Draw(this, _battleState, _selectedUnit, _gameState, _actionMode, _statusText);
   }
 
-  public override void _Input(InputEvent inputEvent)
+  public override void _UnhandledInput(InputEvent inputEvent)
   {
     if (inputEvent is InputEventKey { Pressed: true, Keycode: Key.A or Key.M or Key.W or Key.Escape } keyButton && _gameState == GameState.PlayerTurn && _selectedUnit is not null)
     {
@@ -54,31 +59,13 @@ public partial class Main : Node2D
       switch (keyButton.Keycode)
       {
         case Key.A:
-          if (TrySetActionMode(PlayerActionMode.NormalAttack, _selectedUnit))
-          {
-            _selectedUnit.SetValidAttackGridPositions(MovementRangeResolver.GetValidNormalAttackGridPositions(_selectedUnit));
-            _statusText = "Attack Mode";
-          }
-          else
-          {
-            _statusText = "This unit has attacked!";
-          }
+          HandlePlayerAttackButtonClick();
           break;
         case Key.M:
-          if (TrySetActionMode(PlayerActionMode.Move, _selectedUnit))
-          {
-            _selectedUnit.SetValidMovementGridPositions(MovementRangeResolver.GetValidMovementGridPositions(_battleState, _selectedUnit));
-            _statusText = "Move Mode";
-          }
-          else
-          {
-            _statusText = "This unit has moved!";
-          }
+          HandlePlayerMoveButtonClick();
           break;
         case Key.W:
-          _selectedUnit.MarkWaited();
-          _statusText = "This unit is waiting!";
-          UnSelectUnit();
+          HandlePlayerWaitButtonClick();
           break;
         case Key.Escape:
           if (_actionMode is PlayerActionMode.Move or PlayerActionMode.NormalAttack)
@@ -215,13 +202,58 @@ public partial class Main : Node2D
   {
     _selectedUnit = unit;
     _selectedUnitPanel.SetUnitInfo(_selectedUnit);
-    _selectedUnitPanel.ShowInfo(true);
+    _selectedUnitPanel.ShowUnitInfo(true);
+    _selectedUnitPanel.SetAllButtonUndisabled(_selectedUnit);
   }
 
   private void UnSelectUnit()
   {
     _selectedUnit = null;
-    _selectedUnitPanel.ShowInfo(false);
+    _selectedUnitPanel.ShowUnitInfo(false);
+    _selectedUnitPanel.SetAllButtonDisabled();
+  }
+
+  private void HandlePlayerMoveButtonClick()
+  {
+    if (_selectedUnit is null) return;
+
+    if (TrySetActionMode(PlayerActionMode.Move, _selectedUnit))
+    {
+      _selectedUnit.SetValidMovementGridPositions(MovementRangeResolver.GetValidMovementGridPositions(_battleState, _selectedUnit));
+      _statusText = "Move Mode";
+    }
+    else
+    {
+      _statusText = "This unit has moved!";
+    }
+
+    QueueRedraw();
+  }
+
+  private void HandlePlayerAttackButtonClick()
+  {
+    if (_selectedUnit is null) return;
+
+    if (TrySetActionMode(PlayerActionMode.NormalAttack, _selectedUnit))
+    {
+      _selectedUnit.SetValidAttackGridPositions(MovementRangeResolver.GetValidNormalAttackGridPositions(_selectedUnit));
+      _statusText = "Attack Mode";
+    }
+    else
+    {
+      _statusText = "This unit has attacked!";
+    }
+
+    QueueRedraw();
+  }
+
+  private void HandlePlayerWaitButtonClick()
+  {
+    if (_selectedUnit is null) return;
+    _selectedUnit.MarkWaited();
+    _statusText = "This unit is waiting!";
+    UnSelectUnit();
+    QueueRedraw();
   }
 
   private bool TrySetActionMode(PlayerActionMode mode)

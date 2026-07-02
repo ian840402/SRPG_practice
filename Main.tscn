@@ -4,4 +4,3 @@
 
 [node name="Main" type="Node2D" unique_id=2012156527]
 script = ExtResource("1_glv2v")
-
